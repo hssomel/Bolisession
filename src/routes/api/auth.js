@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
+const keys = require("../../config/keys");
 const jwt = require("jsonwebtoken");
+const passport = require("passport");
 
 // Load Auth model
 const Auth = require("../../models/Auth");
@@ -69,7 +71,7 @@ router.post("/login", (req, res) => {
         // Sign Token and send it to user
         jwt.sign(
           payload,
-          process.env.JWT_KEY,
+          keys.secretOrKey,
           { expiresIn: 3600 },
           (err, token) => {
             res.json({ success: true, token: "Bearer " + token });
@@ -81,5 +83,20 @@ router.post("/login", (req, res) => {
     });
   });
 });
+
+// @route   GET api/auth/currentuser
+// @desc    Return current user
+// @access  Private
+router.get(
+  "/current",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    res.json({
+      id: req.user.id,
+      username: req.user.username,
+      usertype: req.user.usertype
+    });
+  }
+);
 
 module.exports = router;
