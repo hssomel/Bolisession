@@ -1,3 +1,3 @@
-const accountTypes = ["Gabroo", "Mutiyaar", "Team", "Competition"];
+const accountTypes = ["gabroo", "mutiyaar", "team", "competition"];
 
 module.exports = accountTypes;
