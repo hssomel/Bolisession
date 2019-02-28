@@ -5,6 +5,10 @@ const keys = require("../../config/keys");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 
+// Load Validation
+const validateRegisterInput = require("../../validation/register");
+const validateLoginInput = require("../../validation/login");
+
 // Load Auth model
 const Auth = require("../../models/Auth");
 
@@ -17,24 +21,39 @@ router.get("/test", (req, res) => res.json({ msg: "auth works" }));
 // @desc    Register user
 // @access  Public
 router.post("/register", (req, res) => {
+  // Run request body through validation first
+  const { errors, isValid } = validateRegisterInput(req.body);
+
+  // Check Validation if there are any errors in the errors object
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   Auth.findOne({ username: req.body.username }).then(user => {
     if (user) {
-      return res.status(400).json({ username: "Username already exists" });
+      errors.username = "Username already exists";
+      return res.status(400).json(errors);
     } else {
-      const newAuth = new Auth({
-        username: req.body.username,
-        password: req.body.password,
-        usertype: req.body.usertype
-      });
-
-      // Hash the password for database storage
+      // Valid new account - hash the password and save into db
       bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newAuth.password, salt, (err, hash) => {
+        bcrypt.hash(req.body.password, salt, (err, hash) => {
           if (err) throw err;
-          newAuth.password = hash;
-          newAuth
+
+          const newAccount = new Auth({
+            username: req.body.username,
+            password: hash,
+            usertype: req.body.usertype
+          });
+
+          newAccount
             .save()
-            .then(registeredUser => res.json(registeredUser))
+            .then(dbEntry =>
+              res.json({
+                // id: dbEntry.id,
+                username: dbEntry.username,
+                usertype: dbEntry.usertype
+              })
+            )
             .catch(err => console.log(err));
         });
       });
@@ -46,6 +65,13 @@ router.post("/register", (req, res) => {
 // @desc    Login User (AKA Return JWT)
 // @access  Public
 router.post("/login", (req, res) => {
+  // Run request body through validation first
+  const { errors, isValid } = validateLoginInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   const username = req.body.username;
   const password = req.body.password;
 
@@ -53,7 +79,8 @@ router.post("/login", (req, res) => {
   Auth.findOne({ username }).then(user => {
     // In case username doesn't exist
     if (!user) {
-      return res.status(404).json({ username: "Username not found" });
+      errors.username = "Username not found";
+      return res.status(404).json(errors);
     }
 
     // Check the Password
@@ -63,7 +90,7 @@ router.post("/login", (req, res) => {
 
         // Create JWT Payload
         const payload = {
-          id: user.id,
+          // id: user.id,
           username: user.username,
           usertype: user.usertype
         };
@@ -78,7 +105,8 @@ router.post("/login", (req, res) => {
           }
         );
       } else {
-        return res.status(400).json({ password: "Password incorrect" });
+        errors.password = "Password incorrect";
+        return res.status(400).json(errors);
       }
     });
   });
@@ -92,7 +120,7 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     res.json({
-      id: req.user.id,
+      // id: req.user.id,
       username: req.user.username,
       usertype: req.user.usertype
     });
