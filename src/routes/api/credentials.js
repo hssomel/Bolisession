@@ -12,12 +12,12 @@ const validateLoginInput = require("../../validation/login");
 // Load Credential model
 const Credential = require("../../models/Credential");
 
-// @route   GET api/auth/test
-// @desc    Tests the auth route
+// @route   GET api/credentials/test
+// @desc    Tests the credentials route
 // @access  Public
-router.get("/test", (req, res) => res.json({ msg: "auth works" }));
+router.get("/test", (req, res) => res.json({ msg: "credentials works" }));
 
-// @route   POST api/auth/register
+// @route   POST api/credentials/register
 // @desc    Register user
 // @access  Public
 router.post("/register", (req, res) => {
@@ -61,7 +61,7 @@ router.post("/register", (req, res) => {
   });
 });
 
-// @route   POST api/auth/login
+// @route   POST api/credentials/login
 // @desc    Login User (AKA Return JWT)
 // @access  Public
 router.post("/login", (req, res) => {
@@ -112,7 +112,7 @@ router.post("/login", (req, res) => {
   });
 });
 
-// @route   GET api/auth/currentuser
+// @route   GET api/credentials/currentuser
 // @desc    Return current user
 // @access  Private
 router.get(

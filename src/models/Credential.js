@@ -12,7 +12,7 @@ const CredentialSchema = new Schema({
     required: true
   },
   usertype: {
-    // Dancer, Team, or Competition Account
+    // gabroo, mutiyaar, dancer, team, or competition Account
     type: "String",
     required: true
   },

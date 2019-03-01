@@ -5,7 +5,8 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const keys = require("./config/keys");
 
-const auth = require("./routes/api/auth");
+// Import API route files
+const credentials = require("./routes/api/credentials");
 const profiles = require("./routes/api/profiles");
 const posts = require("./routes/api/posts");
 
@@ -28,7 +29,7 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 
 // Use Routes
-app.use("/api/auth", auth);
+app.use("/api/credentials", credentials);
 app.use("/api/profiles", profiles);
 app.use("/api/posts", posts);
 
