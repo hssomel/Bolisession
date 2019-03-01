@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Create Schema
-const AuthSchema = new Schema({
+const CredentialSchema = new Schema({
   username: {
     type: String,
     required: true
@@ -23,4 +23,4 @@ const AuthSchema = new Schema({
   }
 });
 
-module.exports = Auth = mongoose.model("authentication", AuthSchema);
+module.exports = Credential = mongoose.model("Credential", CredentialSchema);

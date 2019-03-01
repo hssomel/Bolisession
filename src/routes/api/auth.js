@@ -9,8 +9,8 @@ const passport = require("passport");
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 
-// Load Auth model
-const Auth = require("../../models/Auth");
+// Load Credential model
+const Credential = require("../../models/Credential");
 
 // @route   GET api/auth/test
 // @desc    Tests the auth route
@@ -29,7 +29,7 @@ router.post("/register", (req, res) => {
     return res.status(400).json(errors);
   }
 
-  Auth.findOne({ username: req.body.username }).then(user => {
+  Credential.findOne({ username: req.body.username }).then(user => {
     if (user) {
       errors.username = "Username already exists";
       return res.status(400).json(errors);
@@ -39,7 +39,7 @@ router.post("/register", (req, res) => {
         bcrypt.hash(req.body.password, salt, (err, hash) => {
           if (err) throw err;
 
-          const newAccount = new Auth({
+          const newAccount = new Credential({
             username: req.body.username,
             password: hash,
             usertype: req.body.usertype
@@ -76,7 +76,7 @@ router.post("/login", (req, res) => {
   const password = req.body.password;
 
   // Find user by username
-  Auth.findOne({ username }).then(user => {
+  Credential.findOne({ username }).then(user => {
     // In case username doesn't exist
     if (!user) {
       errors.username = "Username not found";
