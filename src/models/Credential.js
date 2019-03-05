@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const CredentialSchema = new Schema({
+  // userID
   username: {
     type: String,
     required: true

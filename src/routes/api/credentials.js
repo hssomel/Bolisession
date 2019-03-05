@@ -49,7 +49,7 @@ router.post("/register", (req, res) => {
             .save()
             .then(dbEntry =>
               res.json({
-                //id: dbEntry.id,
+                id: dbEntry.id,
                 username: dbEntry.username,
                 usertype: dbEntry.usertype
               })
@@ -90,7 +90,7 @@ router.post("/login", (req, res) => {
 
         // Create JWT Payload
         const payload = {
-          //id: user.id,
+          id: user.id,
           username: user.username,
           usertype: user.usertype
         };
@@ -120,7 +120,7 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     res.json({
-      //id: req.user.id,
+      id: req.user.id,
       username: req.user.username,
       usertype: req.user.usertype
     });
