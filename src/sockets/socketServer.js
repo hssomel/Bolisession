@@ -1,6 +1,7 @@
+// Pairing socketIds and User Ids
 const mobileSockets = {};
 
-// Load Conversation Model
+// Load Mongoose Models
 const Conversation = require("../models/Conversation");
 
 module.exports = server => {

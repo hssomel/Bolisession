@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Create Schema
-const CredentialSchema = new Schema({
+const credentialSchema = new Schema({
   // userID
   username: {
     type: String,
@@ -24,4 +24,5 @@ const CredentialSchema = new Schema({
   }
 });
 
-module.exports = Credential = mongoose.model("Credential", CredentialSchema);
+// Export Credential Model
+module.exports = mongoose.model("Credential", credentialSchema);
