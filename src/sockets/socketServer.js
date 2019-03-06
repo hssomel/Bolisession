@@ -9,16 +9,27 @@ module.exports = server => {
   const mobileSockets = {};
 
   io.on("connection", socket => {
+    console.log(`connected to user on socket id: ${socket.id}`);
     socket.on("newUser", credentials => {
+      console.log(credentials);
       const { username } = credentials;
       Promise.all([
         // Find Connected User and All Available Users
         Credential.findOne({ username }, "username publicKey"),
         Credential.find({}, "username publicKey")
       ]).then(([user, users]) => {
-        mobileSockets[user[0].id] = socket.id;
-        socket.emit("userCreated", { user: user[0], users });
-        socket.broadcast.emit("newUser", user[0]);
+        //
+
+        // TESTING ONLY
+        console.log(user);
+        console.log(users);
+        //
+        //
+        //
+        mobileSockets[user._id] = socket.id;
+        console.log(mobileSockets);
+        socket.emit("userCreated", { user: user, users });
+        socket.broadcast.emit("newUser", user);
       });
     });
 
