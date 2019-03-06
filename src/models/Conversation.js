@@ -59,12 +59,12 @@ conversationSchema.statics.findOrCreateConversation = function(
         messages: []
       });
 
-      // newConversation
-      //   .save()
-      //   .then(dbEntry => {
-      //     console.log(dbEntry);
-      //   })
-      //   .catch(err => console.log(err));
+      newConversation
+        .save()
+        .then(dbEntry => {
+          console.log(dbEntry);
+        })
+        .catch(err => console.log(err));
 
       return newConversation;
     }
@@ -73,17 +73,18 @@ conversationSchema.statics.findOrCreateConversation = function(
 conversationSchema.statics.createMessage = function(text, sender, receiver) {
   const user1Id = sender.id;
   const user2Id = receiver.id;
+  const newMessage = {
+    user: {
+      _id: sender.id,
+      username: sender.username
+    },
+    timestamp: Date.now,
+    text
+  };
 
+  // Save newMessage to appropriate document
   this.findOrCreateConversation(user1Id, user2Id).then(function(conversation) {
-    conversation.messages.push({
-      user: {
-        _id: sender.id,
-        username: sender.username
-      },
-      timestamp: Date.now,
-      text
-    });
-
+    conversation.messages.push(newMessage);
     conversation
       .save()
       .then(dbEntry => {
@@ -91,6 +92,8 @@ conversationSchema.statics.createMessage = function(text, sender, receiver) {
       })
       .catch(err => console.log(err));
   });
+
+  return newMessage;
 };
 
 // Export Conversation Model

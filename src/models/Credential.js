@@ -12,6 +12,10 @@ const credentialSchema = new Schema({
     type: String,
     required: true
   },
+  publicKey: {
+    type: String,
+    required: true
+  },
   usertype: {
     // gabroo, mutiyaar, dancer, team, or competition Account
     type: "String",
