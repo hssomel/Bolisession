@@ -23,8 +23,8 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch(error => console.log(error));
 
-// Dummy Hello World Route at Root
-app.get("/", function(req, res) {
+// Dummy Landing Page Route at Root
+app.get("/", function (req, res) {
   res.sendFile(__dirname + "/html/index.html");
 });
 
