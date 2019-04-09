@@ -128,7 +128,7 @@ router.get(
 );
 
 // @route   GET api/credentials/allusers
-// @desc    Return the username and id of all users
+// @desc    Return the username, usertype, and _id of all users
 // @access  Public
 router.get("/allusers", (req, res) => {
   let errors = {};
