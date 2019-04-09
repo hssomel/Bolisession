@@ -24,7 +24,7 @@ mongoose
   .catch(error => console.log(error));
 
 // Dummy Landing Page Route at Root
-app.get("/", function (req, res) {
+app.get("/", function(req, res) {
   res.sendFile(__dirname + "/html/index.html");
 });
 

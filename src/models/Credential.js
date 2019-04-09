@@ -6,16 +6,17 @@ const credentialSchema = new Schema({
   // userID
   username: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   password: {
     type: String,
     required: true
   },
-  publicKey: {
-    type: String,
-    required: true
-  },
+  // publicKey: {
+  //   type: String,
+  //   required: true
+  // },
   usertype: {
     // gabroo, mutiyaar, dancer, team, or competition Account
     type: "String",
