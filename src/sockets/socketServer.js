@@ -14,9 +14,10 @@ module.exports = server => {
       console.log(credentials);
       const { username } = credentials;
       Promise.all([
-        // Find Connected User and All Available Users
-        Credential.findOne({ username }, "username publicKey"),
-        Credential.find({}, "username publicKey")
+        // Find Connected User's username and _id
+        Credential.findOne({ username }, "username"),
+        // Find all the usernames and _id's
+        Credential.find({}, "username")
       ]).then(([user, users]) => {
         //
 
@@ -26,6 +27,7 @@ module.exports = server => {
         //
         //
         //
+
         mobileSockets[user._id] = socket.id;
         console.log(mobileSockets);
         socket.emit("userCreated", { user: user, users });
