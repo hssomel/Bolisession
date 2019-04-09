@@ -15,13 +15,14 @@ const credentialSchema = new Schema({
   },
   usertype: {
     // gabroo, mutiyaar, dancer, team, or competition Account
-    type: "String",
+    type: String,
     required: true
   },
   date: {
     // Date they joined
     type: Date,
-    default: Date.now
+    default: Date.now,
+    required: true
   }
 });
 
