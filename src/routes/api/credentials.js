@@ -127,4 +127,18 @@ router.get(
   }
 );
 
+// @route   GET api/credentials/allusers
+// @desc    Return the username and id of all users
+// @access  Public
+router.get("/allusers", (req, res) => {
+  let errors = {};
+  Credential.find({}, "username usertype").then(users => {
+    if (!users) {
+      errors.users = "No user was found";
+      return res.status(404).json(errors);
+    }
+    res.json(users);
+  });
+});
+
 module.exports = router;
