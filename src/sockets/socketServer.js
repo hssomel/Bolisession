@@ -48,7 +48,6 @@ module.exports = server => {
         )
       );
     });
-
     socket.on("message", ({ text, sender, receiver }) => {
       Conversation.createMessage(text, sender, receiver).then(message => {
         socket.emit("incomingMessage", message);
