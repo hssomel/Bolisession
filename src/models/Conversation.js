@@ -7,7 +7,8 @@ const messageSchema = new Schema({
     _id: {
       // User who sent message
       type: Schema.Types.ObjectId,
-      ref: "Credential"
+      ref: "Credential",
+      required: true
     },
     username: {
       type: String,
@@ -37,40 +38,40 @@ const conversationSchema = new Schema({
 });
 
 // Static Methods on the Model - Note Avoid Arrow Functions where access to 'this' is needed
-conversationSchema.statics.findOrCreateConversation = function(
+conversationSchema.statics.findOrCreateConversation = async function(
   user1Id,
   user2Id
 ) {
-  return this.findOne({ participants: { $all: [user1Id, user2Id] } }, function(
-    err,
-    conversation
-  ) {
-    if (err) {
+  const conversation = await this.findOne({ participants: { $all: [user1Id, user2Id] } })
+    .catch(err => {
       console.log(err);
       throw err;
-    }
+    });
 
-    if (conversation) {
-      return conversation;
-    } else {
-      const newConversation = new this({
-        participants: [user1Id, user2Id],
-        dateCreated: Date.now,
-        messages: []
+  if (conversation) {
+    return conversation;
+  }
+  else {
+    const newConversation = new this({
+      participants: [user1Id, user2Id],
+      dateCreated: Date.now,
+      messages: []
+    });
+    await newConversation
+      .save()
+      .then(dbEntry => {
+        console.log(dbEntry);
+      })
+      .catch(err => {
+        console.log(err);
+        throw err;
       });
-
-      newConversation
-        .save()
-        .then(dbEntry => {
-          console.log(dbEntry);
-        })
-        .catch(err => console.log(err));
-
-      return newConversation;
-    }
-  });
+    return newConversation;
+  }
 };
-conversationSchema.statics.createMessage = function(text, sender, receiver) {
+
+
+conversationSchema.statics.createMessage = async function(text, sender, receiver) {
   const user1Id = sender.id;
   const user2Id = receiver.id;
   const newMessage = {
@@ -81,18 +82,21 @@ conversationSchema.statics.createMessage = function(text, sender, receiver) {
     timestamp: Date.now,
     text
   };
-
   // Save newMessage to appropriate document
-  this.findOrCreateConversation(user1Id, user2Id).then(function(conversation) {
-    conversation.messages.push(newMessage);
-    conversation
-      .save()
-      .then(dbEntry => {
-        console.log(dbEntry);
-      })
-      .catch(err => console.log(err));
+  const conversation = await this.findOrCreateConversation(user1Id, user2Id).catch(err => {
+    console.log(err);
+    throw err;
   });
-
+  conversation.messages.push(newMessage);
+  conversation
+    .save()
+    .then(dbEntry => {
+      console.log(dbEntry);
+    })
+    .catch(err => {
+      console.log(err);
+      throw err;
+    });
   return newMessage;
 };
 
