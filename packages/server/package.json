@@ -1,11 +1,13 @@
 {
-  "name": "social-network-backend-server",
+  "name": "server",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "mon": "nodemon --exec node src/index.js"
+    "mon": "nodemon --exec node src/index.js",
+    "ios": "nodemon --exec node src/index.js",
+    "android": "nodemon --exec node src/index.js"
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
