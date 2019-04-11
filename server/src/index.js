@@ -28,6 +28,8 @@ app.get("/", function(req, res) {
   res.sendFile(__dirname + "/html/index.html");
 });
 
+app.get("/test", (req, res) => res.json({ msg: "Backend Works!!!" }));
+
 // Passport middleware
 app.use(passport.initialize());
 
@@ -40,7 +42,7 @@ app.use("/api/profiles", profiles);
 app.use("/api/posts", posts);
 
 // Port
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || process.env.SERVER_PORT || 8080;
 
 // Run Server on that Port
 const server = app.listen(port, () =>
