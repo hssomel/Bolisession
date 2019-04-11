@@ -1,0 +1,18 @@
+{
+  "name": "@gurkamalpsc/react-native-social-app",
+  "version": "1.0.0",
+  "description": "Codebase for a react-native social media application. Includes both server and client packages.",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gurkamalpsc/react-native-social-app.git"
+  },
+  "author": "Gurkamal Singh",
+  "bugs": {
+    "url": "https://github.com/gurkamalpsc/react-native-social-app/issues"
+  },
+  "homepage": "https://github.com/gurkamalpsc/react-native-social-app#readme"
+}
