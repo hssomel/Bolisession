@@ -1,14 +1,14 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, { Component } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { API_ENDPOINT } from "react-native-dotenv"; // import from .env
+import { Provider, connect } from "react-redux";
+import {
+  createAppContainer,
+  createSwitchNavigator,
+  createDrawerNavigator,
+  createBottomTabNavigator,
+  createStackNavigator
+} from "react-navigation";
 
 import axios from "axios"; // Test the backend in ComponentDidMount()
 
@@ -19,23 +19,22 @@ const instructions = Platform.select({
     "Shake or press menu button for dev menu"
 });
 
-type Props = {};
-export default class App extends Component<Props> {
+export default class App extends Component {
   state = {
     msg: ""
   };
 
-  componentDidMount() {
-    axios.get(`${API_ENDPOINT}/test`).then(res => {
-      const msg = res.data.msg;
-      this.setState({ msg });
-    });
-  }
+  // componentDidMount() {
+  //   axios.get("http://192.168.42.121:8080/test").then(res => {
+  //     const msg = res.data.msg;
+  //     this.setState({ msg });
+  //   });
+  // }
 
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
+        <Text style={styles.welcome}>Welcome to React Native 4 5 6!</Text>
         <Text style={styles.instructions}>To get started, edit App.js</Text>
         <Text style={styles.instructions}>
           Testing URL: {API_ENDPOINT}/test:
