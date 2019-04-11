@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
-import { API_ENDPOINT } from "react-native-dotenv"; // import from .env
+import { API_ENDPOINT } from "./env" // import from env.js
+// import { API_ENDPOINT } from "react-native-dotenv"; // import from .env
 import { Provider, connect } from "react-redux";
 import {
   createAppContainer,
@@ -8,14 +9,14 @@ import {
   createDrawerNavigator,
   createBottomTabNavigator,
   createStackNavigator
-} from "react-navigation";
+}
+from "react-navigation";
 
 import axios from "axios"; // Test the backend in ComponentDidMount()
 
 const instructions = Platform.select({
   ios: "Press Cmd+R to reload,\n" + "Cmd+D or shake for dev menu",
-  android:
-    "Double tap R on your keyboard to reload,\n" +
+  android: "Double tap R on your keyboard to reload,\n" +
     "Shake or press menu button for dev menu"
 });
 
