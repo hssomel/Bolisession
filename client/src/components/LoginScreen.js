@@ -31,13 +31,9 @@ class LoginScreen extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     if (nextProps.auth.isAuthenticated) {
       this.props.navigation.navigate("/Test");
-    }
-
-    if (nextProps.errors) {
-      this.setState({ errors: nextProps.errors });
     }
   }
 
@@ -53,7 +49,7 @@ class LoginScreen extends React.Component {
       password: this.state.password
     };
 
-    loginUser(returningUser);
+    this.props.loginUser(returningUser);
     console.log({ returningUser });
   }
 

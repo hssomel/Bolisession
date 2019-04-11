@@ -10,11 +10,11 @@ export const registerUser = (newUser, navigation) => dispatch => {
   axios
     .post(
       // "https://social-network-backend-server.herokuapp.com/api/credentials/register",
-      "http://192.168.42.188:8080/api/credentials/register",
+      "http://192.168.42.121:8080/api/credentials/register",
       newUser
     )
     .then(() => {
-      navigate("Next");
+      navigate("Login");
     })
     .catch(err =>
       dispatch({
@@ -29,7 +29,7 @@ export const loginUser = userData => dispatch => {
   axios
     .post(
       // "https://social-network-backend-server.herokuapp.com/api/credentials/login",
-      "http://192.168.42.188:8080/api/credentials/login",
+      "http://192.168.42.121:8080/api/credentials/login",
       userData
     )
     .then(res => {
