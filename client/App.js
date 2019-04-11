@@ -8,6 +8,7 @@
 
 import React, { Component } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
+import { ENV_VAR_1, ENV_VAR_2, ENV_VAR_3 } from "react-native-dotenv";
 //import { createAppContainer } from "react-navigation";
 
 const instructions = Platform.select({
@@ -26,7 +27,9 @@ export default class App extends Component<Props> {
           An Update using GIT! Welcome to React Native!
         </Text>
         <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        <Text style={styles.instructions}>ENV_VAR_1 works: {ENV_VAR_1}</Text>
+        <Text style={styles.instructions}>ENV_VAR_2 works: {ENV_VAR_2}</Text>
+        <Text style={styles.instructions}>ENV_VAR_3 works: {ENV_VAR_3}</Text>
       </View>
     );
   }
