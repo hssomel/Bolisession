@@ -2,17 +2,26 @@ import axios from "axios";
 import { SET_CURRENT_USER, GET_USERS, GET_ERRORS } from "./actionTypes";
 import setAuthToken from "../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
+import {
+  storeData,
+  readData,
+  removeData
+} from "../utils/asyncStorageFunctions";
+
+/////// Assign API_ENDPOINT using one of these:
+//import { API_ENDPOINT } from "../../env";
+const API_ENDPOINT = "http://192.168.0.14:8080";
+// const API_ENDPOINT = "https://social-network-backend-server.herokuapp.com";
 
 let navigate;
+
+// The key for the key-value pair of the jwtToken in local storage
+const jwtLocalStorageKey = "jwtToken";
 
 export const registerUser = (newUser, navigation) => dispatch => {
   navigate = navigation.navigate;
   axios
-    .post(
-      // "https://social-network-backend-server.herokuapp.com/api/credentials/register",
-      "http://192.168.0.14:8080/api/credentials/register",
-      newUser
-    )
+    .post(`${API_ENDPOINT}/api/credentials/register`, newUser)
     .then(() => {
       navigate("Login");
     })
@@ -27,16 +36,17 @@ export const registerUser = (newUser, navigation) => dispatch => {
 // Login - Get User Token
 export const loginUser = userData => dispatch => {
   axios
-    .post(
-      // "https://social-network-backend-server.herokuapp.com/api/credentials/login",
-      "http://192.168.0.14:8080/api/credentials/login",
-      userData
-    )
+    .post(`${API_ENDPOINT}/api/credentials/login`, userData)
     .then(res => {
-      console.log(JSON.stringify(res.data));
       const { token } = res.data;
-      // Set token to ls
-      // localStorage.setItem("jwtToken", token);
+      // Set token using AyncStorage to device
+      storeData(jwtLocalStorageKey, token).then(success => {
+        if (success) {
+          console.log("JWT stored on Device!");
+        } else {
+          console.log("JWT storage Failed!");
+        }
+      });
       // Set token to Auth header
       setAuthToken(token);
       // Decode token to get user data
@@ -66,10 +76,7 @@ export const setCurrentUser = decoded => {
 export const testPress = navigation => dispatch => {
   navigate = navigation.navigate;
   axios
-    .get(
-      // "https://social-network-backend-server.herokuapp.com/api/credentials/allusers",
-      "http://192.168.0.14:8080/api/credentials/allusers"
-    )
+    .get(`${API_ENDPOINT}/api/credentials/allusers`)
     .then(res => {
       dispatch({
         type: GET_USERS,
