@@ -22,6 +22,7 @@ router.get("/test", (req, res) => res.json({ msg: "credentials works" }));
 // @access  Public
 router.post("/register", (req, res) => {
   // Run request body through validation first
+
   const { errors, isValid } = validateRegisterInput(req.body);
 
   // Check Validation if there are any errors in the errors object
@@ -66,6 +67,7 @@ router.post("/register", (req, res) => {
 // @access  Public
 router.post("/login", (req, res) => {
   // Run request body through validation first
+  console.log("test point 1");
   const { errors, isValid } = validateLoginInput(req.body);
 
   if (!isValid) {

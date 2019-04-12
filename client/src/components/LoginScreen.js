@@ -11,50 +11,33 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 class LoginScreen extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      username: "",
-      password: "",
-      errors: {}
-    };
+  state = {
+    username: "",
+    password: "",
+    errors: {}
+  };
 
-    // this.handleChange = this.handleChange.bind(this);
-    this.handleLogin = this.handleLogin.bind(this);
-    this.handleRegister = this.handleRegister.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  componentDidMount() {
-    if (this.props.auth.isAuthenticated) {
-      this.props.navigation.navigate("/Test");
-    }
-  }
-
-  componentDidUpdate(nextProps) {
-    if (nextProps.auth.isAuthenticated) {
-      this.props.navigation.navigate("/Test");
-    }
-  }
-
-  handleChange(type, value) {
-    this.setState({ [type]: value });
-  }
-
-  handleLogin(e) {
-    e.preventDefault();
-
+  // Event Handlers
+  handleChangeText = (type, value) => this.setState({ [type]: value });
+  handleRegisterPress = () => this.props.navigation.navigate("Register");
+  handleLoginPress = pressEvent => {
     const returningUser = {
       username: this.state.username,
       password: this.state.password
     };
-
     this.props.loginUser(returningUser);
-    console.log({ returningUser });
+  };
+
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      this.props.navigation.navigate("Test");
+    }
   }
 
-  handleRegister() {
-    this.props.navigation.navigate("Register");
+  componentDidUpdate() {
+    if (this.props.auth.isAuthenticated) {
+      this.props.navigation.navigate("Test");
+    }
   }
 
   render() {
@@ -63,7 +46,7 @@ class LoginScreen extends React.Component {
         <Text style={styles.text}>Enter your username AND password:</Text>
         <TextInput
           placeholder="username"
-          onChangeText={value => this.handleChange("username", value)}
+          onChangeText={value => this.handleChangeText("username", value)}
           returnKeyType="next"
           autoCorrect={false}
           onSubmitEditing={() => this.passwordInput.focus()}
@@ -71,18 +54,21 @@ class LoginScreen extends React.Component {
         />
         <TextInput
           placeholder="password"
-          onChangeText={value => this.handleChange("password", value)}
-          // secureTextEntry
+          onChangeText={value => this.handleChangeText("password", value)}
+          secureTextEntry // changes password to ***
           returnKeyType="go"
           autoCapitalize="none"
           style={styles.input}
           value={this.state.password}
           ref={input => (this.passwordInput = input)}
         />
-        <TouchableOpacity onPress={this.handleLogin} style={styles.button}>
+        <TouchableOpacity onPress={this.handleLoginPress} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={this.handleRegister} style={styles.button}>
+        <TouchableOpacity
+          onPress={this.handleRegisterPress}
+          style={styles.button}
+        >
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
       </View>
@@ -110,7 +96,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "powderblue",
+    backgroundColor: "green",
     height: "100%",
     width: "100%"
   },
