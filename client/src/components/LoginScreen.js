@@ -20,12 +20,9 @@ class LoginScreen extends React.Component {
   // Event Handlers
   handleChangeText = (type, value) => this.setState({ [type]: value });
   handleRegisterPress = () => this.props.navigation.navigate("Register");
-  handleLoginPress = pressEvent => {
-    const returningUser = {
-      username: this.state.username,
-      password: this.state.password
-    };
-    this.props.loginUser(returningUser);
+  handleLoginPress = () => {
+    const { username, password } = this.state;
+    this.props.loginUser({ username, password });
   };
 
   componentDidMount() {
