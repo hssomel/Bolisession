@@ -20,10 +20,12 @@ const address = ip.address();
 const port = process.env.PORT || 8080;
 const url = `http://${address}:${port}`;
 
-// Test Response at API root route
-app.get("/", (req, res) => res.json({
-  msg: `API connected at ${url}`
-}));
+// Test Response at API root route; Log any errors
+app.get("/", (req, res) => {
+  console.log(typeof(req.ip));
+  console.log(`API request at "${req.path}" from ${req.protocol}://${req.ip}`);
+  res.json({msg: `API connected at ${url}`});
+});
 
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
