@@ -8,20 +8,15 @@ import {
   removeData
 } from "../utils/asyncStorageFunctions";
 
-/////// Assign API_ENDPOINT using one of these:
-import { API_ENDPOINT } from "../../env";
-//const API_ENDPOINT = "http://192.168.0.14:8080";
-// const API_ENDPOINT = "https://social-network-backend-server.herokuapp.com";
-
 let navigate;
 
-// The key for the key-value pair of the jwtToken in local storage
+// The key for jwtToken in local storage
 const jwtLocalStorageKey = "jwtToken";
 
 export const registerUser = (newUser, navigation) => dispatch => {
   navigate = navigation.navigate;
   axios
-    .post(`${API_ENDPOINT}/api/credentials/register`, newUser)
+    .post(`/api/credentials/register`, newUser)
     .then(() => {
       navigate("Login");
     })
@@ -36,7 +31,7 @@ export const registerUser = (newUser, navigation) => dispatch => {
 // Login - Get User Token
 export const loginUser = userData => dispatch => {
   axios
-    .post(`${API_ENDPOINT}/api/credentials/login`, userData)
+    .post(`/api/credentials/login`, userData)
     .then(res => {
       const { token } = res.data;
       // Set token using AyncStorage to device
@@ -76,7 +71,7 @@ export const setCurrentUser = decoded => {
 export const testPress = navigation => dispatch => {
   navigate = navigation.navigate;
   axios
-    .get(`${API_ENDPOINT}/api/credentials/allusers`)
+    .get(`/api/credentials/allusers`)
     .then(res => {
       dispatch({
         type: GET_USERS,
