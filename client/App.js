@@ -39,20 +39,8 @@ const RootStack = createStackNavigator(
 
 const AppContainer = createAppContainer(RootStack);
 
-const App = () => (
+export default App = () => (
   <Provider store={store}>
     <AppContainer />
   </Provider>
 );
-
-export default App;
-
-// class App extends Component {
-//   render() {
-//     return (
-//       <Provider store={store}>
-//         <AppContainer />
-//       </Provider>
-//     );
-//   }
-// }

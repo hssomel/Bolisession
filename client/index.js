@@ -11,6 +11,7 @@ import {name as appName} from './app.json';
  import axios from "axios";
  axios.defaults.baseURL = API_BASE_URL;
 
+// Testing API Connection
 axios
   .get(`/`)
   .then(res => console.log(res.data))
