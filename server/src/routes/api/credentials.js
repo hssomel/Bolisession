@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const keys = require("../../config/keys");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
+const requestLogger = require("../../utils/requestLogger");
 
 // Load Validation
 const validateRegisterInput = require("../../validation/register");
@@ -12,15 +13,17 @@ const validateLoginInput = require("../../validation/login");
 // Load Credential model
 const Credential = require("../../models/Credential");
 
-// @route   GET api/credentials/test
-// @desc    Tests the credentials route
-// @access  Public
-router.get("/test", (req, res) => res.json({ msg: "credentials works" }));
-
 // @route   POST api/credentials/register
 // @desc    Register user
 // @access  Public
 router.post("/register", (req, res) => {
+
+  // Log the request
+  requestLogger(req,res);
+
+  const { method, path, protocol, ip } = req;
+  console.log(`${method} "${path}" from ${protocol}://${ip}`);
+
   // Run request body through validation first
 
   const { errors, isValid } = validateRegisterInput(req.body);
@@ -66,6 +69,10 @@ router.post("/register", (req, res) => {
 // @desc    Login User (AKA Return JWT)
 // @access  Public
 router.post("/login", (req, res) => {
+
+  // Log the request
+  requestLogger(req,res);
+
   // Run request body through validation first
   console.log("test point 1");
   const { errors, isValid } = validateLoginInput(req.body);
@@ -121,6 +128,10 @@ router.get(
   "/current",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
+
+    // Log the request
+    requestLogger(req,res);
+
     res.json({
       id: req.user.id,
       username: req.user.username,
@@ -133,6 +144,10 @@ router.get(
 // @desc    Return the username, usertype, and _id of all users
 // @access  Public
 router.get("/allusers", (req, res) => {
+
+  // Log the request
+  requestLogger(req,res);
+  
   let errors = {};
   Credential.find({}, "username usertype").then(users => {
     if (!users) {

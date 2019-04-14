@@ -15,21 +15,21 @@ const posts = require("./routes/api/posts");
 // Initialize express
 const app = express();
 
+// Body parser middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 // API URL
 const address = ip.address();
 const port = process.env.PORT || 8080;
 const url = `http://${address}:${port}`;
+const requestLogger = require("./utils/requestLogger");
 
 // Test Response at API root route; Log any errors
-app.get("/", (req, res) => {
-  console.log(typeof(req.ip));
-  console.log(`API request at "${req.path}" from ${req.protocol}://${req.ip}`);
+app.post("/", (req, res) => {
+  requestLogger(req, res);
   res.json({msg: `API connected at ${url}`});
 });
-
-// Body parser middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 
 // Connect to MongoDB
 mongoose
