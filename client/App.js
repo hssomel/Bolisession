@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
-// import { API_ENDPOINT } from "./env"; // import from env.js
 import { Provider, connect } from "react-redux";
 import store from "./src/store/store";
 import {
@@ -14,8 +13,6 @@ import LoginScreen from "./src/components/LoginScreen";
 import UsersScreen from "./src/components/UsersScreen";
 import RegisterScreen from "./src/components/RegisterScreen";
 import TestScreen from "./src/components/TestScreen";
-
-import axios from "axios"; // Test the backend in ComponentDidMount()
 
 const RootStack = createStackNavigator(
   {

@@ -9,8 +9,8 @@ import {
 } from "../utils/asyncStorageFunctions";
 
 /////// Assign API_ENDPOINT using one of these:
-//import { API_ENDPOINT } from "../../env";
-const API_ENDPOINT = "http://192.168.0.14:8080";
+import { API_ENDPOINT } from "../../env";
+//const API_ENDPOINT = "http://192.168.0.14:8080";
 // const API_ENDPOINT = "https://social-network-backend-server.herokuapp.com";
 
 let navigate;

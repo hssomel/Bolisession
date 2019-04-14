@@ -2,18 +2,19 @@
   "name": "@gurkamalpsc/react-native-social-app-server",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node src/index.js",
-    "mon": "nodemon --exec node src/index.js",
-    "ios": "nodemon --exec node src/index.js",
-    "android": "nodemon --exec node src/index.js"
+    "start": "node src/server.js",
+    "mon": "nodemon --exec node src/server.js",
+    "ios": "nodemon --exec node src/server.js",
+    "android": "nodemon --exec node src/server.js"
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
     "body-parser": "1.18.3",
     "dotenv": "6.2.0",
     "express": "4.16.4",
+    "ip": "^1.1.5",
     "jsonwebtoken": "8.5.0",
     "lodash.isempty": "4.4.0",
     "mongoose": "5.4.16",
