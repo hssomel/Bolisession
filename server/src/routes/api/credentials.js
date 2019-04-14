@@ -21,9 +21,6 @@ router.post("/register", (req, res) => {
   // Log the request
   requestLogger(req,res);
 
-  const { method, path, protocol, ip } = req;
-  console.log(`${method} "${path}" from ${protocol}://${ip}`);
-
   // Run request body through validation first
 
   const { errors, isValid } = validateRegisterInput(req.body);
@@ -74,7 +71,6 @@ router.post("/login", (req, res) => {
   requestLogger(req,res);
 
   // Run request body through validation first
-  console.log("test point 1");
   const { errors, isValid } = validateLoginInput(req.body);
 
   if (!isValid) {
