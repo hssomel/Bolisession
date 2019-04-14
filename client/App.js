@@ -38,23 +38,21 @@ const RootStack = createStackNavigator(
 );
 
 const AppContainer = createAppContainer(RootStack);
-export default class App extends Component {
-  // state = {
-  //   msg: ""
-  // };
 
-  // componentDidMount() {
-  //   axios.get({ API_ENDPOINT } + "/test").then(res => {
-  //     const msg = res.data.msg;
-  //     this.setState({ msg });
-  //   });
-  // }
+const App = () => (
+  <Provider store={store}>
+    <AppContainer />
+  </Provider>
+);
 
-  render() {
-    return (
-      <Provider store={store}>
-        <AppContainer />
-      </Provider>
-    );
-  }
-}
+export default App;
+
+// class App extends Component {
+//   render() {
+//     return (
+//       <Provider store={store}>
+//         <AppContainer />
+//       </Provider>
+//     );
+//   }
+// }
