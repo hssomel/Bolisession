@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TouchableHighlight,
-  StyleSheet,
-  FlatList
-} from "react-native";
+import { View, StyleSheet, FlatList, ActivityIndicator } from "react-native";
 import { List, ListItem, SearchBar } from "react-native-elements";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -21,15 +14,50 @@ class UsersScreen extends React.Component {
     this.props.navigation.navigate("Messages");
   }
 
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "86%",
+          backgroundColor: "#CED0CE",
+          marginLeft: "14%"
+        }}
+      />
+    );
+  };
+
+  renderHeader = () => {
+    return <SearchBar placeholder="Type Here..." lightTheme round />;
+  };
+
+  // renderFooter = () => {
+  //   if (!this.state.loading) return null;
+
+  //   return (
+  //     <View
+  //       style={{
+  //         paddingVertical: 20,
+  //         borderTopWidth: 1,
+  //         borderColor: "#CED0CE"
+  //       }}
+  //     >
+  //       <ActivityIndicator animating size="large" />
+  //     </View>
+  //   );
+  // };
+
   render() {
     const { users } = this.props.auth;
     return (
+      // <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
       <FlatList
         style={styles.listcontainer}
         data={users}
         renderItem={({ item }) => (
           <ListItem
             title={`${item.username}`}
+            subtitle={item.usertype}
             leftAvatar={{
               rounded: true,
               source: { uri: "http://www.gravatar.com/avatar/?d=identicon" }
@@ -39,7 +67,11 @@ class UsersScreen extends React.Component {
           />
         )}
         keyExtractor={item => item._id}
+        ItemSeparatorComponent={this.renderSeparator}
+        ListHeaderComponent={this.renderHeader}
+        // ListFooterComponent={this.renderFooter}
       />
+      // </List>
     );
   }
 }
