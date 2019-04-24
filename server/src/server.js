@@ -62,5 +62,5 @@ fs.writeFile('../mobile/env.js', data, err => {
   else console.log("Generated Client-side env.js configuration!")
 })
 
-// // Initialize socket.io
-// require("./sockets/socketServer")(server);
+// Initialize socket.io
+require("./sockets/socketServer")(server);
