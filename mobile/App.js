@@ -14,19 +14,13 @@ import UsersScreen from "./src/components/UsersScreen";
 import RegisterScreen from "./src/components/RegisterScreen";
 import TestScreen from "./src/components/TestScreen";
 
-const RootStack = createStackNavigator(
+const AuthStack = createStackNavigator(
   {
     Login: {
       screen: LoginScreen
     },
     Register: {
       screen: RegisterScreen
-    },
-    Users: {
-      screen: UsersScreen
-    },
-    Test: {
-      screen: TestScreen
     }
   },
   {
@@ -37,10 +31,29 @@ const RootStack = createStackNavigator(
   }
 );
 
-const AppContainer = createAppContainer(RootStack);
+const AppStack = createStackNavigator({
+  Test: {
+    screen: TestScreen
+  },
+  Users: {
+    screen: UsersScreen
+  }
+});
 
-export default App = () => (
+const AppContainer = createAppContainer(
+  createSwitchNavigator(
+    {
+      App: AppStack,
+      Auth: AuthStack
+    },
+    {
+      initialRouteName: "Auth"
+    }
+  )
+);
+
+export default (App = () => (
   <Provider store={store}>
     <AppContainer />
   </Provider>
-);
+));
