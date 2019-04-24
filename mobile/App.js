@@ -21,23 +21,18 @@ import RegisterScreen from "./src/components/RegisterScreen";
 import TestScreen from "./src/components/TestScreen";
 import MessagesScreen from "./src/components/MessagesScreen";
 import SettingsScreen from "./src/components/SettingsScreen";
+import ProfileScreen from "./src/components/ProfileScreen";
+import SearchScreen from "./src/components/SearchScreen";
 
-const AuthStack = createStackNavigator(
-  {
-    Login: {
-      screen: LoginScreen
-    },
-    Register: {
-      screen: RegisterScreen
-    }
+// -------- STACKS ( NOT TO BE CONFUSED WITH NAVIGATORS!!! ) ------- //
+const AuthStack = createStackNavigator({
+  Login: {
+    screen: LoginScreen
   },
-  {
-    initialRouteName: "Login",
-    navigationOptions: {
-      headerTitle: "Chat!"
-    }
+  Register: {
+    screen: RegisterScreen
   }
-);
+});
 
 const AppStack = createStackNavigator({
   Test: {
@@ -51,14 +46,35 @@ const AppStack = createStackNavigator({
   }
 });
 
+const SearchStack = createStackNavigator({
+  Search: {
+    screen: SearchScreen
+  }
+});
+
+const ProfileStack = createStackNavigator({
+  Profile: {
+    screen: ProfileScreen
+  }
+});
+
+const SettingsStack = createStackNavigator({
+  Settings: {
+    screen: SettingsScreen
+  }
+});
+
+// ----- END OF STACKS ----------//
+
 const DashboardTabNavigator = createBottomTabNavigator(
   {
     Home: AppStack,
-    Settings: SettingsScreen
+    Search: SearchStack, // for searching teams/competitions --equivalent to instagram search icon
+    Profile: ProfileStack,
+    Settings: SettingsStack
   },
   {
-    navigationOptions: ({ navigation }) => {
-      // const { routeName } = navigation.state.routes[navigation.state.index];
+    navigationOptions: () => {
       return {
         headerTitle: <Text style={styles.buttonText}>Bhangra App</Text>
       };
@@ -80,14 +96,6 @@ const DashboardStackNavigator = createStackNavigator(
           >
             <Text style={styles.buttonText}>Drawer</Text>
           </TouchableOpacity>
-        ),
-        headerRight: (
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Users")}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>DM's</Text>
-          </TouchableOpacity>
         )
       };
     }
@@ -100,15 +108,10 @@ const AppDrawerNavigator = createDrawerNavigator({
   }
 });
 
-const AppSwitchNavigator = createSwitchNavigator(
-  {
-    Login: AuthStack,
-    Dashboard: { screen: AppDrawerNavigator }
-  },
-  {
-    initialRouteName: "Login"
-  }
-);
+const AppSwitchNavigator = createSwitchNavigator({
+  Login: AuthStack,
+  Dashboard: { screen: AppDrawerNavigator }
+});
 
 const AppContainer = createAppContainer(AppSwitchNavigator);
 
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
   button: {
     width: "75%",
     backgroundColor: "indianred",
-    borderRadius: 40,
+    borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
@@ -136,7 +139,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "black",
     textAlign: "center",
-    fontSize: 12
+    fontSize: 10
   },
   buttonText2: {
     color: "black",
