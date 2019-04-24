@@ -28,7 +28,7 @@ const requestLogger = require("./utils/requestLogger");
 // Test Response at API root route; Log any errors
 app.get("/", (req, res) => {
   requestLogger(req, res);
-  res.json({msg: `API connected at ${url}`});
+  res.json({ msg: `API connected at ${url}` });
 });
 
 // Connect to MongoDB
@@ -57,10 +57,10 @@ const server = app.listen(port, () => {
 // Write a env.js file in the client directory to configure API_BASE_URL
 const data = `export const API_BASE_URL = "http://${ip.address()}:${port}";`;
 // const data = `export const API_BASE_URL = "http://localhost:${port}";`;
-fs.writeFile('../mobile/env.js', data, err => {
+fs.writeFile("../mobile/env.js", data, err => {
   if (err) console.log("Error while writing client env.js file", err);
-  else console.log("Generated Client-side env.js configuration!")
-})
+  else console.log("Generated Client-side env.js configuration!");
+});
 
-// // Initialize socket.io
-// require("./sockets/socketServer")(server);
+// Initialize socket.io
+require("./sockets/socketServer")(server);

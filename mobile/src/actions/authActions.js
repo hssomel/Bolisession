@@ -50,13 +50,14 @@ export const loginUser = userData => dispatch => {
       console.log("right before dispatch");
       dispatch(setCurrentUser(decoded));
     })
-    .catch(err =>
+    .catch(err => {
       // dispatch({
       //   type: GET_ERRORS,
       //   payload: err.response.data
       // });
-      console.log(err)
-    );
+      console.log("console logging catch error");
+      console.log(err);
+    });
 };
 
 // Set logged in user
