@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity
 } from "react-native";
-import { registerUser } from "../actions/authActions";
+import { registerUser } from "../actions/authActionDispatchers";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 

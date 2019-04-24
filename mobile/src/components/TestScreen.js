@@ -7,7 +7,7 @@ import {
   TouchableOpacity
 } from "react-native";
 import PropTypes from "prop-types";
-import { testPress } from "../actions/authActions";
+import { testPress } from "../actions/authActionDispatchers";
 import { connect } from "react-redux";
 
 class TestScreen extends React.Component {

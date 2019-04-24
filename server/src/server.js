@@ -14,6 +14,10 @@ const posts = require("./routes/api/posts");
 
 // Initialize express
 const app = express();
+const server = require('http').createServer(app);
+
+// Initialize socket.io
+require("./sockets/socketServer")(server);
 
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -48,19 +52,20 @@ app.use("/api/credentials", credentials);
 app.use("/api/profiles", profiles);
 app.use("/api/posts", posts);
 
-// Run Server on that Port
-const server = app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-  console.log(`API: ${url}`);
-});
-
 // Write a env.js file in the client directory to configure API_BASE_URL
 const data = `export const API_BASE_URL = "http://${ip.address()}:${port}";`;
 // const data = `export const API_BASE_URL = "http://localhost:${port}";`;
 fs.writeFile("../mobile/env.js", data, err => {
   if (err) console.log("Error while writing client env.js file", err);
-  else console.log("Generated Client-side env.js configuration!");
+  else console.log("Generated MOBILE env.js configuration!");
+});
+fs.writeFile("../web/src/env.js", data, err => {
+  if (err) console.log("Error while writing client env.js file", err);
+  else console.log("Generated WEB env.js configuration!");
 });
 
-// Initialize socket.io
-require("./sockets/socketServer")(server);
+// Run Server on that Port
+server.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+  console.log(`API: ${url}`);
+});

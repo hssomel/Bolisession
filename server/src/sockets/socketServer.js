@@ -10,6 +10,10 @@ module.exports = server => {
 
   io.on("connection", socket => {
     console.log(`connected to user on socket id: ${socket.id}`);
-    //socket.on();
+
+    socket.on('newUser', userID => {
+      mobileSockets[userID] = socket.id;
+      console.log("New user added to mobileSockets Object", mobileSockets);
+    });
   });
 };

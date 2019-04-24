@@ -1,3 +1,5 @@
+// This File Acts as a library of Action Dispatching functions
+
 import axios from "axios";
 import { SET_CURRENT_USER, GET_USERS, GET_ERRORS } from "./actionTypes";
 import setAuthToken from "../utils/setAuthToken";
@@ -7,6 +9,7 @@ import {
   readData,
   removeData
 } from "../utils/asyncStorageFunctions";
+import {connectSocket, newSocketConnection} from "./socketActionDispatchers"
 
 let navigate;
 
@@ -44,11 +47,16 @@ export const loginUser = userData => dispatch => {
       });
       // Set token to Auth header
       setAuthToken(token);
+
       // Decode token to get user data
-      const decoded = jwt_decode(token);
+      const decodedToken = jwt_decode(token);
+
       // Set current user
-      console.log("right before dispatch");
-      dispatch(setCurrentUser(decoded));
+      dispatch(setCurrentUser(decodedToken));
+
+      // Connect Socket - Stateful connection
+      dispatch(connectSocket(decodedToken.id));
+
     })
     .catch(err => {
       // dispatch({
@@ -61,11 +69,10 @@ export const loginUser = userData => dispatch => {
 };
 
 // Set logged in user
-export const setCurrentUser = decoded => {
-  console.log("setCurrentUser called");
+const setCurrentUser = decodedToken => {
   return {
     type: SET_CURRENT_USER,
-    payload: decoded
+    payload: decodedToken
   };
 };
 

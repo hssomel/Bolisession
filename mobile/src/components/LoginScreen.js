@@ -6,10 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity
 } from "react-native";
-import { loginUser } from "../actions/authActions";
+import { loginUser } from "../actions/authActionDispatchers";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import socket from "../sockets/socket";
 
 class LoginScreen extends React.Component {
   state = {
