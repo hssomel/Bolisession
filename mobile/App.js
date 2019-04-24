@@ -13,6 +13,7 @@ import LoginScreen from "./src/components/LoginScreen";
 import UsersScreen from "./src/components/UsersScreen";
 import RegisterScreen from "./src/components/RegisterScreen";
 import TestScreen from "./src/components/TestScreen";
+import MessagesScreen from "./src/components/MessagesScreen";
 
 const AuthStack = createStackNavigator(
   {
@@ -37,6 +38,9 @@ const AppStack = createStackNavigator({
   },
   Users: {
     screen: UsersScreen
+  },
+  Messages: {
+    screen: MessagesScreen
   }
 });
 

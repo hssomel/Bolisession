@@ -7,17 +7,18 @@ import {
   StyleSheet,
   FlatList
 } from "react-native";
+import { List, ListItem, SearchBar } from "react-native-elements";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 class UsersScreen extends React.Component {
   constructor() {
     super();
-    this.testChat = this.testChat.bind(this);
+    this.testChatPress = this.testChatPress.bind(this);
   }
 
-  testChat() {
-    this.props.navigation.navigate("Login");
+  testChatPress() {
+    this.props.navigation.navigate("Messages");
   }
 
   render() {
@@ -26,7 +27,17 @@ class UsersScreen extends React.Component {
       <FlatList
         style={styles.listcontainer}
         data={users}
-        renderItem={({ item }) => <Text>{`${item.username}`}</Text>}
+        renderItem={({ item }) => (
+          <ListItem
+            title={`${item.username}`}
+            leftAvatar={{
+              rounded: true,
+              source: { uri: "http://www.gravatar.com/avatar/?d=identicon" }
+            }}
+            onPress={this.testChatPress}
+            containerStyle={{ borderBottomWidth: 0 }}
+          />
+        )}
         keyExtractor={item => item._id}
       />
     );
@@ -84,3 +95,15 @@ const styles = StyleSheet.create({
     textAlign: "center"
   }
 });
+
+// render() {
+//   const { users } = this.props.auth;
+//   return (
+//     <FlatList
+//       style={styles.listcontainer}
+//       data={users}
+//       renderItem={({ item }) => <Text>{`${item.username}`}</Text>}
+//       keyExtractor={item => item._id}
+//     />
+//   );
+// }
