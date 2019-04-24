@@ -27,13 +27,13 @@ class LoginScreen extends React.Component {
 
   componentDidMount() {
     if (this.props.auth.isAuthenticated) {
-      this.props.navigation.navigate("Test");
+      this.props.navigation.navigate("Dashboard");
     }
   }
 
   componentDidUpdate() {
     if (this.props.auth.isAuthenticated) {
-      this.props.navigation.navigate("Test");
+      this.props.navigation.navigate("Dashboard");
     }
   }
 

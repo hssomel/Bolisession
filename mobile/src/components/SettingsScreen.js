@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 import { testPress } from "../actions/authActionDispatchers";
 import { connect } from "react-redux";
 
-class TestScreen extends React.Component {
+class SettingsScreen extends React.Component {
   constructor() {
     super();
 
@@ -24,19 +24,16 @@ class TestScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>
-          Welcome! {this.props.auth.user.username}
-        </Text>
-        <Text style={styles.text}>This will be your future feed!</Text>
-        <TouchableOpacity onPress={this.handleTestPress} style={styles.button}>
+        <Text style={styles.text}>WELCOME TO THE SETTINGS SCREEN</Text>
+        {/* <TouchableOpacity onPress={this.handleTestPress} style={styles.button}>
           <Text style={styles.buttonText}>Go to Chat</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
   }
 }
 
-TestScreen.propTypes = {
+SettingsScreen.propTypes = {
   testPress: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired
 };
@@ -48,13 +45,13 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { testPress }
-)(TestScreen);
+)(SettingsScreen);
 
 const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "pink",
+    backgroundColor: "aqua",
     height: "100%",
     width: "100%"
   },
