@@ -14,20 +14,8 @@ import { connect } from "react-redux";
 class TestScreen extends React.Component {
   constructor() {
     super();
-
     this.handleTestPress = this.handleTestPress.bind(this);
   }
-  // static navigationOptions = {
-  //   headerRight: (
-  //     <Button
-  //       onPress={() => {
-  //         this.handleTestPress;
-  //       }}
-  //       title="DM's"
-  //       color="black"
-  //     />
-  //   )
-  // };
 
   handleTestPress() {
     this.props.testPress(this.props.navigation);
@@ -66,7 +54,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "pink",
+    backgroundColor: "rosybrown",
     height: "100%",
     width: "100%"
   },

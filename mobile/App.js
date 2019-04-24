@@ -23,6 +23,7 @@ import MessagesScreen from "./src/components/MessagesScreen";
 import SettingsScreen from "./src/components/SettingsScreen";
 import ProfileScreen from "./src/components/ProfileScreen";
 import SearchScreen from "./src/components/SearchScreen";
+import Icon from "react-native-vector-icons/Ionicons";
 
 // -------- STACKS ( NOT TO BE CONFUSED WITH NAVIGATORS!!! ) ------- //
 const AuthStack = createStackNavigator({
@@ -68,16 +69,50 @@ const SettingsStack = createStackNavigator({
 
 const DashboardTabNavigator = createBottomTabNavigator(
   {
-    Home: AppStack,
-    Search: SearchStack, // for searching teams/competitions --equivalent to instagram search icon
-    Profile: ProfileStack,
-    Settings: SettingsStack
+    Home: {
+      screen: AppStack,
+      navigationOptions: {
+        tabBarLabel: "Home",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-home" color={tintColor} size={24} />
+        )
+      }
+    },
+    Search: {
+      screen: SearchStack,
+      navigationOptions: {
+        tabBarLabel: "Search",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-search" color={tintColor} size={24} />
+        )
+      }
+    }, // for searching teams/competitions --equivalent to instagram search icon
+    Profile: {
+      screen: ProfileStack,
+      navigationOptions: {
+        tabBarLabel: "Profile",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="android" color={tintColor} size={24} />
+        )
+      }
+    },
+    Settings: {
+      screen: SettingsStack,
+      navigationOptions: {
+        tabBarLabel: "Settings",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-settings" color={tintColor} size={24} />
+        )
+      }
+    }
   },
   {
-    navigationOptions: () => {
-      return {
-        headerTitle: <Text style={styles.buttonText}>Bhangra App</Text>
-      };
+    navigationOptions: {
+      tabBarVisible: true
+    },
+    tabBarOptions: {
+      activeTintColor: "red",
+      inactiveTintColor: "grey"
     }
   }
 );
@@ -122,19 +157,14 @@ export default (App = () => (
 ));
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  },
   button: {
     width: "75%",
     backgroundColor: "indianred",
     borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 10,
-    paddingVertical: 10
+    marginTop: 20,
+    paddingVertical: 15
   },
   buttonText: {
     color: "black",
