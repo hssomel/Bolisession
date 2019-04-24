@@ -57,7 +57,7 @@ const server = app.listen(port, () => {
 // Write a env.js file in the client directory to configure API_BASE_URL
 const data = `export const API_BASE_URL = "http://${ip.address()}:${port}";`;
 // const data = `export const API_BASE_URL = "http://localhost:${port}";`;
-fs.writeFile('../client/env.js', data, err => {
+fs.writeFile('../mobile/env.js', data, err => {
   if (err) console.log("Error while writing client env.js file", err);
   else console.log("Generated Client-side env.js configuration!")
 })
