@@ -4,7 +4,6 @@ const accountTypes = require('../config/accountTypes');
 
 module.exports = function validateRegisterInput(data) {
   const errors = {};
-
   let { username, usertype, password, password2 } = data;
 
   // turn empty objects into Empty strings for Validator

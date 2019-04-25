@@ -1,26 +1,25 @@
-Validator = require("validator"); // Validate Strings
-isEmpty = require("lodash.isempty"); // Check if objects are empty
-accountTypes = require("../config/accountTypes");
+const Validator = require('validator'); // Validate Strings
+const isEmpty = require('lodash.isempty'); // Check if objects are empty
 
 module.exports = function validateLoginInput(data) {
-  let errors = {};
-
-  // Turn empty objects into Empty strings for Validator
-  data.username = !isEmpty(data.username) ? data.username : "";
-  data.password = !isEmpty(data.password) ? data.password : "";
+  const errors = {};
+  let { username, password } = data;
+  // turn empty objects into Empty strings for Validator
+  username = !isEmpty(username) ? username : '';
+  password = !isEmpty(password) ? password : '';
 
   // username validation
-  if (Validator.isEmpty(data.username)) {
-    errors.username = "Username is required";
+  if (Validator.isEmpty(username)) {
+    errors.username = 'Username is required';
   }
 
   // password validation
-  if (Validator.isEmpty(data.password)) {
-    errors.password = "Password is required";
+  if (Validator.isEmpty(password)) {
+    errors.password = 'Password is required';
   }
 
   return {
     errors,
-    isValid: isEmpty(errors)
+    isValid: isEmpty(errors),
   };
 };
