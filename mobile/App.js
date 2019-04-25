@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Provider, connect } from 'react-redux';
 import store from './src/store/store';
 import {
@@ -74,7 +68,7 @@ const DashboardTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarLabel: 'Home',
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-home" color={tintColor} size={24} />
+          <Icon name="ios-home" color={tintColor} size={30} />
         ),
       },
     },
@@ -83,7 +77,7 @@ const DashboardTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarLabel: 'Search',
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-search" color={tintColor} size={24} />
+          <Icon name="ios-search" color={tintColor} size={30} />
         ),
       },
     }, // for searching teams/competitions --equivalent to instagram search icon
@@ -92,7 +86,7 @@ const DashboardTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarLabel: 'Profile',
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-person" color={tintColor} size={24} />
+          <Icon name="ios-person" color={tintColor} size={30} />
         ),
       },
     },
@@ -101,7 +95,7 @@ const DashboardTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         // tabBarLabel: "Settings",
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-settings" color={tintColor} size={24} />
+          <Icon name="ios-settings" color={tintColor} size={30} />
         ),
       },
     },
@@ -128,19 +122,20 @@ const DashboardStackNavigator = createStackNavigator(
         headerLeft: (
           <Icon
             name="ios-menu"
-            style={styles.button}
+            style={styles.button1}
             onPress={() => navigation.openDrawer()}
             color="grey"
-            size={24}
+            size={30}
           />
         ),
         headerRight: (
-          <TouchableOpacity
+          <Icon
+            name="ios-paper-plane"
+            style={styles.button2}
             onPress={() => navigation.navigate('Users')}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>Drawer</Text>
-          </TouchableOpacity>
+            color="grey"
+            size={30}
+          />
         ),
       };
     },
@@ -148,9 +143,7 @@ const DashboardStackNavigator = createStackNavigator(
 );
 
 const AppDrawerNavigator = createDrawerNavigator({
-  Dashboard: {
-    screen: DashboardStackNavigator,
-  },
+  Dashboard: DashboardStackNavigator,
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
@@ -167,14 +160,15 @@ export default (App = () => (
 ));
 
 const styles = StyleSheet.create({
-  button: {
-    width: '75%',
-    backgroundColor: 'indianred',
-    borderRadius: 50,
+  button1: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
-    paddingVertical: 15,
+    marginLeft: 20,
+  },
+  button2: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 17,
   },
   buttonText: {
     color: 'black',
