@@ -26,7 +26,5 @@
     "eslint-plugin-react": "^7.12.4",
     "prettier": "^1.17.0"
   },
-  "dependencies": {
-    "morgan-body": "^2.4.7"
-  }
+  "dependencies": {}
 }
