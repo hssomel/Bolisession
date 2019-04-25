@@ -11,9 +11,9 @@ const morganBody = require('morgan-body');
 const keys = require('./config/keys');
 
 // Import API route files
-const credentials = require('./routes/api/credentials').default;
-const profiles = require('./routes/api/profiles');
-const posts = require('./routes/api/posts');
+const credentialsRoute = require('./routes/api/credentialsRoute');
+const profilesRoute = require('./routes/api/profilesRoute');
+const postsRoute = require('./routes/api/postsRoute');
 
 // Initialize express
 const app = express();
@@ -39,11 +39,9 @@ morganBody(app);
 const address = ip.address();
 const port = process.env.PORT || 8080;
 const url = `http://${address}:${port}`;
-const requestLogger = require('./utils/requestLogger');
 
 // Test Response at API root route; Log any errors
 app.get('/', (req, res) => {
-  requestLogger(req, res);
   res.json({ msg: `API connected at ${url}` });
 });
 
@@ -61,9 +59,9 @@ app.use(passport.initialize());
 require('./config/passport')(passport);
 
 // Use Routes
-app.use('/api/credentials', credentials);
-app.use('/api/profiles', profiles);
-app.use('/api/posts', posts);
+app.use('/api/credentials', credentialsRoute);
+app.use('/api/profiles', profilesRoute);
+app.use('/api/posts', postsRoute);
 
 // Write a env.js file in the client directory to configure API_BASE_URL
 const data = `export const API_BASE_URL = "http://${ip.address()}:${port}";`;

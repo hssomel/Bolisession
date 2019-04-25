@@ -1,9 +1,10 @@
 const Validator = require('validator'); // Validate Strings
 const isEmpty = require('lodash.isempty'); // Check if objects are empty
 
-module.exports = function validateLoginInput(data) {
+const validateLogin = data => {
   const errors = {};
   let { username, password } = data;
+
   // turn empty objects into Empty strings for Validator
   username = !isEmpty(username) ? username : '';
   password = !isEmpty(password) ? password : '';
@@ -23,3 +24,5 @@ module.exports = function validateLoginInput(data) {
     isValid: isEmpty(errors),
   };
 };
+
+module.exports = validateLogin;

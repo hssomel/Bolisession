@@ -1,75 +1,95 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
 const bcrypt = require('bcryptjs');
-const keys = require('../../config/keys');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const requestLogger = require('../../utils/requestLogger');
+const keys = require('../../config/keys');
 
 // Load Validation
-const validateRegisterInput = require('../../validation/register');
-const validateLoginInput = require('../../validation/login');
+const validateRegister = require('../../validation/validateRegister');
+const validateLogin = require('../../validation/validateLogin');
 
 // Load Credential model
 const Credential = require('../../models/Credential');
 
-// @route   POST api/credentials/register
+// @route   POST /api/credentials/register
 // @desc    Register user
 // @access  Public
-router.post('/register', (req, res) => {
-  // Log the request
-  requestLogger(req, res);
-
-  // Run request body through validation first
-
-  const { errors, isValid } = validateRegisterInput(req.body);
-
-  // Check Validation if there are any errors in the errors object
-  if (!isValid) {
-    return res.status(400).json(errors);
-  }
-
-  Credential.findOne({ username: req.body.username }).then(user => {
-    if (user) {
-      errors.username = 'Username already exists';
-      return res.status(400).json(errors);
-    } else {
-      // Valid new account - hash the password and save into db
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(req.body.password, salt, (err, hash) => {
-          if (err) throw err;
-
+router.post('/register', async (req, res) => {
+  Promise.all([
+    validateRegister(req.body),
+    Credential.findOne({ username: req.body.username }),
+    bcrypt.genSalt(10),
+  ])
+    .then(([validation, existingUser, salt]) => {
+      const { errors, isValid } = validation;
+      if (!isValid) {
+        res.status(400).json({ success: false, errors, data: {} });
+        return;
+      }
+      if (existingUser) {
+        errors.push({
+          type: 'username',
+          message: 'Username already exists',
+        });
+        res.status(400).json({ success: false, errors, data: {} });
+        return;
+      }
+      bcrypt
+        .hash(req.body.password, salt)
+        .then(hash => {
           const newAccount = new Credential({
             username: req.body.username,
             password: hash,
             usertype: req.body.usertype,
           });
-
           newAccount
             .save()
-            .then(dbEntry =>
+            .then(savedAccount => {
               res.json({
-                id: dbEntry.id,
-                username: dbEntry.username,
-                usertype: dbEntry.usertype,
-              }),
-            )
-            .catch(err => console.log(err));
+                success: true,
+                errors: [],
+                data: {
+                  id: savedAccount.id,
+                  username: savedAccount.username,
+                  usertype: savedAccount.usertype,
+                },
+              });
+            })
+            .catch(error => {
+              res.status(500).json({
+                success: false,
+                errors: [
+                  { type: 'internal', message: 'Internal server error' },
+                ],
+                data: {},
+              });
+              console.log(error);
+            });
+        })
+        .catch(error => {
+          res.status(500).json({
+            success: false,
+            errors: [{ type: 'internal', message: 'Internal server error' }],
+            data: {},
+          });
+          console.log(error);
         });
+    })
+    .catch(error => {
+      res.status(500).json({
+        success: false,
+        errors: [{ type: 'internal', message: 'Internal server error' }],
+        data: {},
       });
-    }
-  });
+      console.log(error);
+    });
 });
 
 // @route   POST api/credentials/login
 // @desc    Login User (AKA Return JWT)
 // @access  Public
 router.post('/login', (req, res) => {
-  // Log the request
-  requestLogger(req, res);
-
-  // Run request body through validation first
-  const { errors, isValid } = validateLoginInput(req.body);
+  const { errors, isValid } = validateLogin(req.body);
 
   if (!isValid) {
     return res.status(400).json(errors);
@@ -122,9 +142,6 @@ router.get(
   '/current',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    // Log the request
-    requestLogger(req, res);
-
     res.json({
       id: req.user.id,
       username: req.user.username,
@@ -137,9 +154,6 @@ router.get(
 // @desc    Return the username, usertype, and _id of all users
 // @access  Public
 router.get('/allusers', (req, res) => {
-  // Log the request
-  requestLogger(req, res);
-
   let errors = {};
   Credential.find({}, 'username usertype').then(users => {
     if (!users) {
