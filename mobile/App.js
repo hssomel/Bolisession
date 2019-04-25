@@ -23,39 +23,63 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const AuthStack = createStackNavigator({
   Login: {
     screen: LoginScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
   },
   Register: {
     screen: RegisterScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
   },
 });
 
 const AppStack = createStackNavigator({
   Test: {
-    screen: TestScreen, //aka the future FeedScreen
+    screen: TestScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
   },
   Users: {
     screen: UsersScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
   },
   Messages: {
     screen: MessagesScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
   },
 });
 
 const SearchStack = createStackNavigator({
   Search: {
     screen: SearchScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
   },
 });
 
 const ProfileStack = createStackNavigator({
   Profile: {
     screen: ProfileScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
   },
 });
 
 const SettingsStack = createStackNavigator({
   Settings: {
     screen: SettingsScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
   },
 });
 
