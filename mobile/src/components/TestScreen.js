@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'crimson',
+    backgroundColor: 'chartreuse',
     height: '100%',
     width: '100%',
   },

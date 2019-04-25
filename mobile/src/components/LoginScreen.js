@@ -5,6 +5,7 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import { loginUser } from '../actions/authActionDispatchers';
 import PropTypes from 'prop-types';
@@ -40,7 +41,8 @@ class LoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>BholiSession</Text>
+        {/* <Text style={styles.text}>BholiSession</Text> */}
+        <Image source={require('../assets/images/bhangra.png')} />
         <TextInput
           placeholder="username"
           onChangeText={value => this.handleChangeText('username', value)}
@@ -97,6 +99,9 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
+  // container1: {
+  //   tintColor: 'white',
+  // },
   text: {
     fontSize: 38,
     fontWeight: 'bold',
