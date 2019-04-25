@@ -92,14 +92,14 @@ const DashboardTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarLabel: "Profile",
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="android" color={tintColor} size={24} />
+          <Icon name="ios-person" color={tintColor} size={24} />
         )
       }
     },
     Settings: {
       screen: SettingsStack,
       navigationOptions: {
-        tabBarLabel: "Settings",
+        // tabBarLabel: "Settings",
         tabBarIcon: ({ tintColor }) => (
           <Icon name="ios-settings" color={tintColor} size={24} />
         )
