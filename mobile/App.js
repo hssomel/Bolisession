@@ -23,7 +23,7 @@ import OpeningScreen from './src/components/OpeningScreen';
 import ExplanationScreenOne from './src/components/ExplanationScreenOne';
 import ExplanationScreenTwo from './src/components/ExplanationScreenTwo';
 
-// -------- STACKS ( NOT TO BE CONFUSED WITH NAVIGATORS!!! ) ------- //
+// -------- STACK NAVIGATORS ONLY ------- //
 const AuthStack = createStackNavigator({
   Login: {
     screen: LoginScreen,
@@ -38,44 +38,6 @@ const AuthStack = createStackNavigator({
     }),
   },
 });
-
-const IntroStack = createMaterialTopTabNavigator(
-  {
-    Ex_1: {
-      screen: ExplanationScreenOne,
-      navigationOptions: () => ({
-        header: null,
-      }),
-    },
-    Ex_2: {
-      screen: ExplanationScreenTwo,
-      navigationOptions: () => ({
-        header: null,
-      }),
-    },
-    Ex_3: {
-      screen: OpeningScreen,
-      navigationOptions: () => ({
-        header: null,
-      }),
-    },
-  },
-  {
-    navigationOptions: {
-      tabBarVisible: false,
-      tabBarIcon: {
-        tintColor: 'red',
-      },
-    },
-    tabBarOptions: {
-      style: {
-        backgroundColor: 'white',
-        width: 0,
-      },
-      showLabel: false,
-    },
-  },
-);
 
 const AppStack = createStackNavigator({
   Test: {
@@ -125,7 +87,38 @@ const SettingsStack = createStackNavigator({
   },
 });
 
-// ----- END OF STACKS ----------//
+// ----- END OF STACK nAVIGATORS; BELOW ARE TAB AND OTHER NAVIGATORS ----------//
+
+const IntroStack = createMaterialTopTabNavigator(
+  {
+    Ex_1: {
+      screen: ExplanationScreenOne,
+    },
+    Ex_2: {
+      screen: ExplanationScreenTwo,
+    },
+    Ex_3: {
+      screen: OpeningScreen,
+    },
+  },
+  {
+    navigationOptions: {
+      tabBarVisible: false,
+      tabBarIcon: {
+        tintColor: 'transparent',
+      },
+    },
+    tabBarOptions: {
+      style: {
+        backgroundColor: 'transparent',
+      },
+      showLabel: false,
+      indicatorStyle: {
+        backgroundColor: 'transparent',
+      },
+    },
+  },
+);
 
 const DashboardTabNavigator = createBottomTabNavigator(
   {
@@ -250,24 +243,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-// const AuthStack = createStackNavigator({
-//   Opening: {
-//     screen: OpeningScreen,
-//     navigationOptions: () => ({
-//       header: null,
-//     }),
-//   },
-//   Login: {
-//     screen: LoginScreen,
-//     navigationOptions: () => ({
-//       header: null,
-//     }),
-//   },
-//   Register: {
-//     screen: RegisterScreen,
-//     navigationOptions: () => ({
-//       header: null,
-//     }),
-//   },
-// });
