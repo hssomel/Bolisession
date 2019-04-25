@@ -7,6 +7,7 @@ import {
   createDrawerNavigator,
   createBottomTabNavigator,
   createStackNavigator,
+  createMaterialTopTabNavigator,
 } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import store from './src/store/store';

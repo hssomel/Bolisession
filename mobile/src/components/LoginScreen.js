@@ -40,7 +40,7 @@ class LoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>Enter your username AND password:</Text>
+        <Text style={styles.text}>BholiSession</Text>
         <TextInput
           placeholder="username"
           onChangeText={value => this.handleChangeText('username', value)}
@@ -93,23 +93,29 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'green',
+    backgroundColor: 'white',
     height: '100%',
     width: '100%',
   },
   text: {
-    fontSize: 20,
+    fontSize: 38,
     fontWeight: 'bold',
+    fontFamily: 'Helvetica',
+    color: 'black',
+    marginBottom: 6,
+    fontStyle: 'italic',
   },
   input: {
-    height: 40,
-    width: '90%',
+    height: 45,
+    width: '87%',
     borderWidth: 0.5,
-    borderColor: 'black',
-    backgroundColor: '#fff',
+    borderColor: 'grey',
+    backgroundColor: 'whitesmoke',
     color: '#000',
-    textAlign: 'center',
-    marginTop: 10,
+    textAlign: 'left',
+    marginTop: 14,
+    paddingLeft: '5%',
+    borderRadius: 10,
   },
   button: {
     width: '75%',
