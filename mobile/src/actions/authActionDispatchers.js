@@ -1,33 +1,33 @@
 // This File Acts as a library of Action Dispatching functions
 
-import axios from "axios";
-import { SET_CURRENT_USER, GET_USERS, GET_ERRORS } from "./actionTypes";
-import setAuthToken from "../utils/setAuthToken";
-import jwt_decode from "jwt-decode";
+import axios from 'axios';
+import { SET_CURRENT_USER, GET_USERS, GET_ERRORS } from './actionTypes';
+import setAuthToken from '../utils/setAuthToken';
+import jwt_decode from 'jwt-decode';
 import {
   storeData,
   readData,
-  removeData
-} from "../utils/asyncStorageFunctions";
-import { connectSocket, newSocketConnection } from "./socketActionDispatchers";
+  removeData,
+} from '../utils/asyncStorageFunctions';
+import { connectSocket, newSocketConnection } from './socketActionDispatchers';
 
 let navigate;
 
 // The key for jwtToken in local storage
-const jwtLocalStorageKey = "jwtToken";
+const jwtLocalStorageKey = 'jwtToken';
 
 export const registerUser = (newUser, navigation) => dispatch => {
   navigate = navigation.navigate;
   axios
     .post(`/api/credentials/register`, newUser)
     .then(() => {
-      navigate("Login");
+      navigate('Login');
     })
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
-      })
+        payload: err.response.data,
+      }),
     );
 };
 
@@ -40,9 +40,9 @@ export const loginUser = userData => dispatch => {
       // Set token using AyncStorage to device
       storeData(jwtLocalStorageKey, token).then(success => {
         if (success) {
-          console.log("JWT stored on Device!");
+          console.log('JWT stored on Device!');
         } else {
-          console.log("JWT storage Failed!");
+          console.log('JWT storage Failed!');
         }
       });
       // Set token to Auth header
@@ -62,7 +62,7 @@ export const loginUser = userData => dispatch => {
       //   type: GET_ERRORS,
       //   payload: err.response.data
       // });
-      console.log("console logging catch error");
+      console.log('console logging catch error');
       console.log(err);
     });
 };
@@ -71,7 +71,7 @@ export const loginUser = userData => dispatch => {
 const setCurrentUser = decodedToken => {
   return {
     type: SET_CURRENT_USER,
-    payload: decodedToken
+    payload: decodedToken,
   };
 };
 
@@ -82,7 +82,7 @@ export const getUsers = navigation => dispatch => {
     .then(res => {
       dispatch({
         type: GET_USERS,
-        payload: res.data
+        payload: res.data,
       });
       // navigate("Users");
     })

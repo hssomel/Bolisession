@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import { Provider, connect } from 'react-redux';
-import store from './src/store/store';
 import {
   createAppContainer,
   createSwitchNavigator,
@@ -9,6 +8,8 @@ import {
   createBottomTabNavigator,
   createStackNavigator,
 } from 'react-navigation';
+import Icon from 'react-native-vector-icons/Ionicons';
+import store from './src/store/store';
 import LoginScreen from './src/components/LoginScreen';
 import UsersScreen from './src/components/UsersScreen';
 import RegisterScreen from './src/components/RegisterScreen';
@@ -17,7 +18,6 @@ import MessagesScreen from './src/components/MessagesScreen';
 import SettingsScreen from './src/components/SettingsScreen';
 import ProfileScreen from './src/components/ProfileScreen';
 import SearchScreen from './src/components/SearchScreen';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 // -------- STACKS ( NOT TO BE CONFUSED WITH NAVIGATORS!!! ) ------- //
 const AuthStack = createStackNavigator({

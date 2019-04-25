@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 
 // Create Subdocument Schema for Messages inside Conversation
 const messageSchema = new Schema({
@@ -7,55 +6,55 @@ const messageSchema = new Schema({
     _id: {
       // User who sent message
       type: Schema.Types.ObjectId,
-      ref: "Credential",
-      required: true
+      ref: 'Credential',
+      required: true,
     },
     username: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   timestamp: {
     // timestamp message was sent
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   text: {
     // Message Text
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 // Create Conversation Schema
 const conversationSchema = new Schema({
-  participants: [{ type: Schema.Types.ObjectId, ref: "Credential" }],
+  participants: [{ type: Schema.Types.ObjectId, ref: 'Credential' }],
   dateCreated: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
-  messages: [messageSchema]
+  messages: [messageSchema],
 });
 
 // Static Methods on the Model - Note Avoid Arrow Functions where access to 'this' is needed
 conversationSchema.statics.findOrCreateConversation = async function(
   user1Id,
-  user2Id
+  user2Id,
 ) {
-  const conversation = await this.findOne({ participants: { $all: [user1Id, user2Id] } })
-    .catch(err => {
-      console.log(err);
-      throw err;
-    });
+  const conversation = await this.findOne({
+    participants: { $all: [user1Id, user2Id] },
+  }).catch(err => {
+    console.log(err);
+    throw err;
+  });
 
   if (conversation) {
     return conversation;
-  }
-  else {
+  } else {
     const newConversation = new this({
       participants: [user1Id, user2Id],
       dateCreated: Date.now,
-      messages: []
+      messages: [],
     });
     await newConversation
       .save()
@@ -70,20 +69,26 @@ conversationSchema.statics.findOrCreateConversation = async function(
   }
 };
 
-
-conversationSchema.statics.createMessage = async function(text, sender, receiver) {
+conversationSchema.statics.createMessage = async function(
+  text,
+  sender,
+  receiver,
+) {
   const user1Id = sender.id;
   const user2Id = receiver.id;
   const newMessage = {
     user: {
       _id: sender.id,
-      username: sender.username
+      username: sender.username,
     },
     timestamp: Date.now,
-    text
+    text,
   };
   // Save newMessage to appropriate document
-  const conversation = await this.findOrCreateConversation(user1Id, user2Id).catch(err => {
+  const conversation = await this.findOrCreateConversation(
+    user1Id,
+    user2Id,
+  ).catch(err => {
     console.log(err);
     throw err;
   });
@@ -101,4 +106,4 @@ conversationSchema.statics.createMessage = async function(text, sender, receiver
 };
 
 // Export Conversation Model
-module.exports = mongoose.model("Conversation", conversationSchema);
+module.exports = model('Conversation', conversationSchema);

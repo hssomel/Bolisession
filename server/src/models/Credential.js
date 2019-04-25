@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 
 // Create Schema
 const credentialSchema = new Schema({
@@ -7,24 +6,24 @@ const credentialSchema = new Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   usertype: {
     // gabroo, mutiyaar, dancer, team, or competition Account
     type: String,
-    required: true
+    required: true,
   },
   date: {
     // Date they joined
     type: Date,
     default: Date.now,
-    required: true
-  }
+    required: true,
+  },
 });
 
 // Export Credential Model
-module.exports = mongoose.model("Credential", credentialSchema);
+module.exports = model('Credential', credentialSchema);
