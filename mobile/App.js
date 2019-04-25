@@ -7,6 +7,7 @@ import {
   createDrawerNavigator,
   createBottomTabNavigator,
   createStackNavigator,
+  createMaterialTopTabNavigator,
 } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import store from './src/store/store';
@@ -19,15 +20,11 @@ import SettingsScreen from './src/components/SettingsScreen';
 import ProfileScreen from './src/components/ProfileScreen';
 import SearchScreen from './src/components/SearchScreen';
 import OpeningScreen from './src/components/OpeningScreen';
+import ExplanationScreenOne from './src/components/ExplanationScreenOne';
+import ExplanationScreenTwo from './src/components/ExplanationScreenTwo';
 
 // -------- STACKS ( NOT TO BE CONFUSED WITH NAVIGATORS!!! ) ------- //
 const AuthStack = createStackNavigator({
-  Opening: {
-    screen: OpeningScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
-  },
   Login: {
     screen: LoginScreen,
     navigationOptions: () => ({
@@ -36,6 +33,27 @@ const AuthStack = createStackNavigator({
   },
   Register: {
     screen: RegisterScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
+
+const IntroStack = createMaterialTopTabNavigator({
+  Ex_1: {
+    screen: ExplanationScreenOne,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+  Ex_2: {
+    screen: ExplanationScreenTwo,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+  Ex_3: {
+    screen: OpeningScreen,
     navigationOptions: () => ({
       header: null,
     }),
@@ -178,7 +196,8 @@ const AppDrawerNavigator = createDrawerNavigator({
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
-  Login: AuthStack,
+  Intro: IntroStack,
+  Auth: AuthStack,
   Dashboard: { screen: AppDrawerNavigator },
 });
 
@@ -214,3 +233,24 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+// const AuthStack = createStackNavigator({
+//   Opening: {
+//     screen: OpeningScreen,
+//     navigationOptions: () => ({
+//       header: null,
+//     }),
+//   },
+//   Login: {
+//     screen: LoginScreen,
+//     navigationOptions: () => ({
+//       header: null,
+//     }),
+//   },
+//   Register: {
+//     screen: RegisterScreen,
+//     navigationOptions: () => ({
+//       header: null,
+//     }),
+//   },
+// });
