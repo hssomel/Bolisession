@@ -11,7 +11,7 @@ const morganBody = require('morgan-body');
 const keys = require('./config/keys');
 
 // Import API route files
-const credentials = require('./routes/api/credentials');
+const credentials = require('./routes/api/credentials').default;
 const profiles = require('./routes/api/profiles');
 const posts = require('./routes/api/posts');
 
@@ -29,7 +29,7 @@ app.use(bodyParser.json());
 // Using morgan & morgan-body to log during development
 app.use(
   morgan(
-    '\nINCOMING :method :url  FROM :remote-addr' +
+    '\nINCOMING REQUEST:method :url  FROM :remote-addr' +
       '\nAuthorization Header: :req[Authorization]',
   ),
 );
@@ -48,6 +48,7 @@ app.get('/', (req, res) => {
 });
 
 // Connect to MongoDB
+mongoose.Promise = global.Promise;
 mongoose
   .connect(keys.mongoURI, { useNewUrlParser: true, useCreateIndex: true })
   .then(() => console.log('MongoDB Connected'))
