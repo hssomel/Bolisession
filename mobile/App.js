@@ -7,7 +7,6 @@ import {
   createDrawerNavigator,
   createBottomTabNavigator,
   createStackNavigator,
-  createMaterialTopTabNavigator,
 } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import store from './src/store/store';
@@ -19,9 +18,16 @@ import MessagesScreen from './src/components/MessagesScreen';
 import SettingsScreen from './src/components/SettingsScreen';
 import ProfileScreen from './src/components/ProfileScreen';
 import SearchScreen from './src/components/SearchScreen';
+import OpeningScreen from './src/components/OpeningScreen';
 
 // -------- STACKS ( NOT TO BE CONFUSED WITH NAVIGATORS!!! ) ------- //
 const AuthStack = createStackNavigator({
+  Opening: {
+    screen: OpeningScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
   Login: {
     screen: LoginScreen,
     navigationOptions: () => ({
