@@ -112,7 +112,8 @@ const DashboardTabNavigator = createBottomTabNavigator(
     },
     tabBarOptions: {
       activeTintColor: "red",
-      inactiveTintColor: "grey"
+      inactiveTintColor: "grey",
+      showLabel: false
     }
   }
 );
@@ -127,6 +128,14 @@ const DashboardStackNavigator = createStackNavigator(
         headerLeft: (
           <TouchableOpacity
             onPress={() => navigation.openDrawer()}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Drawer</Text>
+          </TouchableOpacity>
+        ),
+        headerRight: (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Users")}
             style={styles.button}
           >
             <Text style={styles.buttonText}>Drawer</Text>

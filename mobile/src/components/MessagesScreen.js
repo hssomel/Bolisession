@@ -7,7 +7,7 @@ import {
   TouchableOpacity
 } from "react-native";
 import PropTypes from "prop-types";
-import { testPress } from "../actions/authActionDispatchers";
+import { getUsers } from "../actions/authActionDispatchers";
 import { connect } from "react-redux";
 
 class MessagesScreen extends React.Component {
@@ -18,7 +18,7 @@ class MessagesScreen extends React.Component {
   }
 
   handleTestPress() {
-    this.props.testPress(this.props.navigation);
+    this.props.getUsers(this.props.navigation);
   }
 
   render() {
@@ -35,7 +35,7 @@ class MessagesScreen extends React.Component {
 }
 
 MessagesScreen.propTypes = {
-  testPress: PropTypes.func.isRequired,
+  getUsers: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired
 };
 
@@ -45,7 +45,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { testPress }
+  { getUsers }
 )(MessagesScreen);
 
 const styles = StyleSheet.create({

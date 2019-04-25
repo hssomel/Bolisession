@@ -8,7 +8,7 @@ import {
   Button
 } from "react-native";
 import PropTypes from "prop-types";
-import { testPress } from "../actions/authActionDispatchers";
+import { getUsers } from "../actions/authActionDispatchers";
 import { connect } from "react-redux";
 
 class TestScreen extends React.Component {
@@ -17,8 +17,12 @@ class TestScreen extends React.Component {
     this.handleTestPress = this.handleTestPress.bind(this);
   }
 
+  componentDidMount() {
+    this.handleTestPress();
+  }
+
   handleTestPress() {
-    this.props.testPress(this.props.navigation);
+    this.props.getUsers(this.props.navigation);
   }
 
   render() {
@@ -28,16 +32,13 @@ class TestScreen extends React.Component {
           Welcome! {this.props.auth.user.username}
         </Text>
         <Text style={styles.text}>This will be your future feed!</Text>
-        <TouchableOpacity onPress={this.handleTestPress} style={styles.button}>
-          <Text style={styles.buttonText}>Go to Chat</Text>
-        </TouchableOpacity>
       </View>
     );
   }
 }
 
 TestScreen.propTypes = {
-  testPress: PropTypes.func.isRequired,
+  getUsers: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired
 };
 
@@ -47,7 +48,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { testPress }
+  { getUsers }
 )(TestScreen);
 
 const styles = StyleSheet.create({

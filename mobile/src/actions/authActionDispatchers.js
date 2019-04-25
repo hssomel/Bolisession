@@ -9,7 +9,7 @@ import {
   readData,
   removeData
 } from "../utils/asyncStorageFunctions";
-import {connectSocket, newSocketConnection} from "./socketActionDispatchers"
+import { connectSocket, newSocketConnection } from "./socketActionDispatchers";
 
 let navigate;
 
@@ -56,7 +56,6 @@ export const loginUser = userData => dispatch => {
 
       // Connect Socket - Stateful connection
       dispatch(connectSocket(decodedToken.id));
-
     })
     .catch(err => {
       // dispatch({
@@ -76,7 +75,7 @@ const setCurrentUser = decodedToken => {
   };
 };
 
-export const testPress = navigation => dispatch => {
+export const getUsers = navigation => dispatch => {
   navigate = navigation.navigate;
   axios
     .get(`/api/credentials/allusers`)
@@ -85,7 +84,7 @@ export const testPress = navigation => dispatch => {
         type: GET_USERS,
         payload: res.data
       });
-      navigate("Users");
+      // navigate("Users");
     })
     .catch(err => console.log(JSON.stringify(err)));
 };
