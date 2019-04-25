@@ -39,26 +39,43 @@ const AuthStack = createStackNavigator({
   },
 });
 
-const IntroStack = createMaterialTopTabNavigator({
-  Ex_1: {
-    screen: ExplanationScreenOne,
-    navigationOptions: () => ({
-      header: null,
-    }),
+const IntroStack = createMaterialTopTabNavigator(
+  {
+    Ex_1: {
+      screen: ExplanationScreenOne,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
+    Ex_2: {
+      screen: ExplanationScreenTwo,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
+    Ex_3: {
+      screen: OpeningScreen,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
   },
-  Ex_2: {
-    screen: ExplanationScreenTwo,
-    navigationOptions: () => ({
-      header: null,
-    }),
+  {
+    navigationOptions: {
+      tabBarVisible: false,
+      tabBarIcon: {
+        tintColor: 'red',
+      },
+    },
+    tabBarOptions: {
+      style: {
+        backgroundColor: 'white',
+        width: 0,
+      },
+      showLabel: false,
+    },
   },
-  Ex_3: {
-    screen: OpeningScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
-  },
-});
+);
 
 const AppStack = createStackNavigator({
   Test: {
