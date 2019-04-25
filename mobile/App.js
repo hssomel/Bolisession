@@ -1,68 +1,68 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Platform,
   StyleSheet,
   Text,
   View,
-  TouchableOpacity
-} from "react-native";
-import { Provider, connect } from "react-redux";
-import store from "./src/store/store";
+  TouchableOpacity,
+} from 'react-native';
+import { Provider, connect } from 'react-redux';
+import store from './src/store/store';
 import {
   createAppContainer,
   createSwitchNavigator,
   createDrawerNavigator,
   createBottomTabNavigator,
-  createStackNavigator
-} from "react-navigation";
-import LoginScreen from "./src/components/LoginScreen";
-import UsersScreen from "./src/components/UsersScreen";
-import RegisterScreen from "./src/components/RegisterScreen";
-import TestScreen from "./src/components/TestScreen";
-import MessagesScreen from "./src/components/MessagesScreen";
-import SettingsScreen from "./src/components/SettingsScreen";
-import ProfileScreen from "./src/components/ProfileScreen";
-import SearchScreen from "./src/components/SearchScreen";
-import Icon from "react-native-vector-icons/Ionicons";
+  createStackNavigator,
+} from 'react-navigation';
+import LoginScreen from './src/components/LoginScreen';
+import UsersScreen from './src/components/UsersScreen';
+import RegisterScreen from './src/components/RegisterScreen';
+import TestScreen from './src/components/TestScreen';
+import MessagesScreen from './src/components/MessagesScreen';
+import SettingsScreen from './src/components/SettingsScreen';
+import ProfileScreen from './src/components/ProfileScreen';
+import SearchScreen from './src/components/SearchScreen';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 // -------- STACKS ( NOT TO BE CONFUSED WITH NAVIGATORS!!! ) ------- //
 const AuthStack = createStackNavigator({
   Login: {
-    screen: LoginScreen
+    screen: LoginScreen,
   },
   Register: {
-    screen: RegisterScreen
-  }
+    screen: RegisterScreen,
+  },
 });
 
 const AppStack = createStackNavigator({
   Test: {
-    screen: TestScreen //aka the future FeedScreen
+    screen: TestScreen, //aka the future FeedScreen
   },
   Users: {
-    screen: UsersScreen
+    screen: UsersScreen,
   },
   Messages: {
-    screen: MessagesScreen
-  }
+    screen: MessagesScreen,
+  },
 });
 
 const SearchStack = createStackNavigator({
   Search: {
-    screen: SearchScreen
-  }
+    screen: SearchScreen,
+  },
 });
 
 const ProfileStack = createStackNavigator({
   Profile: {
-    screen: ProfileScreen
-  }
+    screen: ProfileScreen,
+  },
 });
 
 const SettingsStack = createStackNavigator({
   Settings: {
-    screen: SettingsScreen
-  }
+    screen: SettingsScreen,
+  },
 });
 
 // ----- END OF STACKS ----------//
@@ -72,29 +72,29 @@ const DashboardTabNavigator = createBottomTabNavigator(
     Home: {
       screen: AppStack,
       navigationOptions: {
-        tabBarLabel: "Home",
+        tabBarLabel: 'Home',
         tabBarIcon: ({ tintColor }) => (
           <Icon name="ios-home" color={tintColor} size={24} />
-        )
-      }
+        ),
+      },
     },
     Search: {
       screen: SearchStack,
       navigationOptions: {
-        tabBarLabel: "Search",
+        tabBarLabel: 'Search',
         tabBarIcon: ({ tintColor }) => (
           <Icon name="ios-search" color={tintColor} size={24} />
-        )
-      }
+        ),
+      },
     }, // for searching teams/competitions --equivalent to instagram search icon
     Profile: {
       screen: ProfileStack,
       navigationOptions: {
-        tabBarLabel: "Profile",
+        tabBarLabel: 'Profile',
         tabBarIcon: ({ tintColor }) => (
           <Icon name="ios-person" color={tintColor} size={24} />
-        )
-      }
+        ),
+      },
     },
     Settings: {
       screen: SettingsStack,
@@ -102,55 +102,60 @@ const DashboardTabNavigator = createBottomTabNavigator(
         // tabBarLabel: "Settings",
         tabBarIcon: ({ tintColor }) => (
           <Icon name="ios-settings" color={tintColor} size={24} />
-        )
-      }
-    }
+        ),
+      },
+    },
   },
   {
     navigationOptions: {
-      tabBarVisible: true
+      tabBarVisible: true,
     },
     tabBarOptions: {
-      activeTintColor: "red",
-      inactiveTintColor: "grey",
-      showLabel: false
-    }
-  }
+      activeTintColor: 'red',
+      inactiveTintColor: 'grey',
+      showLabel: false,
+    },
+  },
 );
 
 const DashboardStackNavigator = createStackNavigator(
   {
-    DashboardTabNavigator: DashboardTabNavigator
+    DashboardTabNavigator: DashboardTabNavigator,
   },
   {
     defaultNavigationOptions: ({ navigation }) => {
       return {
         headerLeft: (
-          <Icon name="ios-menu" style={styles.button} onPress={() => navigation.openDrawer()} color="grey" size={24} />
-          
-                    ),
+          <Icon
+            name="ios-menu"
+            style={styles.button}
+            onPress={() => navigation.openDrawer()}
+            color="grey"
+            size={24}
+          />
+        ),
         headerRight: (
           <TouchableOpacity
-            onPress={() => navigation.navigate("Users")}
+            onPress={() => navigation.navigate('Users')}
             style={styles.button}
           >
             <Text style={styles.buttonText}>Drawer</Text>
           </TouchableOpacity>
-        )
+        ),
       };
-    }
-  }
+    },
+  },
 );
 
 const AppDrawerNavigator = createDrawerNavigator({
   Dashboard: {
-    screen: DashboardStackNavigator
-  }
+    screen: DashboardStackNavigator,
+  },
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
   Login: AuthStack,
-  Dashboard: { screen: AppDrawerNavigator }
+  Dashboard: { screen: AppDrawerNavigator },
 });
 
 const AppContainer = createAppContainer(AppSwitchNavigator);
@@ -163,24 +168,24 @@ export default (App = () => (
 
 const styles = StyleSheet.create({
   button: {
-    width: "75%",
-    backgroundColor: "indianred",
+    width: '75%',
+    backgroundColor: 'indianred',
     borderRadius: 50,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 20,
-    paddingVertical: 15
+    paddingVertical: 15,
   },
   buttonText: {
-    color: "black",
-    textAlign: "center",
-    fontSize: 10
+    color: 'black',
+    textAlign: 'center',
+    fontSize: 10,
   },
   buttonText2: {
-    color: "black",
-    textAlign: "center",
+    color: 'black',
+    textAlign: 'center',
     fontSize: 20,
-    alignItems: "center",
-    fontWeight: "bold"
-  }
+    alignItems: 'center',
+    fontWeight: 'bold',
+  },
 });
