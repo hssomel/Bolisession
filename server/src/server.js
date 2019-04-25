@@ -6,6 +6,8 @@ const passport = require('passport');
 const ip = require('ip');
 const fs = require('fs');
 const http = require('http');
+const morgan = require('morgan');
+const morganBody = require('morgan-body');
 const keys = require('./config/keys');
 
 // Import API route files
@@ -23,6 +25,15 @@ require('./sockets/socketServer')(server);
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// Using morgan & morgan-body to log during development
+app.use(
+  morgan(
+    '\nINCOMING :method :url  FROM :remote-addr' +
+      '\nAuthorization Header: :req[Authorization]',
+  ),
+);
+morganBody(app);
 
 // API URL
 const address = ip.address();

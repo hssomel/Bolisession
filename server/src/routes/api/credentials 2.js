@@ -1,24 +1,25 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const keys = require('../../config/keys');
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const requestLogger = require('../../utils/requestLogger');
+const bcrypt = require("bcryptjs");
+const keys = require("../../config/keys");
+const jwt = require("jsonwebtoken");
+const passport = require("passport");
+const requestLogger = require("../../utils/requestLogger");
 
 // Load Validation
-const validateRegisterInput = require('../../validation/register');
-const validateLoginInput = require('../../validation/login');
+const validateRegisterInput = require("../../validation/register");
+const validateLoginInput = require("../../validation/login");
 
 // Load Credential model
-const Credential = require('../../models/Credential');
+const Credential = require("../../models/Credential");
 
 // @route   POST api/credentials/register
 // @desc    Register user
 // @access  Public
-router.post('/register', (req, res) => {
+router.post("/register", (req, res) => {
+
   // Log the request
-  requestLogger(req, res);
+  requestLogger(req,res);
 
   // Run request body through validation first
 
@@ -31,7 +32,7 @@ router.post('/register', (req, res) => {
 
   Credential.findOne({ username: req.body.username }).then(user => {
     if (user) {
-      errors.username = 'Username already exists';
+      errors.username = "Username already exists";
       return res.status(400).json(errors);
     } else {
       // Valid new account - hash the password and save into db
@@ -42,7 +43,7 @@ router.post('/register', (req, res) => {
           const newAccount = new Credential({
             username: req.body.username,
             password: hash,
-            usertype: req.body.usertype,
+            usertype: req.body.usertype
           });
 
           newAccount
@@ -51,8 +52,8 @@ router.post('/register', (req, res) => {
               res.json({
                 id: dbEntry.id,
                 username: dbEntry.username,
-                usertype: dbEntry.usertype,
-              }),
+                usertype: dbEntry.usertype
+              })
             )
             .catch(err => console.log(err));
         });
@@ -64,9 +65,10 @@ router.post('/register', (req, res) => {
 // @route   POST api/credentials/login
 // @desc    Login User (AKA Return JWT)
 // @access  Public
-router.post('/login', (req, res) => {
+router.post("/login", (req, res) => {
+
   // Log the request
-  requestLogger(req, res);
+  requestLogger(req,res);
 
   // Run request body through validation first
   const { errors, isValid } = validateLoginInput(req.body);
@@ -82,7 +84,7 @@ router.post('/login', (req, res) => {
   Credential.findOne({ username }).then(user => {
     // In case username doesn't exist
     if (!user) {
-      errors.username = 'Username not found';
+      errors.username = "Username not found";
       return res.status(404).json(errors);
     }
 
@@ -95,7 +97,7 @@ router.post('/login', (req, res) => {
         const payload = {
           id: user.id,
           username: user.username,
-          usertype: user.usertype,
+          usertype: user.usertype
         };
 
         // Sign Token and send it to user
@@ -104,46 +106,48 @@ router.post('/login', (req, res) => {
           keys.secretOrKey,
           { expiresIn: 3600 },
           (err, token) => {
-            res.json({ success: true, token: 'Bearer ' + token });
-          },
+            res.json({ success: true, token: "Bearer " + token });
+          }
         );
       } else {
-        errors.password = 'Password incorrect';
+        errors.password = "Password incorrect";
         return res.status(400).json(errors);
       }
     });
   });
 });
 
-// @route   GET api/credentials/current
+// @route   GET api/credentials/currentuser
 // @desc    Return current user
 // @access  Private
 router.get(
-  '/current',
-  passport.authenticate('jwt', { session: false }),
+  "/current",
+  passport.authenticate("jwt", { session: false }),
   (req, res) => {
+
     // Log the request
-    requestLogger(req, res);
+    requestLogger(req,res);
 
     res.json({
       id: req.user.id,
       username: req.user.username,
-      usertype: req.user.usertype,
+      usertype: req.user.usertype
     });
-  },
+  }
 );
 
 // @route   GET api/credentials/allusers
 // @desc    Return the username, usertype, and _id of all users
 // @access  Public
-router.get('/allusers', (req, res) => {
-  // Log the request
-  requestLogger(req, res);
+router.get("/allusers", (req, res) => {
 
+  // Log the request
+  requestLogger(req,res);
+  
   let errors = {};
-  Credential.find({}, 'username usertype').then(users => {
+  Credential.find({}, "username usertype").then(users => {
     if (!users) {
-      errors.users = 'No user was found';
+      errors.users = "No user was found";
       return res.status(404).json(errors);
     }
     res.json(users);
