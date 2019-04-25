@@ -126,13 +126,9 @@ const DashboardStackNavigator = createStackNavigator(
     defaultNavigationOptions: ({ navigation }) => {
       return {
         headerLeft: (
-          <TouchableOpacity
-            onPress={() => navigation.openDrawer()}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>Drawer</Text>
-          </TouchableOpacity>
-        ),
+          <Icon name="ios-menu" style={styles.button} onPress={() => navigation.openDrawer()} color="grey" size={24} />
+          
+                    ),
         headerRight: (
           <TouchableOpacity
             onPress={() => navigation.navigate("Users")}
