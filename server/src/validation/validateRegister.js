@@ -8,7 +8,7 @@ const validateRegister = async data => {
       data <object> - key used to reference data in local storage
     Returns:
       { 
-        errors <object> - contains any validation errors,
+        errors <array> - contains any validation error objects {name: String, message: String},
         isValid <boolean> - validation result
       }
   */
@@ -24,13 +24,13 @@ const validateRegister = async data => {
   // username validation
   if (!Validator.isLength(username, { min: 2, max: 30 })) {
     errors.push({
-      type: 'username',
+      name: 'UsernameError',
       message: 'Username must be between 2 and 30 characters',
     });
   }
   if (Validator.isEmpty(username)) {
     errors.push({
-      type: 'username',
+      name: 'UsernameError',
       message: 'Username is required',
     });
   }
@@ -38,13 +38,13 @@ const validateRegister = async data => {
   // usertype validation
   if (Validator.isEmpty(usertype)) {
     errors.push({
-      type: 'usertype',
+      name: 'UsertypeError',
       message: 'Account type is required',
     });
   }
   if (!Validator.isIn(usertype, accountTypes)) {
     errors.push({
-      type: 'usertype',
+      name: 'UsertypeError',
       message: 'Account type is invalid',
     });
   }
@@ -54,19 +54,19 @@ const validateRegister = async data => {
   const passwordMaxLength = 100;
   if (Validator.isEmpty(password)) {
     errors.push({
-      type: 'password',
+      name: 'PasswordError',
       message: 'Password is required',
     });
   }
   if (!Validator.isLength(password, { min: passwordMinLength })) {
     errors.push({
-      type: 'password',
+      name: 'PasswordError',
       message: 'Password must be atleast 6 characters',
     });
   }
   if (!Validator.isLength(password, { max: passwordMaxLength })) {
     errors.push({
-      type: 'password',
+      name: 'PasswordError',
       message: 'Invalid password',
     });
   }
@@ -75,7 +75,7 @@ const validateRegister = async data => {
   if (!errors.password) {
     if (!Validator.equals(password, password2)) {
       errors.push({
-        type: 'password2',
+        name: 'PasswordConfirmationError',
         message: 'Passwords must match',
       });
     }

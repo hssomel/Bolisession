@@ -11,78 +11,84 @@ const validateLogin = require('../../validation/validateLogin');
 // Load Credential model
 const Credential = require('../../models/Credential');
 
+// Reference this Template for all JSON responses
+// const newResponse =
+//   status: 400
+//   success: false,
+//   errors: [
+//     {
+//       name: 'ErrorName1',
+//       message: 'Error message 1',
+//     },
+//     {
+//       name: 'ErrorName2',
+//       message: 'Error message 2',
+//     },
+//   ],
+//   data: {},
+// };
+
 // @route   POST /api/credentials/register
 // @desc    Register user
 // @access  Public
 router.post('/register', async (req, res) => {
-  Promise.all([
-    validateRegister(req.body),
-    Credential.findOne({ username: req.body.username }),
-    bcrypt.genSalt(10),
-  ])
-    .then(([validation, existingUser, salt]) => {
-      const { errors, isValid } = validation;
-      if (!isValid) {
-        res.status(400).json({ success: false, errors, data: {} });
-        return;
-      }
-      if (existingUser) {
-        errors.push({
-          type: 'username',
-          message: 'Username already exists',
-        });
-        res.status(400).json({ success: false, errors, data: {} });
-        return;
-      }
-      bcrypt
-        .hash(req.body.password, salt)
-        .then(hash => {
-          const newAccount = new Credential({
-            username: req.body.username,
-            password: hash,
-            usertype: req.body.usertype,
-          });
-          newAccount
-            .save()
-            .then(savedAccount => {
-              res.json({
-                success: true,
-                errors: [],
-                data: {
-                  id: savedAccount.id,
-                  username: savedAccount.username,
-                  usertype: savedAccount.usertype,
-                },
-              });
-            })
-            .catch(error => {
-              res.status(500).json({
-                success: false,
-                errors: [
-                  { type: 'internal', message: 'Internal server error' },
-                ],
-                data: {},
-              });
-              console.log(error);
-            });
-        })
-        .catch(error => {
-          res.status(500).json({
-            success: false,
-            errors: [{ type: 'internal', message: 'Internal server error' }],
-            data: {},
-          });
-          console.log(error);
-        });
-    })
-    .catch(error => {
-      res.status(500).json({
-        success: false,
-        errors: [{ type: 'internal', message: 'Internal server error' }],
-        data: {},
-      });
-      console.log(error);
+  try {
+    let error = new Error();
+    const { username, password, usertype } = req.body;
+    // Run async actions in parrallel for speed
+    const [{ isValid, errors }, existingUser, hash] = await Promise.all([
+      validateRegister(req.body),
+      Credential.findOne({ username }),
+      bcrypt.hash(password, 10),
+    ]).catch(e => {
+      console.log(e);
+      error.name = 'ServerError';
+      error.message = 'Internal server error';
+      error.status = 500;
+      throw error;
     });
+    // Check for any errors, and throw if any
+    if (existingUser) {
+      error.name = 'UsernameError';
+      error.message = 'Username already exists';
+      error.status = 409;
+      throw error;
+    }
+    if (!isValid) {
+      const jsonRes = {
+        status: 400,
+        success: false,
+        errors, // from validateRegister();
+        data: {},
+      };
+      res.status(jsonRes.status).json(jsonRes);
+      return;
+    }
+    // Validation passed, create newAccount and send data or throw error
+    const newAccount = new Credential({ username, usertype, password: hash });
+    const { id } = await newAccount.save().catch(e => {
+      console.log(e);
+      error.name = 'DatabaseError';
+      error.message = 'Error while communicating with database';
+      error.status = 502;
+      throw error;
+    });
+    const jsonRes = {
+      status: 200,
+      success: true,
+      errors: [],
+      data: { id, username, usertype },
+    };
+  } catch (error) {
+    console.log(error);
+    const jsonRes = {
+      status: error.status,
+      success: false,
+      errors: [{ name: error.name, message: error.message }],
+      data: {},
+    };
+    res.status(jsonRes.status).json(jsonRes);
+  }
 });
 
 // @route   POST api/credentials/login
