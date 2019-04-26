@@ -11,30 +11,29 @@ class OpeningScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image
-          source={require('../assets/images/bhangra.png')}
-          style={styles.image}
-        />
-        <Text style={styles.text}>Connect with the</Text>
-        <Text style={styles.text}>Bhangra Community</Text>
-        <View style={styles.buttonContainer}>
+        <View style={styles.viewOne}>
+          <Image
+            source={require('../assets/images/bhangra.png')}
+            style={styles.image}
+          />
+          <Text style={styles.text}>Connect with the best</Text>
+          <Text style={styles.text}>Bhangra Community</Text>
+        </View>
+        <View style={styles.viewTwo}>
           <TouchableOpacity
             onPress={this.handleSignUpPress}
             style={styles.button}
           >
             <Text style={styles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
-        </View>
-        <View style={styles.buttonContainer}>
           <TouchableOpacity
             onPress={this.handleLoginPress}
-            style={styles.button}
+            style={styles.button1}
+            outline={true}
           >
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText1}>Login</Text>
           </TouchableOpacity>
         </View>
-
-        <Text style={styles.text1}>BhangraSocial</Text>
       </View>
     );
   }
@@ -54,52 +53,75 @@ export default connect(mapStateToProps)(OpeningScreen);
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'space-evenly',
+    alignItems: 'center',
     backgroundColor: 'white',
     height: '100%',
     width: '100%',
     flex: 1,
-    flexDirection: 'column',
+    alignContent: 'center',
   },
-  buttonContainer: {
+  viewOne: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    height: '100%',
+    width: '100%',
+    flex: 1.25,
+  },
+  viewTwo: {
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    backgroundColor: 'white',
+    height: '100%',
+    width: '100%',
     flex: 1,
+    flexDirection: 'row',
+    paddingHorizontal: '5%',
   },
   text: {
     fontSize: 34,
     fontWeight: 'bold',
     fontFamily: 'Helvetica',
     color: 'black',
-    textAlign: 'left',
-  },
-  text1: {
-    fontSize: 14,
-    fontFamily: 'Helvetica',
-    color: 'black',
-    textAlign: 'left',
-    marginLeft: 13,
-    position: 'absolute',
-    bottom: 0,
-    marginBottom: '5%',
+    // textAlign: 'left',
   },
   image: {
-    height: '7.5%',
-    width: '7.5%',
+    height: '12.5%',
+    width: '12.5%',
     position: 'absolute',
     top: 0,
-    marginTop: '5%',
-    // alignItems: 'center',
+    marginTop: '1%',
   },
   button: {
-    width: '80%',
+    width: '40%',
     backgroundColor: '#ff001D',
     borderRadius: 36,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 25,
+    marginTop: '7%',
+    paddingVertical: 12.5,
+  },
+  button1: {
+    width: '40%',
+    backgroundColor: 'white',
+    borderRadius: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '7%',
+    paddingVertical: 12.5,
+    borderColor: 'black',
+    borderWidth: 2,
   },
   buttonText: {
-    color: '#fff',
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  buttonText1: {
+    color: '#ff001D',
     textAlign: 'center',
     fontSize: 24,
     fontWeight: 'bold',
