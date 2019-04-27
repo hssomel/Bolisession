@@ -1,25 +1,38 @@
 const Validator = require('validator'); // Validate Strings
-const isEmpty = require('lodash.isempty'); // Check if objects are empty
+const isEmpty = require('lodash.isempty'); // to check if errors array is empty
 const accountTypes = require('../config/accountTypes');
 
 const validateRegister = async data => {
   /* note: async function - returns promise
     Args:
-      data <object> - key used to reference data in local storage
+      data <object> - parts of req.body from /api/credentials/register route
+        {
+          username: <string>,
+          usertype: <string>,
+          password: <string>,
+          password2: <string>,
+        }
     Returns:
-      { 
-        errors <array> - contains any validation error objects {name: String, message: String},
-        isValid <boolean> - validation result
-      }
+      <object>
+        { 
+          errors <array> - contains any validation error objects 
+            [
+              {
+                name: <string> - one of the following:
+                  'UsernameError'
+                  'UsertypeError'
+                  'PasswordError'
+                  'PasswordConfirmationError',
+                message: <string>,
+              },
+            ],
+          isValid <boolean> - validation result
+        }
   */
-  const errors = [];
-  let { username, usertype, password, password2 } = data;
 
-  // turn empty objects into Empty strings for Validator
-  username = !isEmpty(username) ? username : '';
-  usertype = !isEmpty(usertype) ? usertype : '';
-  password = !isEmpty(password) ? password : '';
-  password2 = !isEmpty(password2) ? password2 : '';
+  const errors = [];
+  const { username, password, password2 } = data;
+  const usertype = data.usertype.toLowerCase();
 
   // username validation
   if (!Validator.isLength(username, { min: 2, max: 30 })) {
@@ -32,6 +45,12 @@ const validateRegister = async data => {
     errors.push({
       name: 'UsernameError',
       message: 'Username is required',
+    });
+  }
+  if (!Validator.matches(username, '^[a-zA-Z0-9_]*$')) {
+    errors.push({
+      name: 'UsernameError',
+      message: 'Username must only contain letters, numbers, or underscores',
     });
   }
 
@@ -68,6 +87,12 @@ const validateRegister = async data => {
     errors.push({
       name: 'PasswordError',
       message: 'Invalid password',
+    });
+  }
+  if (!Validator.isAscii(password)) {
+    errors.push({
+      name: 'PasswordError',
+      message: 'Password contains invalid character(s)',
     });
   }
 

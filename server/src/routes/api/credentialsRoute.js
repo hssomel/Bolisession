@@ -33,8 +33,10 @@ const Credential = require('../../models/Credential');
 // @access  Public
 router.post('/register', async (req, res) => {
   try {
-    let error = new Error();
-    const { username, password, usertype } = req.body;
+    const error = new Error(); // to throw errors into catch block
+    let { username, usertype, password, password2 } = req.body;
+    username = username.toLowerCase();
+    usertype = usertype.toLowerCase();
     // Run async actions in parrallel for speed
     const [{ isValid, errors }, existingUser, hash] = await Promise.all([
       validateRegister(req.body),
@@ -64,9 +66,13 @@ router.post('/register', async (req, res) => {
       res.status(jsonRes.status).json(jsonRes);
       return;
     }
-    // Validation passed, create newAccount and send data or throw error
-    const newAccount = new Credential({ username, usertype, password: hash });
-    const { id } = await newAccount.save().catch(e => {
+    // Validation passed - store account with lowercase data
+    const newCredential = new Credential({
+      username,
+      usertype,
+      password: hash,
+    });
+    const newCredentialDocument = await newCredential.save().catch(e => {
       console.log(e);
       error.name = 'DatabaseError';
       error.message = 'Error while communicating with database';
@@ -77,8 +83,13 @@ router.post('/register', async (req, res) => {
       status: 200,
       success: true,
       errors: [],
-      data: { id, username, usertype },
+      data: {
+        id: newCredentialDocument.id,
+        username: newCredentialDocument.username,
+        usertype: newCredentialDocument.usertype,
+      },
     };
+    res.status(jsonRes.status).json(jsonRes);
   } catch (error) {
     console.log(error);
     const jsonRes = {
