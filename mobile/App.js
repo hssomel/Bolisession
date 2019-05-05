@@ -7,7 +7,6 @@ import {
   createDrawerNavigator,
   createBottomTabNavigator,
   createStackNavigator,
-  createMaterialTopTabNavigator,
 } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import store from './src/store/store';
@@ -20,8 +19,6 @@ import SettingsScreen from './src/components/SettingsScreen';
 import ProfileScreen from './src/components/ProfileScreen';
 import SearchScreen from './src/components/SearchScreen';
 import OpeningScreen from './src/components/OpeningScreen';
-import ExplanationScreenOne from './src/components/ExplanationScreenOne';
-import ExplanationScreenTwo from './src/components/ExplanationScreenTwo';
 
 // -------- STACK NAVIGATORS ONLY ------- //
 const AuthStack = createStackNavigator({
@@ -33,6 +30,15 @@ const AuthStack = createStackNavigator({
   },
   Register: {
     screen: RegisterScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
+
+const IntroStack = createStackNavigator({
+  Opening: {
+    screen: OpeningScreen,
     navigationOptions: () => ({
       header: null,
     }),
@@ -88,37 +94,6 @@ const SettingsStack = createStackNavigator({
 });
 
 // ----- END OF STACK nAVIGATORS; BELOW ARE TAB AND OTHER NAVIGATORS ----------//
-
-const IntroStack = createMaterialTopTabNavigator(
-  {
-    Ex_1: {
-      screen: ExplanationScreenOne,
-    },
-    Ex_2: {
-      screen: ExplanationScreenTwo,
-    },
-    Ex_3: {
-      screen: OpeningScreen,
-    },
-  },
-  {
-    navigationOptions: {
-      tabBarVisible: false,
-      tabBarIcon: {
-        tintColor: 'transparent',
-      },
-    },
-    tabBarOptions: {
-      style: {
-        backgroundColor: 'transparent',
-      },
-      showLabel: false,
-      indicatorStyle: {
-        backgroundColor: 'transparent',
-      },
-    },
-  },
-);
 
 const DashboardTabNavigator = createBottomTabNavigator(
   {

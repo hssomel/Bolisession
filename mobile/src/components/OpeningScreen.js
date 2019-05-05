@@ -13,14 +13,23 @@ class OpeningScreen extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.viewOne}>
-          <Image
+          {/* <Image
             source={require('../assets/images/bhangra.png')}
             style={styles.image}
+          /> */}
+          <Video
+            source={require('../assets/videos/sample1.mp4')}
+            ref={ref => {
+              this.player = ref;
+            }}
+            repeat={true}
+            onBuffer={this.onBuffer}
+            onError={this.videoError}
+            style={styles.backgroundVideo}
+            resizeMode={'cover'}
           />
           <Text style={styles.text}>Connect with the</Text>
-          <Text style={styles.text}>Bhangra Community</Text>
-        </View>
-        <View style={styles.viewTwo}>
+          <Text style={styles.text1}>Bhangra Community</Text>
           <TouchableOpacity
             onPress={this.handleSignUpPress}
             style={styles.button}
@@ -64,29 +73,26 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   viewOne: {
-    justifyContent: 'flex-end',
+    // justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
     height: '100%',
     width: '100%',
     flex: 1.25,
   },
-  viewTwo: {
-    justifyContent: 'space-around',
-    alignItems: 'flex-start',
-    backgroundColor: 'white',
-    height: '100%',
-    width: '100%',
-    flex: 1,
-    flexDirection: 'row',
-    paddingHorizontal: '5%',
-  },
   text: {
-    fontSize: 34,
+    fontSize: 28,
     fontWeight: 'bold',
     fontFamily: 'Helvetica',
-    color: 'black',
-    // textAlign: 'left',
+    color: 'pink',
+    marginTop: '8%',
+  },
+  text1: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    fontFamily: 'Helvetica',
+    color: 'pink',
+    marginBottom: '25%',
   },
   image: {
     height: '12.5%',
@@ -96,35 +102,37 @@ const styles = StyleSheet.create({
     marginTop: '1%',
   },
   button: {
-    width: '40%',
-    backgroundColor: '#ff001D',
-    borderRadius: 36,
+    width: '80%',
+    backgroundColor: 'transparent',
+    borderRadius: 32,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: '7%',
-    paddingVertical: 12.5,
+    // justifyContent: 'center',
+    marginTop: '90%',
+    paddingVertical: 11,
+    borderColor: 'white',
+    borderWidth: 2,
   },
   button1: {
-    width: '40%',
-    backgroundColor: 'white',
-    borderRadius: 34,
+    width: '80%',
+    backgroundColor: 'coral',
+    borderRadius: 32,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: '7%',
-    paddingVertical: 12.5,
-    borderColor: 'black',
+    // justifyContent: 'center',
+    marginTop: '4%',
+    paddingVertical: 11,
+    borderColor: 'white',
     borderWidth: 2,
   },
   buttonText: {
     color: 'white',
     textAlign: 'center',
-    fontSize: 24,
+    fontSize: 21,
     fontWeight: 'bold',
   },
   buttonText1: {
-    color: '#ff001D',
+    color: 'white',
     textAlign: 'center',
-    fontSize: 24,
+    fontSize: 21,
     fontWeight: 'bold',
   },
   backgroundVideo: {
