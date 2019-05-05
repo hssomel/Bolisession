@@ -1,9 +1,10 @@
 // Load Mongoose Models
+const socketIo = require('socket.io');
 const Conversation = require('../models/Conversation');
 const Credential = require('../models/Credential');
 
 module.exports = server => {
-  const io = require('socket.io')(server);
+  const io = socketIo(server);
 
   // Object mapping socketIds and User Ids
   const mobileSockets = {};

@@ -4,18 +4,18 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const keys = require('../../config/keys');
 
-// Load Validation
+// load validation helper functions
 const validateRegister = require('../../validation/validateRegister');
 const validateLogin = require('../../validation/validateLogin');
 
-// Load Credential model
+// load Credential model
 const Credential = require('../../models/Credential');
 
-// Reference this Template for all JSON responses
-// const newResponse =
-//   status: 400
-//   success: false,
-//   errors: [
+// reference this Template for all JSON responses
+// {
+//   "status": 400
+//   "success": false,
+//   "errors": [
 //     {
 //       name: 'ErrorName1',
 //       message: 'Error message 1',
@@ -23,10 +23,10 @@ const Credential = require('../../models/Credential');
 //     {
 //       name: 'ErrorName2',
 //       message: 'Error message 2',
-//     },
+//     }
 //   ],
-//   data: {},
-// };
+//   "data": {}
+// }
 
 // @route   POST /api/credentials/register
 // @desc    Register user
@@ -34,28 +34,25 @@ const Credential = require('../../models/Credential');
 router.post('/register', async (req, res) => {
   try {
     const error = new Error(); // to throw errors into catch block
-    let { username, usertype, password, password2 } = req.body;
-    username = username.toLowerCase();
-    usertype = usertype.toLowerCase();
-    // Run async actions in parrallel for speed
-    const [{ isValid, errors }, existingUser, hash] = await Promise.all([
-      validateRegister(req.body),
+    const username = req.body.username.toLowerCase();
+    const usertype = req.body.usertype.toLowerCase();
+    const { password, password2 } = req.body;
+    // run async actions in parrallel for speed
+    const [
+      { isValid, errors },
+      existingUser,
+      hashedPassword,
+    ] = await Promise.all([
+      validateRegister({ username, usertype, password, password2 }),
       Credential.findOne({ username }),
       bcrypt.hash(password, 10),
-    ]).catch(e => {
-      console.log(e);
+    ]).catch(() => {
       error.name = 'ServerError';
       error.message = 'Internal server error';
       error.status = 500;
       throw error;
     });
-    // Check for any errors, and throw if any
-    if (existingUser) {
-      error.name = 'UsernameError';
-      error.message = 'Username already exists';
-      error.status = 409;
-      throw error;
-    }
+    // check for any errors, and throw if any
     if (!isValid) {
       const jsonRes = {
         status: 400,
@@ -66,14 +63,20 @@ router.post('/register', async (req, res) => {
       res.status(jsonRes.status).json(jsonRes);
       return;
     }
-    // Validation passed - store account with lowercase data
+    if (existingUser) {
+      error.name = 'UsernameError';
+      error.message = 'Username already exists';
+      error.status = 409;
+      throw error;
+    }
+    // validation passed - store account data
     const newCredential = new Credential({
       username,
       usertype,
-      password: hash,
+      password: hashedPassword,
     });
-    const newCredentialDocument = await newCredential.save().catch(e => {
-      console.log(e);
+    const newCredentialDocument = await newCredential.save().catch(async () => {
+      await Credential.findOneAndDelete({ username }); // save() error, so delete incase it saved
       error.name = 'DatabaseError';
       error.message = 'Error while communicating with database';
       error.status = 502;
@@ -91,7 +94,6 @@ router.post('/register', async (req, res) => {
     };
     res.status(jsonRes.status).json(jsonRes);
   } catch (error) {
-    console.log(error);
     const jsonRes = {
       status: error.status,
       success: false,
@@ -105,51 +107,78 @@ router.post('/register', async (req, res) => {
 // @route   POST api/credentials/login
 // @desc    Login User (AKA Return JWT)
 // @access  Public
-router.post('/login', (req, res) => {
-  const { errors, isValid } = validateLogin(req.body);
-
-  if (!isValid) {
-    return res.status(400).json(errors);
-  }
-
-  const username = req.body.username;
-  const password = req.body.password;
-
-  // Find user by username
-  Credential.findOne({ username }).then(user => {
-    // In case username doesn't exist
-    if (!user) {
-      errors.username = 'Username not found';
-      return res.status(404).json(errors);
-    }
-
-    // Check the Password
-    bcrypt.compare(password, user.password).then(isMatch => {
-      if (isMatch) {
-        // User Matched - Sign the JWT
-
-        // Create JWT Payload
-        const payload = {
-          id: user.id,
-          username: user.username,
-          usertype: user.usertype,
-        };
-
-        // Sign Token and send it to user
-        jwt.sign(
-          payload,
-          keys.secretOrKey,
-          { expiresIn: 3600 },
-          (err, token) => {
-            res.json({ success: true, token: 'Bearer ' + token });
-          },
-        );
-      } else {
-        errors.password = 'Password incorrect';
-        return res.status(400).json(errors);
-      }
+router.post('/login', async (req, res) => {
+  try {
+    const error = new Error(); // to throw errors into catch block
+    const username = req.body.username.toLowerCase();
+    const { password } = req.body;
+    // run async actions in parrallel for speed
+    const [{ isValid, errors }, userCredential] = await Promise.all([
+      validateLogin({ username, password }),
+      Credential.findOne({ username }),
+    ]).catch(() => {
+      error.name = 'ServerError';
+      error.message = 'Internal server error';
+      error.status = 500;
+      throw error;
     });
-  });
+    // check for any errors, and throw if any
+    if (!isValid) {
+      const jsonRes = {
+        status: 400,
+        success: false,
+        errors, // from validateLogin();
+        data: {},
+      };
+      res.status(jsonRes.status).json(jsonRes);
+      return;
+    }
+    if (!userCredential) {
+      error.name = 'UsernameError';
+      error.message = 'Username not found';
+      error.status = 404;
+      throw error;
+    }
+    // prepare jwt payload
+    const jtwPaylod = {
+      id: userCredential.id,
+      username: userCredential.username,
+      usertype: userCredential.usertype,
+    };
+    // confirm password & generate token
+    const [passwordValid, token] = await Promise.all([
+      bcrypt.compare(password, userCredential.password),
+      jwt.sign(jtwPaylod, keys.secretOrKey, { expiresIn: 3600 }),
+    ]).catch(() => {
+      error.name = 'ServerError';
+      error.message = 'Internal server error';
+      error.status = 500;
+      throw error;
+    });
+    if (!passwordValid) {
+      error.name = 'PasswordError';
+      error.message = 'Invalid password';
+      error.status = 401;
+      throw error;
+    }
+    const jsonRes = {
+      status: 200,
+      success: true,
+      errors: [],
+      data: {
+        token: `Bearer ${token}`,
+      },
+    };
+    res.status(jsonRes.status).json(jsonRes);
+  } catch (error) {
+    const jsonRes = {
+      status: error.status,
+      success: false,
+      errors: [{ name: error.name, message: error.message }],
+      data: {},
+    };
+    res.status(jsonRes.status).json(jsonRes);
+  }
 });
 
 // @route   GET api/credentials/current

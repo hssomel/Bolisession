@@ -1,22 +1,46 @@
 const Validator = require('validator'); // Validate Strings
 const isEmpty = require('lodash.isempty'); // Check if objects are empty
 
-const validateLogin = data => {
-  const errors = {};
-  let { username, password } = data;
+const validateLogin = async data => {
+  /* note: async function - returns promise
+    Args:
+      data <object> - parts of req.body from /api/credentials/register route
+        {
+          username: <string>,
+          password: <string>,
+        }
+    Returns:
+      <object>
+        { 
+          errors <array> - contains any validation error objects 
+            [
+              {
+                name: <string> - one of the following:
+                  'UsernameError',
+                  'PasswordError',
+                message: <string>,
+              },
+            ],
+          isValid <boolean> - validation result
+        }
+  */
 
-  // turn empty objects into Empty strings for Validator
-  username = !isEmpty(username) ? username : '';
-  password = !isEmpty(password) ? password : '';
+  const errors = [];
+  const { username, password } = data;
 
-  // username validation
   if (Validator.isEmpty(username)) {
-    errors.username = 'Username is required';
+    errors.push({
+      name: 'UsernameError',
+      message: 'Username is required',
+    });
   }
 
   // password validation
   if (Validator.isEmpty(password)) {
-    errors.password = 'Password is required';
+    errors.push({
+      name: 'PasswordError',
+      message: 'Password is required',
+    });
   }
 
   return {

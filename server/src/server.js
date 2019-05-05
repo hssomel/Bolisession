@@ -19,9 +19,6 @@ const postsRoute = require('./routes/api/postsRoute');
 const app = express();
 const server = http.createServer(app);
 
-// Initialize socket.io
-require('./sockets/socketServer')(server);
-
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -74,6 +71,9 @@ fs.writeFile('../web/src/env.js', data, err => {
   if (err) console.log('Error while writing client env.js file', err);
   else console.log('Generated WEB env.js configuration!');
 });
+
+// Initialize socket.io
+require('./sockets/socketServer')(server);
 
 // Run Server on that Port
 server.listen(port, () => {
