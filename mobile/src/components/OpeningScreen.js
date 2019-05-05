@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Video from 'react-native-video';
 
 class OpeningScreen extends React.Component {
   // Event Handlers
@@ -16,7 +17,7 @@ class OpeningScreen extends React.Component {
             source={require('../assets/images/bhangra.png')}
             style={styles.image}
           />
-          <Text style={styles.text}>Connect with the best</Text>
+          <Text style={styles.text}>Connect with the</Text>
           <Text style={styles.text}>Bhangra Community</Text>
         </View>
         <View style={styles.viewTwo}>
@@ -125,5 +126,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 24,
     fontWeight: 'bold',
+  },
+  backgroundVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
 });
