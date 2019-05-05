@@ -4,7 +4,8 @@
   "description": "Codebase for a react-native social media application. Includes both server and client packages.",
   "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "i": "npm install && cd server && npm install && cd ../mobile && npm install && cd ../web && npm install && cd .."
   },
   "repository": {
     "type": "git",
