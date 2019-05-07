@@ -70,10 +70,6 @@ fs.writeFile('../client/env.js', data, err => {
   if (err) console.log('Error while writing ../client/env.js', err);
   else console.log('Generated ../client/env.js');
 });
-fs.writeFile('../web/src/env.js', data, err => {
-  if (err) console.log('Error while writing ../web/src/env.js', err);
-  else console.log('Generated ../web/src/env.js');
-});
 
 // generate GoogleService-Info.plist for IOS
 fs.writeFile('../client/ios/GoogleService-Info.plist', process.env.GOOGLE_SERVICE_INFO_PLIST, err => {
