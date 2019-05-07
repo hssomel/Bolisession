@@ -5,7 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "i": "npm install && cd server && npm install && cd ../mobile && npm install && cd ../web && npm install && cd .."
+    "i": "npm install && cd server && npm install && cd "
   },
   "repository": {
     "type": "git",

@@ -60,16 +60,31 @@ app.use('/api/credentials', credentialsRoute);
 app.use('/api/profiles', profilesRoute);
 app.use('/api/posts', postsRoute);
 
-// Write a env.js file in the client directory to configure API_BASE_URL
+// generate env.js files
 const data = `export const API_BASE_URL = "http://${ip.address()}:${port}";`;
-// const data = `export const API_BASE_URL = "http://localhost:${port}";`;
 fs.writeFile('../mobile/env.js', data, err => {
-  if (err) console.log('Error while writing client env.js file', err);
-  else console.log('Generated MOBILE env.js configuration!');
+  if (err) console.log('Error while writing ../mobile/env.js', err);
+  else console.log('Generated ../mobile/env.js');
+});
+fs.writeFile('../client/env.js', data, err => {
+  if (err) console.log('Error while writing ../client/env.js', err);
+  else console.log('Generated ../client/env.js');
 });
 fs.writeFile('../web/src/env.js', data, err => {
-  if (err) console.log('Error while writing client env.js file', err);
-  else console.log('Generated WEB env.js configuration!');
+  if (err) console.log('Error while writing ../web/src/env.js', err);
+  else console.log('Generated ../web/src/env.js');
+});
+
+// generate GoogleService-Info.plist for IOS
+fs.writeFile('../client/ios/GoogleService-Info.plist', process.env.GOOGLE_SERVICE_INFO_PLIST, err => {
+  if (err) console.log('Error while writing ../client/ios/GoogleService-Info.plist', err);
+  else console.log('Generated ../client/ios/GoogleService-Info.plist');
+});
+
+// generate google-services.json
+fs.writeFile('../client/android/app/google-services.json', process.env.GOOGLE_SERVICES_JSON, err => {
+  if (err) console.log('Error while writing ../client/android/app/google-services.json', err);
+  else console.log('Generated ../client/android/app/google-services.json');
 });
 
 // Initialize socket.io
