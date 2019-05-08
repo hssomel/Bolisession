@@ -7,6 +7,7 @@ import {
 import startScreen from './src/components/startScreen';
 import phoneEntryScreen from './src/components/phoneEntryScreen';
 import codeVerifyScreen from './src/components/codeVerifyScreen';
+import feedScreen from './src/components/feedScreen';
 import firebase from 'react-native-firebase';
 
 const AuthStack = createStackNavigator({
@@ -33,9 +34,19 @@ const IntroStack = createStackNavigator({
   },
 });
 
+const AppStack = createStackNavigator({
+  Feed: {
+    screen: feedScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
+
 const AppSwitchNavigator = createSwitchNavigator({
   Intro: IntroStack,
   Auth: AuthStack,
+  App: AppStack,
 });
 
 const AppContainer = createAppContainer(AppSwitchNavigator);

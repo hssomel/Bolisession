@@ -10,8 +10,26 @@ import {
 const brandColor = '#744BAC';
 
 class codeVerifyScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      enterCode: false,
+      spinner: false,
+      phoneNumber: '',
+      code: '',
+    };
+  }
+
   handleChange(type, value) {
-    this.setState({ [type]: value });
+    {
+      this.setState({ [type]: value });
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.state.code.length > 8) {
+      this.props.navigation.navigate('Feed');
+    }
   }
 
   handlePhoneVerifyPress = () => this.props.navigation.navigate('phEntry');
@@ -26,7 +44,7 @@ class codeVerifyScreen extends React.Component {
           underlineColorAndroid={'transparent'}
           autoCapitalize={'none'}
           autoCorrect={false}
-          onChangeText={value => this.handleChange('phoneNumber', value)}
+          onChangeText={value => this.handleChange('code', value)}
           placeholder="_ _ _ _ _ _ _ _ _ _"
           keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
           style={[styles.textInput]}
