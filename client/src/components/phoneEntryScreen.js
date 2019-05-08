@@ -36,7 +36,7 @@ class phoneEntryScreen extends React.Component {
           autoCapitalize={'none'}
           autoCorrect={false}
           onChangeText={value => this.handleChange('phoneNumber', value)}
-          placeholder="_ _ _ _ _ _ _ _ _ _"
+          placeholder="Phone Number"
           keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
           style={[styles.textInput]}
           returnKeyType="go"
@@ -65,13 +65,6 @@ class phoneEntryScreen extends React.Component {
 export default phoneEntryScreen;
 
 const styles = StyleSheet.create({
-  //   container: {
-  //     justifyContent: 'center',
-  //     alignItems: 'center',
-  //     backgroundColor: 'white',
-  //     height: '100%',
-  //     width: '100%',
-  //   },
   container: {
     flex: 1,
     height: '100%',
@@ -96,12 +89,11 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     height: 60,
     fontSize: 26,
-
     padding: 0,
     margin: 0,
   },
   disclaimerText: {
-    marginTop: '10%',
+    marginTop: '8%',
     marginLeft: '5%',
     marginRight: '5%',
     fontSize: 12,
