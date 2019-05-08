@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import Form from 'react-native-form';
+
 const brandColor = '#744BAC';
 
 class phoneEntryScreen extends React.Component {
@@ -25,60 +25,38 @@ class phoneEntryScreen extends React.Component {
 
   handlePhoneAuthPress = () => this.props.navigation.navigate('phCodeVerify');
 
-  _renderCallingCode = () => {
-    return (
-      <View style={styles.callingCodeView}>
-        <Text style={styles.callingCodeText}>+1</Text>
-      </View>
-    );
-  };
-
-  _renderFooter = () => {
-    return (
-      <View>
-        <Text style={styles.disclaimerText}>
-          By tapping "Send confirmation code" above, we will send you an SMS to
-          confirm your phone number. Message &amp; data rates may apply.
-        </Text>
-      </View>
-    );
-  };
-
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.header}>What's your phone number?</Text>
 
-        <Form ref={'form'} style={styles.form}>
-          <View style={{ flexDirection: 'row' }}>
-            {this._renderCallingCode()}
+        <TextInput
+          type={'TextInput'}
+          underlineColorAndroid={'transparent'}
+          autoCapitalize={'none'}
+          autoCorrect={false}
+          onChangeText={value => this.handleChange('phoneNumber', value)}
+          placeholder="_ _ _ _ _ _ _ _ _ _"
+          keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
+          style={[styles.textInput]}
+          returnKeyType="go"
+          autoFocus
+          placeholderTextColor={brandColor}
+          selectionColor={brandColor}
+          maxLength={10}
+        />
 
-            <TextInput
-              type={'TextInput'}
-              underlineColorAndroid={'transparent'}
-              autoCapitalize={'none'}
-              autoCorrect={false}
-              onChangeText={value => this.handleChange('phoneNumber', value)}
-              placeholder="_ _ _ _ _ _"
-              keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
-              style={[styles.textInput]}
-              returnKeyType="go"
-              autoFocus
-              placeholderTextColor={brandColor}
-              selectionColor={brandColor}
-              maxLength={10}
-            />
-          </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={this.handlePhoneAuthPress}
+        >
+          <Text style={styles.buttonText}>Send confirmation code</Text>
+        </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={this.handlePhoneAuthPress}
-          >
-            <Text style={styles.buttonText}>Send confirmation code</Text>
-          </TouchableOpacity>
-
-          {this._renderFooter()}
-        </Form>
+        <Text style={styles.disclaimerText}>
+          By tapping "Send confirmation code" above, we will send you an SMS to
+          confirm your phone number. Message &amp; data rates may apply.
+        </Text>
       </View>
     );
   }
@@ -96,30 +74,45 @@ const styles = StyleSheet.create({
   //   },
   container: {
     flex: 1,
+    height: '100%',
+    width: '100%',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   header: {
     textAlign: 'center',
-    marginTop: 60,
-    fontSize: 22,
-    margin: 20,
+    marginTop: '8%',
+    fontSize: 26,
     color: '#4A4A4A',
   },
   buttonText: {
-    color: 'red',
+    color: 'white',
     textAlign: 'center',
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   textInput: {
+    marginTop: '10%',
+    height: 60,
+    fontSize: 26,
+
     padding: 0,
     margin: 0,
-    flex: 1,
-    fontSize: 20,
-    color: brandColor,
   },
   disclaimerText: {
-    marginTop: 30,
+    marginTop: '10%',
+    marginLeft: '5%',
+    marginRight: '5%',
     fontSize: 12,
     color: 'grey',
+  },
+  button: {
+    marginTop: '12%',
+    width: '80%',
+    backgroundColor: 'orangered',
+    alignItems: 'center',
+    borderRadius: 32,
+    paddingVertical: 11,
   },
 });
