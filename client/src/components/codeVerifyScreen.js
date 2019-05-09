@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 
 const brandColor = '#744BAC';

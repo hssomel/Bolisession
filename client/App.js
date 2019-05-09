@@ -4,30 +4,22 @@ import {
   createSwitchNavigator,
   createStackNavigator,
 } from 'react-navigation';
-import startScreen from './src/components/startScreen';
-import phoneEntryScreen from './src/components/phoneEntryScreen';
+
+// Screens
+import LandingPageScreen from './src/screens/LandingPageScreen';
+import PhoneNumberEntryScreen from './src/screens/PhoneNumberEntryScreen';
 import codeVerifyScreen from './src/components/codeVerifyScreen';
 import feedScreen from './src/components/feedScreen';
-import firebase from 'react-native-firebase';
 
 const AuthStack = createStackNavigator({
-  phEntry: {
-    screen: phoneEntryScreen,
+  phoneNumberEntryRoute: {
+    screen: PhoneNumberEntryScreen,
     navigationOptions: () => ({
       header: null,
     }),
   },
   phCodeVerify: {
     screen: codeVerifyScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
-  },
-});
-
-const IntroStack = createStackNavigator({
-  Start: {
-    screen: startScreen,
     navigationOptions: () => ({
       header: null,
     }),
@@ -43,15 +35,27 @@ const AppStack = createStackNavigator({
   },
 });
 
+const LandingPageScreenStack = createStackNavigator({
+  Start: {
+    screen: PhoneNumberEntryScreen,
+    // screen: LandingPageScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
+
 const AppSwitchNavigator = createSwitchNavigator({
-  Intro: IntroStack,
+  LandingPageScreen: LandingPageScreenStack,
   Auth: AuthStack,
   App: AppStack,
 });
 
 const AppContainer = createAppContainer(AppSwitchNavigator);
 
-export default (App = () => <AppContainer />);
+const App = () => <AppContainer />;
+
+export default App;
 
 // export default class App extends React.Component {
 //   constructor() {

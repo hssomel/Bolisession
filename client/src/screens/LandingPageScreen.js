@@ -1,34 +1,26 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-class startScreen extends React.Component {
+const LandingPageScreen = props => {
   // Event Handlers
+  const handleSignUpPress = () => {
+    props.navigation.navigate('phoneNumberEntryRoute');
+  };
 
-  constructor() {
-    super();
-    this.handleSignUpPress = this.handleSignUpPress.bind(this);
-  }
-
-  handleSignUpPress = () => this.props.navigation.navigate('phEntry');
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.viewOne}>
-          <Text style={styles.text}>Connect with the</Text>
-          <Text style={styles.text1}>Bhangra Community</Text>
-          <TouchableOpacity
-            onPress={this.handleSignUpPress}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>Get started</Text>
-          </TouchableOpacity>
-        </View>
+  return (
+    <View style={styles.container}>
+      <View style={styles.viewOne}>
+        <Text style={styles.text}>Connect with the</Text>
+        <Text style={styles.text1}>Bhangra Community</Text>
+        <TouchableOpacity onPress={handleSignUpPress} style={styles.button}>
+          <Text style={styles.buttonText}>Get started</Text>
+        </TouchableOpacity>
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
 
-export default startScreen;
+export default LandingPageScreen;
 
 const styles = StyleSheet.create({
   container: {
