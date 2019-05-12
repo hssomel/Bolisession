@@ -11,6 +11,7 @@ import PhoneNumberEntryScreen from './src/screens/PhoneNumberEntryScreen';
 import codeVerifyScreen from './src/components/codeVerifyScreen';
 import feedScreen from './src/components/feedScreen';
 import phoneAuthScreen from './src/screens/phoneAuthScreen';
+import codeEntryScreen from './src/screens/codeEntryScreen';
 
 const AuthStack = createStackNavigator({
   phoneNumberEntryRoute: {
@@ -43,6 +44,12 @@ const phoneAuthStack = createStackNavigator({
       header: null,
     }),
   },
+  codeEntry: {
+    screen: codeEntryScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
 });
 
 const LandingPageScreenStack = createStackNavigator({
@@ -56,9 +63,9 @@ const LandingPageScreenStack = createStackNavigator({
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
-  phone: phoneAuthStack,
-  LandingPageScreen: LandingPageScreenStack,
-  Auth: AuthStack,
+  latestAuth: phoneAuthStack, // what I worked while you were getting turnt with Navie LOL
+  // LandingPageScreen: LandingPageScreenStack,
+  Auth: AuthStack, // same shit as latestAuth
   App: AppStack,
 });
 
@@ -67,24 +74,3 @@ const AppContainer = createAppContainer(AppSwitchNavigator);
 const App = () => <AppContainer />;
 
 export default App;
-
-// export default class App extends React.Component {
-//   constructor() {
-//     super();
-//     this.state = {};
-//   }
-
-//   async componentDidMount() {
-//     // TODO: You: Do firebase things
-//     // const { user } = await firebase.auth().signInAnonymously();
-//     // console.warn('User -> ', user.toJSON());
-
-//     // await firebase.analytics().logEvent('foo', { bar: '123'});
-//   }
-
-//   render() {
-//     return (
-
-//     );
-//   }
-// }
