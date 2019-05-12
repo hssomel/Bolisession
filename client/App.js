@@ -10,6 +10,7 @@ import LandingPageScreen from './src/screens/LandingPageScreen';
 import PhoneNumberEntryScreen from './src/screens/PhoneNumberEntryScreen';
 import codeVerifyScreen from './src/components/codeVerifyScreen';
 import feedScreen from './src/components/feedScreen';
+import phoneAuthScreen from './src/screens/phoneAuthScreen';
 
 const AuthStack = createStackNavigator({
   phoneNumberEntryRoute: {
@@ -35,6 +36,15 @@ const AppStack = createStackNavigator({
   },
 });
 
+const phoneAuthStack = createStackNavigator({
+  phone: {
+    screen: phoneAuthScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
+
 const LandingPageScreenStack = createStackNavigator({
   Start: {
     screen: PhoneNumberEntryScreen,
@@ -46,6 +56,7 @@ const LandingPageScreenStack = createStackNavigator({
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
+  phone: phoneAuthStack,
   LandingPageScreen: LandingPageScreenStack,
   Auth: AuthStack,
   App: AppStack,
