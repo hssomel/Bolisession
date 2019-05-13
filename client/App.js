@@ -11,22 +11,25 @@ import PhoneNumberEntryScreen from './src/screens/PhoneNumberEntryScreen';
 import codeVerifyScreen from './src/components/codeVerifyScreen';
 import feedScreen from './src/components/feedScreen';
 import phoneAuthScreen from './src/screens/phoneAuthScreen';
-import codeEntryScreen from './src/screens/codeEntryScreen';
+import CodeEntryScreen from './src/screens/CodeEntryScreen';
 
-const AuthStack = createStackNavigator({
-  phoneNumberEntryRoute: {
-    screen: PhoneNumberEntryScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
-  },
-  phCodeVerify: {
-    screen: codeVerifyScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
-  },
-});
+import { Provider, connect } from 'react-redux';
+import store from './src/store/store';
+
+// const AuthStack = createStackNavigator({
+//   phoneNumberEntryRoute: {
+//     screen: PhoneNumberEntryScreen,
+//     navigationOptions: () => ({
+//       header: null,
+//     }),
+//   },
+//   phCodeVerify: {
+//     screen: codeVerifyScreen,
+//     navigationOptions: () => ({
+//       header: null,
+//     }),
+//   },
+// });
 
 const AppStack = createStackNavigator({
   Feed: {
@@ -45,7 +48,7 @@ const phoneAuthStack = createStackNavigator({
     }),
   },
   codeEntry: {
-    screen: codeEntryScreen,
+    screen: CodeEntryScreen,
     navigationOptions: () => ({
       header: null,
     }),
@@ -65,12 +68,14 @@ const LandingPageScreenStack = createStackNavigator({
 const AppSwitchNavigator = createSwitchNavigator({
   latestAuth: phoneAuthStack, // what I worked while you were getting turnt with Navie LOL
   // LandingPageScreen: LandingPageScreenStack,
-  Auth: AuthStack, // same shit as latestAuth
+  // Auth: AuthStack, // same shit as latestAuth
   App: AppStack,
 });
 
 const AppContainer = createAppContainer(AppSwitchNavigator);
 
-const App = () => <AppContainer />;
-
-export default App;
+export default (App = () => (
+  <Provider store={store}>
+    <AppContainer />
+  </Provider>
+));

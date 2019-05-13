@@ -7,11 +7,17 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Input, Text, Button, Icon } from 'react-native-elements';
+import {
+  capturePhoneNum,
+  captureConfirmResult,
+} from '../actions/authActionDispatchers';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import firebase from 'react-native-firebase';
 const brandColor = 'orangered';
 
-export default class phoneAuthScreen extends Component {
+class phoneAuthScreen extends Component {
   constructor(props) {
     super(props);
     this.unsubscribe = null;
@@ -54,7 +60,10 @@ export default class phoneAuthScreen extends Component {
       .signInWithPhoneNumber(phoneNumber)
       .then(confirmResult => {
         this.setState({ confirmResult, message: 'Code has been sent!' });
-        this.props.navigation.navigate('Feed');
+        this.props.capturePhoneNum({ phoneNumber });
+        this.props.captureConfirmResult({ confirmResult });
+        //capturePhoneNum is function for updating redux store with phoneNumber
+        this.props.navigation.navigate('codeEntry');
       })
       .catch(error =>
         this.setState({
@@ -73,7 +82,7 @@ export default class phoneAuthScreen extends Component {
     return (
       <View style={styles.container}>
         <SafeAreaView style={styles.safeArea}>
-          <Text style={styles.header}>What's your phone number?</Text>
+          <Text style={styles.header}>What is your phone number?</Text>
           <TextInput
             onChangeText={value => this.setState({ phoneNumber: value })}
             keyboardType="phone-pad"
@@ -83,7 +92,7 @@ export default class phoneAuthScreen extends Component {
             placeholderTextColor={brandColor}
             selectionColor={brandColor}
             value={phoneNumber}
-            underlineColorAndroid={'transparent'}
+            underlineColorAndroid={'green'}
             autoCapitalize={'none'}
             autoCorrect={false}
             returnKeyType="go"
@@ -116,6 +125,7 @@ export default class phoneAuthScreen extends Component {
     return (
       <View style={{ flex: 1 }}>
         {!user && !confirmResult && this.renderPhoneNumberInput()}
+        {this.renderMessage()}
         {user && (
           <View
             style={{
@@ -137,6 +147,23 @@ export default class phoneAuthScreen extends Component {
   }
 }
 
+phoneAuthScreen.propTypes = {
+  capturePhoneNum: PropTypes.func.isRequired,
+  captureConfirmResult: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  // errors: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  // errors: state.errors,
+});
+
+export default connect(
+  mapStateToProps,
+  { capturePhoneNum, captureConfirmResult },
+)(phoneAuthScreen);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -145,6 +172,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    backgroundColor: 'pink',
   },
   safeArea: {
     alignItems: 'center',
@@ -167,13 +195,13 @@ const styles = StyleSheet.create({
     // textAlign: 'center',
     // alignItems: 'center',
     marginTop: '10%',
-    width: '90%',
+    width: '100%',
     height: 60,
-    fontSize: 26,
+    fontSize: 16,
     padding: 0,
     margin: 0,
-    marginLeft: '15%',
-    backgroundColor: 'transparent',
+    // marginLeft: '15%',
+    backgroundColor: 'purple',
   },
   disclaimerText: {
     marginTop: '5%',
@@ -191,32 +219,3 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
   },
 });
-
-// {this.renderMessage()}
-
-// {!user && confirmResult && this.renderVerificationCodeInput()}
-
-// {user && (
-//   <View
-//     style={{
-//       padding: 15,
-//       justifyContent: 'center',
-//       alignItems: 'center',
-//       backgroundColor: '#77dd77',
-//       flex: 1,
-//     }}
-//   >
-//     <Image
-//       source={{ uri: successImageUri }}
-//       style={{ width: 100, height: 100, marginBottom: 25 }}
-//     />
-//     <Text style={{ fontSize: 25 }}>Signed In!</Text>
-//     <Text>{JSON.stringify(user)}</Text>
-//     <Button
-//       title="Continue"
-//       color="orangered"
-//       onPress={this.handlePhoneVerifyPress}
-//     />
-//     <Button title="Sign Out" color="red" onPress={this.signOut} />
-//   </View>
-// )}

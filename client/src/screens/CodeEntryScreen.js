@@ -8,6 +8,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Input, Text, Button, Icon } from 'react-native-elements';
+import { captureUser, signOutUser } from '../actions/authActionDispatchers';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import firebase from 'react-native-firebase';
 
@@ -15,58 +18,39 @@ const brandColor = 'orangered';
 const successImageUri =
   'https://cdn.pixabay.com/photo/2015/06/09/16/12/icon-803718_1280.png';
 
-export default class phoneAuthScreen extends Component {
+class CodeEntryScreen extends Component {
   constructor(props) {
     super(props);
     this.unsubscribe = null;
     this.state = {
-      user: null,
+      user: this.props.auth.user,
       message: '',
       codeInput: '',
-      phoneNumber: '+1',
-      confirmResult: null,
+      phoneNumber: this.props.auth.phoneNumber,
+      confirmResult: this.props.auth.confirmResult,
     };
   }
 
-  handlePhoneVerifyPress = () => this.props.navigation.navigate('phEntry');
+  // componentDidMount() {
+  //   this.unsubscribe = firebase.auth().onAuthStateChanged(user => {
+  //     if (user) {
+  //       this.setState({ user: user.toJSON() });
+  //     } else {
+  //       // User has been signed out, reset the state
+  //       this.setState({
+  //         user: null,
+  //         message: '',
+  //         codeInput: '',
+  //         phoneNumber: this.props.auth.phoneNumber,
+  //         confirmResult: this.props.auth.confirmResult,
+  //       });
+  //     }
+  //   });
+  // }
 
-  componentDidMount() {
-    this.unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.setState({ user: user.toJSON() });
-      } else {
-        // User has been signed out, reset the state
-        this.setState({
-          user: null,
-          message: '',
-          codeInput: '',
-          phoneNumber: '+1',
-          confirmResult: null,
-        });
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    if (this.unsubscribe) this.unsubscribe();
-  }
-
-  signIn = () => {
-    const { phoneNumber } = this.state;
-    this.setState({ message: 'Sending code ...' });
-
-    firebase
-      .auth()
-      .signInWithPhoneNumber(phoneNumber)
-      .then(confirmResult =>
-        this.setState({ confirmResult, message: 'Code has been sent!' }),
-      )
-      .catch(error =>
-        this.setState({
-          message: `Sign In With Phone Number Error: ${error.message}`,
-        }),
-      );
-  };
+  // componentWillUnmount() {
+  //   if (this.unsubscribe) this.unsubscribe();
+  // }
 
   confirmCode = () => {
     const { codeInput, confirmResult } = this.state;
@@ -76,6 +60,7 @@ export default class phoneAuthScreen extends Component {
         .confirm(codeInput)
         .then(user => {
           this.setState({ message: 'Code Confirmed!' });
+          this.props.captureUser({ user });
         })
         .catch(error =>
           this.setState({ message: `Code Confirm Error: ${error.message}` }),
@@ -85,52 +70,8 @@ export default class phoneAuthScreen extends Component {
 
   signOut = () => {
     firebase.auth().signOut();
+    this.props.signOutUser();
   };
-
-  renderPhoneNumberInput() {
-    const { phoneNumber } = this.state;
-
-    return (
-      //   <View style={{ padding: 25 }}>
-      //     <Text>Enter phone number:</Text>
-      //     <TextInput
-      //       autoFocus
-      //       style={{ height: 40, marginTop: 15, marginBottom: 15 }}
-      //       onChangeText={value => this.setState({ phoneNumber: value })}
-      //       placeholder={'Phone number ... '}
-      //       value={phoneNumber}
-      //     />
-      //     <Button title="Sign In" color="green" onPress={this.signIn} />
-      //   </View>
-
-      <View style={styles.container}>
-        <Text style={styles.header}>What's your phone number?</Text>
-
-        <TextInput
-          onChangeText={value => this.setState({ phoneNumber: value })}
-          keyboardType="phone-pad"
-          autoFocus
-          style={styles.textInput}
-          placeholder="Phone Number"
-          placeholderTextColor={brandColor}
-          selectionColor={brandColor}
-          //underlineColorAndroid={'transparent'}
-          autoCapitalize={'none'}
-          autoCorrect={false}
-          returnKeyType="go"
-        />
-
-        <TouchableOpacity style={styles.button} onPress={this.signIn}>
-          <Text style={styles.buttonText}>Send confirmation code</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.disclaimerText}>
-          By tapping "Send confirmation code" above, we will send you an SMS to
-          confirm your phone number. Message &amp; data rates may apply.
-        </Text>
-      </View>
-    );
-  }
 
   renderMessage() {
     const { message } = this.state;
@@ -167,14 +108,12 @@ export default class phoneAuthScreen extends Component {
   }
 
   render() {
-    const { user, confirmResult } = this.state;
+    const { user, confirmResult } = this.props.auth;
     return (
       <View style={{ flex: 1 }}>
-        {!user && !confirmResult && this.renderPhoneNumberInput()}
+        {!user && confirmResult && this.renderVerificationCodeInput()}
 
         {this.renderMessage()}
-
-        {!user && confirmResult && this.renderVerificationCodeInput()}
 
         {user && (
           <View
@@ -192,11 +131,7 @@ export default class phoneAuthScreen extends Component {
             />
             <Text style={{ fontSize: 25 }}>Signed In!</Text>
             <Text>{JSON.stringify(user)}</Text>
-            <Button
-              title="Continue"
-              color="orangered"
-              onPress={this.handlePhoneVerifyPress}
-            />
+            <Button title="Continue" color="orangered" />
             <Button title="Sign Out" color="red" onPress={this.signOut} />
           </View>
         )}
@@ -204,6 +139,21 @@ export default class phoneAuthScreen extends Component {
     );
   }
 }
+
+CodeEntryScreen.propTypes = {
+  auth: PropTypes.object.isRequired,
+  captureUser: PropTypes.func.isRequired,
+  signOutUser: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+});
+
+export default connect(
+  mapStateToProps,
+  { captureUser, signOutUser },
+)(CodeEntryScreen);
 
 const styles = StyleSheet.create({
   container: {
