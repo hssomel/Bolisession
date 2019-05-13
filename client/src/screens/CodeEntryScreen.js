@@ -27,7 +27,7 @@ class CodeEntryScreen extends Component {
       message: '',
       codeInput: '',
       phoneNumber: this.props.auth.phoneNumber,
-      confirmResult: this.props.auth.confirmResult,
+      confirmResult: null,
     };
   }
 
