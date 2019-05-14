@@ -2,7 +2,6 @@ import {
   SET_CURRENT_PHONE_NUMBER,
   SET_CURRENT_USER,
   SIGN_OUT_USER,
-  SET_CONFIRM_RESULT,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -27,11 +26,6 @@ export default function(state = initialState, action) {
       return {
         ...state,
         user: null,
-      };
-    case SET_CONFIRM_RESULT:
-      return {
-        ...state,
-        confirmResult: action.payload,
       };
     default:
       return state;

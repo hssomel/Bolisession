@@ -6,11 +6,8 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
-import { Input, Text, Button, Icon } from 'react-native-elements';
-import {
-  capturePhoneNum,
-  captureConfirmResult,
-} from '../actions/authActionDispatchers';
+import { Text, Button } from 'react-native-elements';
+import { capturePhoneNum } from '../actions/authActionDispatchers';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -61,9 +58,9 @@ class phoneAuthScreen extends Component {
       .then(confirmResult => {
         this.setState({ confirmResult, message: 'Code has been sent!' });
         this.props.capturePhoneNum({ phoneNumber });
-        this.props.captureConfirmResult({ confirmResult });
-        //capturePhoneNum is function for updating redux store with phoneNumber
-        this.props.navigation.navigate('codeEntry');
+        this.props.navigation.navigate('codeEntry', {
+          confirmResult: this.state.confirmResult,
+        });
       })
       .catch(error =>
         this.setState({
@@ -126,22 +123,6 @@ class phoneAuthScreen extends Component {
       <View style={{ flex: 1 }}>
         {!user && !confirmResult && this.renderPhoneNumberInput()}
         {this.renderMessage()}
-        {user && (
-          <View
-            style={{
-              padding: 15,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: '#77dd77',
-              flex: 1,
-            }}
-          >
-            <Text style={{ fontSize: 25 }}>Signed In!</Text>
-            <Text>{JSON.stringify(user)}</Text>
-
-            <Button title="Sign Out" color="red" onPress={this.signOut} />
-          </View>
-        )}
       </View>
     );
   }
@@ -149,7 +130,6 @@ class phoneAuthScreen extends Component {
 
 phoneAuthScreen.propTypes = {
   capturePhoneNum: PropTypes.func.isRequired,
-  captureConfirmResult: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   // errors: PropTypes.object.isRequired,
 };
@@ -161,7 +141,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { capturePhoneNum, captureConfirmResult },
+  { capturePhoneNum },
 )(phoneAuthScreen);
 
 const styles = StyleSheet.create({

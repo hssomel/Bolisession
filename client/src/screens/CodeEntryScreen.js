@@ -14,7 +14,6 @@ import { connect } from 'react-redux';
 
 import firebase from 'react-native-firebase';
 
-const brandColor = 'orangered';
 const successImageUri =
   'https://cdn.pixabay.com/photo/2015/06/09/16/12/icon-803718_1280.png';
 
@@ -27,30 +26,9 @@ class CodeEntryScreen extends Component {
       message: '',
       codeInput: '',
       phoneNumber: this.props.auth.phoneNumber,
-      confirmResult: null,
+      confirmResult: this.props.navigation.getParam('confirmResult', null),
     };
   }
-
-  // componentDidMount() {
-  //   this.unsubscribe = firebase.auth().onAuthStateChanged(user => {
-  //     if (user) {
-  //       this.setState({ user: user.toJSON() });
-  //     } else {
-  //       // User has been signed out, reset the state
-  //       this.setState({
-  //         user: null,
-  //         message: '',
-  //         codeInput: '',
-  //         phoneNumber: this.props.auth.phoneNumber,
-  //         confirmResult: this.props.auth.confirmResult,
-  //       });
-  //     }
-  //   });
-  // }
-
-  // componentWillUnmount() {
-  //   if (this.unsubscribe) this.unsubscribe();
-  // }
 
   confirmCode = () => {
     const { codeInput, confirmResult } = this.state;
@@ -75,7 +53,6 @@ class CodeEntryScreen extends Component {
 
   renderMessage() {
     const { message } = this.state;
-
     if (!message.length) return null;
 
     return (
@@ -108,7 +85,8 @@ class CodeEntryScreen extends Component {
   }
 
   render() {
-    const { user, confirmResult } = this.props.auth;
+    const { user } = this.props.auth;
+    const { confirmResult } = this.state;
     return (
       <View style={{ flex: 1 }}>
         {!user && confirmResult && this.renderVerificationCodeInput()}
