@@ -9,27 +9,31 @@ import {
 import PhoneNumberScreen from './src/screens/PhoneNumberScreen';
 import LandingPageScreen from './src/screens/LandingPageScreen';
 import PhoneNumberEntryScreen from './src/screens/PhoneNumberEntryScreen';
-import codeVerifyScreen from './src/components/codeVerifyScreen';
 import feedScreen from './src/components/feedScreen';
+import phoneAuthScreen from './src/screens/phoneAuthScreen';
+import CodeEntryScreen from './src/screens/CodeEntryScreen';
 
-const AuthStack = createStackNavigator({
-  phoneNumberEntryRoute: {
-    screen: PhoneNumberEntryScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
-  },
-  phCodeVerify: {
-    screen: codeVerifyScreen,
+import { Provider, connect } from 'react-redux';
+import store from './src/store/store';
+
+const AppStack = createStackNavigator({
+  Feed: {
+    screen: feedScreen,
     navigationOptions: () => ({
       header: null,
     }),
   },
 });
 
-const AppStack = createStackNavigator({
-  Feed: {
-    screen: feedScreen,
+const phoneAuthStack = createStackNavigator({
+  phone: {
+    screen: phoneAuthScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+  codeEntry: {
+    screen: CodeEntryScreen,
     navigationOptions: () => ({
       header: null,
     }),
@@ -47,34 +51,15 @@ const LandingPageScreenStack = createStackNavigator({
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
-  LandingPageScreen: LandingPageScreenStack,
-  Auth: AuthStack,
+  latestAuth: phoneAuthStack, // what I worked while you were getting turnt with Navie LOL
+  // LandingPageScreen: LandingPageScreenStack,
   App: AppStack,
 });
 
 const AppContainer = createAppContainer(AppSwitchNavigator);
 
-const App = () => <AppContainer />;
-
-export default App;
-
-// export default class App extends React.Component {
-//   constructor() {
-//     super();
-//     this.state = {};
-//   }
-
-//   async componentDidMount() {
-//     // TODO: You: Do firebase things
-//     // const { user } = await firebase.auth().signInAnonymously();
-//     // console.warn('User -> ', user.toJSON());
-
-//     // await firebase.analytics().logEvent('foo', { bar: '123'});
-//   }
-
-//   render() {
-//     return (
-
-//     );
-//   }
-// }
+export default (App = () => (
+  <Provider store={store}>
+    <AppContainer />
+  </Provider>
+));
