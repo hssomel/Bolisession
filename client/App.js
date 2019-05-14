@@ -8,7 +8,6 @@ import {
 // Screens
 import LandingPageScreen from './src/screens/LandingPageScreen';
 import PhoneNumberEntryScreen from './src/screens/PhoneNumberEntryScreen';
-import codeVerifyScreen from './src/components/codeVerifyScreen';
 import feedScreen from './src/components/feedScreen';
 import phoneAuthScreen from './src/screens/phoneAuthScreen';
 import CodeEntryScreen from './src/screens/CodeEntryScreen';
