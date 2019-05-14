@@ -15,6 +15,7 @@ import CodeEntryScreen from './src/screens/CodeEntryScreen';
 
 import { Provider, connect } from 'react-redux';
 import store from './src/store/store';
+import PhoneConfirmationScreen from './src/screens/PhoneConfirmationScreen';
 
 const AppStack = createStackNavigator({
   Feed: {
@@ -27,18 +28,33 @@ const AppStack = createStackNavigator({
 
 const phoneAuthStack = createStackNavigator({
   phone: {
-    screen: phoneAuthScreen,
+    screen: PhoneNumberScreen,
     navigationOptions: () => ({
       header: null,
     }),
   },
   codeEntry: {
-    screen: CodeEntryScreen,
+    screen: PhoneConfirmationScreen,
     navigationOptions: () => ({
       header: null,
     }),
   },
 });
+
+// const guguStack = createStackNavigator({
+//   phone: {
+//     screen: PhoneNumberScreen,
+//     navigationOptions: () => ({
+//       header: null,
+//     }),
+//   },
+//   codeEntry: {
+//     screen: CodeEntryScreen,
+//     navigationOptions: () => ({
+//       header: null,
+//     }),
+//   },
+// });
 
 const LandingPageScreenStack = createStackNavigator({
   Start: {

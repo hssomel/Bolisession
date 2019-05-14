@@ -70,6 +70,7 @@ export default function PhoneNumberInput(props) {
     flag,
     setPhoneNumber,
     style,
+    message,
   } = props;
   return (
     <>
@@ -98,7 +99,7 @@ export default function PhoneNumberInput(props) {
           />
         </View>
       </View>
-      <Text style={styles.errorMessage}>Invalid Phone Number</Text>
+      <Text style={styles.errorMessage}>{message}</Text>
     </>
   );
 }

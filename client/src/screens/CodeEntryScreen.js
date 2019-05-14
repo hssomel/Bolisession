@@ -30,6 +30,11 @@ class CodeEntryScreen extends Component {
     };
   }
 
+  componentDidMount() {
+    console.log('codeEntryScreen loaded');
+    console.log(JSON.stringify(user));
+  }
+
   confirmCode = () => {
     const { codeInput, confirmResult } = this.state;
 
@@ -84,9 +89,14 @@ class CodeEntryScreen extends Component {
     );
   }
 
+  handlePress = () => {
+    this.props.navigation.navigate('Feed');
+  };
+
   render() {
     const { user } = this.props.auth;
     const { confirmResult } = this.state;
+
     return (
       <View style={{ flex: 1 }}>
         {!user && confirmResult && this.renderVerificationCodeInput()}
@@ -109,7 +119,11 @@ class CodeEntryScreen extends Component {
             />
             <Text style={{ fontSize: 25 }}>Signed In!</Text>
             <Text>{JSON.stringify(user)}</Text>
-            <Button title="Continue" color="orangered" />
+            <Button
+              title="Continue"
+              color="orangered"
+              onPress={this.handlePress}
+            />
             <Button title="Sign Out" color="red" onPress={this.signOut} />
           </View>
         )}

@@ -21,32 +21,33 @@ class phoneAuthScreen extends Component {
     this.state = {
       user: null,
       message: '',
-      codeInput: '',
+      // codeInput: '',
       phoneNumber: '+1',
       confirmResult: null,
     };
   }
 
-  componentDidMount() {
-    this.unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.setState({ user: user.toJSON() });
-      } else {
-        // User has been signed out, reset the state
-        this.setState({
-          user: null,
-          message: '',
-          codeInput: '',
-          phoneNumber: '+1',
-          confirmResult: null,
-        });
-      }
-    });
-  }
+  // componentDidMount() {
+  //   this.unsubscribe = firebase.auth().onAuthStateChanged(user => {
+  //     if (user) {
+  //       this.setState({ user: user.toJSON() });
+  //     } else {
+  //       // User has been signed out, reset the state
+  //       this.setState({
+  //         user: null,
+  //         message: '',
+  //         codeInput: '',
+  //         phoneNumber: '+1',
+  //         confirmResult: null,
+  //       });
+  //     }
+  //   });
+  //   console.log('phoneAuthScreen loaded');
+  // }
 
-  componentWillUnmount() {
-    if (this.unsubscribe) this.unsubscribe();
-  }
+  // componentWillUnmount() {
+  //   if (this.unsubscribe) this.unsubscribe();
+  // }
 
   signIn = () => {
     const { phoneNumber } = this.state;
