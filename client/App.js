@@ -6,6 +6,7 @@ import {
 } from 'react-navigation';
 
 // Screens
+import PhoneNumberScreen from './src/screens/PhoneNumberScreen';
 import LandingPageScreen from './src/screens/LandingPageScreen';
 import PhoneNumberEntryScreen from './src/screens/PhoneNumberEntryScreen';
 import codeVerifyScreen from './src/components/codeVerifyScreen';
@@ -37,7 +38,7 @@ const AppStack = createStackNavigator({
 
 const LandingPageScreenStack = createStackNavigator({
   Start: {
-    screen: PhoneNumberEntryScreen,
+    screen: PhoneNumberScreen,
     // screen: LandingPageScreen,
     navigationOptions: () => ({
       header: null,
