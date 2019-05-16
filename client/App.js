@@ -8,12 +8,9 @@ import {
 // Screens
 import PhoneNumberScreen from './src/screens/PhoneNumberScreen';
 import LandingPageScreen from './src/screens/LandingPageScreen';
-import PhoneNumberEntryScreen from './src/screens/PhoneNumberEntryScreen';
-import feedScreen from './src/components/feedScreen';
-import phoneAuthScreen from './src/screens/phoneAuthScreen';
-import CodeEntryScreen from './src/screens/CodeEntryScreen';
+import feedScreen from './src/screens/feedScreen';
 
-import { Provider, connect } from 'react-redux';
+import { Provider } from 'react-redux';
 import store from './src/store/store';
 import PhoneConfirmationScreen from './src/screens/PhoneConfirmationScreen';
 
@@ -27,6 +24,12 @@ const AppStack = createStackNavigator({
 });
 
 const phoneAuthStack = createStackNavigator({
+  Start: {
+    screen: LandingPageScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
   phone: {
     screen: PhoneNumberScreen,
     navigationOptions: () => ({
@@ -41,18 +44,8 @@ const phoneAuthStack = createStackNavigator({
   },
 });
 
-const LandingPageScreenStack = createStackNavigator({
-  Start: {
-    screen: LandingPageScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
-  },
-});
-
 const AppSwitchNavigator = createSwitchNavigator({
-  LandingPageScreen: LandingPageScreenStack,
-  latestAuth: phoneAuthStack, // what I worked while you were getting turnt with Navie LOL
+  latestAuth: phoneAuthStack,
   App: AppStack,
 });
 
