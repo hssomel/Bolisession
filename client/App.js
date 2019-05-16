@@ -41,25 +41,9 @@ const phoneAuthStack = createStackNavigator({
   },
 });
 
-// const guguStack = createStackNavigator({
-//   phone: {
-//     screen: PhoneNumberScreen,
-//     navigationOptions: () => ({
-//       header: null,
-//     }),
-//   },
-//   codeEntry: {
-//     screen: CodeEntryScreen,
-//     navigationOptions: () => ({
-//       header: null,
-//     }),
-//   },
-// });
-
 const LandingPageScreenStack = createStackNavigator({
   Start: {
-    screen: PhoneNumberScreen,
-    // screen: LandingPageScreen,
+    screen: LandingPageScreen,
     navigationOptions: () => ({
       header: null,
     }),
@@ -67,8 +51,8 @@ const LandingPageScreenStack = createStackNavigator({
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
+  LandingPageScreen: LandingPageScreenStack,
   latestAuth: phoneAuthStack, // what I worked while you were getting turnt with Navie LOL
-  // LandingPageScreen: LandingPageScreenStack,
   App: AppStack,
 });
 

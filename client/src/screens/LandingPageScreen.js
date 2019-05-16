@@ -1,18 +1,28 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Video from 'react-native-video';
 
 const LandingPageScreen = props => {
-  // Event Handlers
+  //Event Handlers
   const handleSignUpPress = () => {
-    props.navigation.navigate('phoneNumberEntryRoute');
+    props.navigation.navigate('phone');
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.viewOne}>
+        <Video
+          source={require('../assets/videos/sample1.mp4')}
+          ref={ref => {
+            player = ref;
+          }}
+          repeat={true}
+          style={styles.backgroundVideo}
+          resizeMode={'cover'}
+        />
         <Text style={styles.text}>Connect with the</Text>
         <Text style={styles.text1}>Bhangra Community</Text>
-        <TouchableOpacity onPress={handleSignUpPress} style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleSignUpPress}>
           <Text style={styles.buttonText}>Get started</Text>
         </TouchableOpacity>
       </View>
@@ -71,5 +81,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 21,
     fontWeight: 'bold',
+  },
+  backgroundVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
 });
