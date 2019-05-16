@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Video from 'react-native-video';
+import LinearGradient from 'react-native-linear-gradient';
 
 const LandingPageScreen = props => {
   //Event Handlers
@@ -22,9 +23,15 @@ const LandingPageScreen = props => {
         />
         <Text style={styles.text}>Connect with the</Text>
         <Text style={styles.text1}>Bhangra Community</Text>
-        <TouchableOpacity style={styles.button} onPress={handleSignUpPress}>
-          <Text style={styles.buttonText}>Get started</Text>
-        </TouchableOpacity>
+
+        <LinearGradient
+          colors={['#4c669f', '#3b5998', '#192f6a']}
+          style={styles.linearGradient}
+        >
+          <TouchableOpacity style={styles.button} onPress={handleSignUpPress}>
+            <Text style={styles.buttonText}>Get started</Text>
+          </TouchableOpacity>
+        </LinearGradient>
       </View>
     </View>
   );
@@ -55,14 +62,14 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     fontFamily: 'Helvetica',
-    color: 'black',
+    color: 'white',
     marginTop: '8%',
   },
   text1: {
     fontSize: 28,
     fontWeight: 'bold',
     fontFamily: 'Helvetica',
-    color: 'black',
+    color: 'white',
     marginBottom: '25%',
   },
   button: {
@@ -76,11 +83,26 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 2,
   },
+  // buttonText: {
+  //   color: 'white',
+  //   textAlign: 'center',
+  //   fontSize: 21,
+  //   fontWeight: 'bold',
+  // },
+  linearGradient: {
+    flex: 1,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 5,
+    marginTop: '95%',
+  },
   buttonText: {
-    color: 'white',
+    fontSize: 18,
+    fontFamily: 'Gill Sans',
     textAlign: 'center',
-    fontSize: 21,
-    fontWeight: 'bold',
+    margin: 10,
+    color: '#ffffff',
+    backgroundColor: 'transparent',
   },
   backgroundVideo: {
     position: 'absolute',
