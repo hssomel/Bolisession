@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { Button } from 'react-native-elements';
+
 import Video from 'react-native-video';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -23,15 +25,19 @@ const LandingPageScreen = props => {
         />
         <Text style={styles.text}>Connect with the</Text>
         <Text style={styles.text1}>Bhangra Community</Text>
-
-        <LinearGradient
-          colors={['#4c669f', '#3b5998', '#192f6a']}
-          style={styles.linearGradient}
-        >
-          <TouchableOpacity style={styles.button} onPress={handleSignUpPress}>
-            <Text style={styles.buttonText}>Get started</Text>
-          </TouchableOpacity>
-        </LinearGradient>
+        <Button
+          containerStyle={styles.buttonContainer}
+          buttonStyle={styles.buttonStyle}
+          ViewComponent={LinearGradient} // Don't forget this!
+          linearGradientProps={{
+            colors: ['red', 'orange'],
+            start: { x: 0, y: 0.5 },
+            end: { x: 1, y: 0.5 },
+          }}
+          title="Sign in with phone number"
+          titleStyle={styles.text2}
+          onPress={handleSignUpPress}
+        />
       </View>
     </View>
   );
@@ -51,12 +57,24 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   viewOne: {
-    // justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
     height: '100%',
     width: '100%',
     flex: 1.25,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: '20%',
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: 'center',
+  },
+  buttonStyle: {
+    height: 55,
+    width: '85%',
+    borderRadius: 10,
   },
   text: {
     fontSize: 28,
@@ -72,37 +90,14 @@ const styles = StyleSheet.create({
     color: 'white',
     marginBottom: '25%',
   },
-  button: {
-    width: '80%',
-    backgroundColor: 'orangered',
-    borderRadius: 32,
+  text2: {
+    color: 'white',
     alignItems: 'center',
-    // justifyContent: 'center',
-    marginTop: '90%',
-    paddingVertical: 11,
-    borderColor: 'white',
-    borderWidth: 2,
-  },
-  // buttonText: {
-  //   color: 'white',
-  //   textAlign: 'center',
-  //   fontSize: 21,
-  //   fontWeight: 'bold',
-  // },
-  linearGradient: {
-    flex: 1,
-    paddingLeft: 15,
-    paddingRight: 15,
-    borderRadius: 5,
-    marginTop: '95%',
-  },
-  buttonText: {
+    justifyContent: 'center',
     fontSize: 18,
+    fontWeight: 'bold',
     fontFamily: 'Gill Sans',
-    textAlign: 'center',
-    margin: 10,
-    color: '#ffffff',
-    backgroundColor: 'transparent',
+    fontFamily: 'Helvetica',
   },
   backgroundVideo: {
     position: 'absolute',
