@@ -72,7 +72,7 @@ export default function PhoneConfirmationScreen(props) {
         .confirm(codeInput)
         .then(user => {
           setMessage('Code Confirmed!');
-          props.navigation.navigate('Feed');
+          props.navigation.navigate('Home');
         })
         .catch(error => setMessage(error.message));
     }

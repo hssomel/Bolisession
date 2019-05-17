@@ -3,20 +3,33 @@ import {
   createAppContainer,
   createSwitchNavigator,
   createStackNavigator,
+  createDrawerNavigator,
+  createBottomTabNavigator,
 } from 'react-navigation';
-
+import { StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 // Screens
 import PhoneNumberScreen from './src/screens/PhoneNumberScreen';
 import LandingPageScreen from './src/screens/LandingPageScreen';
-import feedScreen from './src/screens/feedScreen';
+import HomeScreen from './src/screens/HomeScreen';
+import SearchScreen from './src/screens/SearchScreen';
 
 import { Provider } from 'react-redux';
 import store from './src/store/store';
 import PhoneConfirmationScreen from './src/screens/PhoneConfirmationScreen';
 
-const AppStack = createStackNavigator({
-  Feed: {
-    screen: feedScreen,
+const HomeStack = createStackNavigator({
+  Home: {
+    screen: HomeScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
+
+const SearchStack = createStackNavigator({
+  Search: {
+    screen: SearchScreen,
     navigationOptions: () => ({
       header: null,
     }),
@@ -44,9 +57,67 @@ const phoneAuthStack = createStackNavigator({
   },
 });
 
+const DashboardTabNavigator = createBottomTabNavigator(
+  {
+    Home: {
+      screen: HomeStack,
+      navigationOptions: {
+        tabBarLabel: 'Home',
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-home" color={tintColor} size={30} />
+        ),
+      },
+    },
+    Search: {
+      screen: SearchStack,
+      navigationOptions: {
+        tabBarLabel: 'Search',
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-search" color={tintColor} size={30} />
+        ),
+      },
+    },
+  },
+  {
+    navigationOptions: {
+      tabBarVisible: true,
+    },
+    tabBarOptions: {
+      activeTintColor: 'red',
+      inactiveTintColor: 'grey',
+      showLabel: false,
+    },
+  },
+);
+
+const DashboardStackNavigator = createStackNavigator(
+  {
+    DashboardTabNavigator: DashboardTabNavigator,
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: (
+          <Icon
+            name="ios-menu"
+            style={styles.button1}
+            onPress={() => navigation.openDrawer()}
+            color="grey"
+            size={30}
+          />
+        ),
+      };
+    },
+  },
+);
+
+const AppDrawerNavigator = createDrawerNavigator({
+  Dashboard: DashboardStackNavigator,
+});
+
 const AppSwitchNavigator = createSwitchNavigator({
-  latestAuth: phoneAuthStack,
-  App: AppStack,
+  Auth: phoneAuthStack,
+  Dashboard: { screen: AppDrawerNavigator },
 });
 
 const AppContainer = createAppContainer(AppSwitchNavigator);
@@ -56,3 +127,11 @@ export default (App = () => (
     <AppContainer />
   </Provider>
 ));
+
+const styles = StyleSheet.create({
+  button1: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 20,
+  },
+});

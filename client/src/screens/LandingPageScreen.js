@@ -28,7 +28,7 @@ const LandingPageScreen = props => {
         <Button
           containerStyle={styles.buttonContainer}
           buttonStyle={styles.buttonStyle}
-          ViewComponent={LinearGradient} // Don't forget this!
+          ViewComponent={LinearGradient}
           linearGradientProps={{
             colors: ['red', 'orange'],
             start: { x: 0, y: 0.5 },

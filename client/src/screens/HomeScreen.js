@@ -1,13 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import PropTypes from 'prop-types';
-import { signOutUser } from '../actions/authActionDispatchers';
-import { connect } from 'react-redux';
 import { Button } from 'react-native-elements';
 
 import firebase from 'react-native-firebase';
 
-class feedScreen extends React.Component {
+class HomeScreen extends React.Component {
   constructor() {
     super();
   }
@@ -18,7 +15,6 @@ class feedScreen extends React.Component {
 
   signOut = () => {
     firebase.auth().signOut();
-    // this.props.signOutUser();
     this.props.navigation.navigate('phone');
   };
 
@@ -33,21 +29,7 @@ class feedScreen extends React.Component {
   }
 }
 
-// feedScreen.propTypes = {
-//   auth: PropTypes.object.isRequired,
-//   signOutUser: PropTypes.func.isRequired,
-// };
-
-// const mapStateToProps = state => ({
-//   auth: state.auth,
-// });
-
-// export default connect(
-//   mapStateToProps,
-//   { signOutUser },
-// )(feedScreen);
-
-export default feedScreen;
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
