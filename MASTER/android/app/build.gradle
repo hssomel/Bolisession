@@ -145,6 +145,9 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
+    // https://github.com/nitaliano/react-native-mapbox-gl/blob/master/android/install.md
+    implementation project(':mapbox-react-native-mapbox-gl')
+
     /* ----------------------------
     *    REACT NATIVE FIREBASE
     * ---------------------------- */

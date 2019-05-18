@@ -8,6 +8,9 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
+// https://github.com/nitaliano/react-native-mapbox-gl/blob/master/android/install.md
+import com.mapbox.rctmgl.RCTMGLPackage;
+
 import io.invertase.firebase.RNFirebasePackage;
 // optional packages - add/remove as appropriate
 import io.invertase.firebase.admob.RNFirebaseAdMobPackage;
@@ -39,26 +42,16 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-        new MainReactPackage(),
-        new RNFirebasePackage(),
-        // add/remove these packages as appropriate
-        new RNFirebaseAdMobPackage(),
-        new RNFirebaseAnalyticsPackage(),
-        new RNFirebaseAuthPackage(),
-        new RNFirebaseRemoteConfigPackage(),
-        new RNFirebaseCrashlyticsPackage(),
-        new RNFirebaseDatabasePackage(),
-        new RNFirebaseFirestorePackage(),
-        new RNFirebaseFunctionsPackage(),
-        new RNFirebaseInstanceIdPackage(),
-        new RNFirebaseInvitesPackage(),
-        new RNFirebaseLinksPackage(),
-        new RNFirebaseMessagingPackage(),
-        new RNFirebaseNotificationsPackage(),
-        new RNFirebasePerformancePackage(),
-        new RNFirebaseStoragePackage()
-      );
+      return Arrays.<ReactPackage>asList(new MainReactPackage(), new RNFirebasePackage(),
+          // add/remove these packages as appropriate
+          new RNFirebaseAdMobPackage(), new RNFirebaseAnalyticsPackage(), new RNFirebaseAuthPackage(),
+          new RNFirebaseRemoteConfigPackage(), new RNFirebaseCrashlyticsPackage(), new RNFirebaseDatabasePackage(),
+          new RNFirebaseFirestorePackage(), new RNFirebaseFunctionsPackage(), new RNFirebaseInstanceIdPackage(),
+          new RNFirebaseInvitesPackage(), new RNFirebaseLinksPackage(), new RNFirebaseMessagingPackage(),
+          new RNFirebaseNotificationsPackage(), new RNFirebasePerformancePackage(), new RNFirebaseStoragePackage(),
+
+          // https://github.com/nitaliano/react-native-mapbox-gl/blob/master/android/install.md
+          new RCTMGLPackage());
     }
 
     @Override
