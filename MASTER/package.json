@@ -11,8 +11,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "@mapbox/react-native-mapbox-gl": "https://github.com/nitaliano/react-native-mapbox-gl/tarball/master",
     "react": "16.8.3",
-    "react-native": "0.59.3",
+    "react-native": "0.59.8",
     "react-native-firebase": "^5.3.1"
   },
   "devDependencies": {
