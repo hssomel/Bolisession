@@ -61,7 +61,10 @@ app.use('/api/profiles', profilesRoute);
 app.use('/api/posts', postsRoute);
 
 // generate env.js files
-const data = `export const API_BASE_URL = "http://${ip.address()}:${port}";`;
+const data = `
+export const API_BASE_URL = "http://${ip.address()}:${port}"; 
+export const MAPBOX_TOKEN = "${process.env.MAPBOX_TOKEN}"
+`;
 fs.writeFile('../mobile/env.js', data, err => {
   if (err) console.log('Error while writing ../mobile/env.js', err);
   else console.log('Generated ../mobile/env.js');
@@ -70,18 +73,64 @@ fs.writeFile('../client/env.js', data, err => {
   if (err) console.log('Error while writing ../client/env.js', err);
   else console.log('Generated ../client/env.js');
 });
+fs.writeFile('../MASTER/env.js', data, err => {
+  if (err) console.log('Error while writing ../MASTER/env.js', err);
+  else console.log('Generated ../MASTER/env.js');
+});
 
 // generate GoogleService-Info.plist for IOS
-fs.writeFile('../client/ios/GoogleService-Info.plist', process.env.GOOGLE_SERVICE_INFO_PLIST, err => {
-  if (err) console.log('Error while writing ../client/ios/GoogleService-Info.plist', err);
-  else console.log('Generated ../client/ios/GoogleService-Info.plist');
-});
+fs.writeFile(
+  '../client/ios/GoogleService-Info.plist',
+  process.env.GOOGLE_SERVICE_INFO_PLIST,
+  err => {
+    if (err)
+      console.log(
+        'Error while writing ../client/ios/GoogleService-Info.plist',
+        err,
+      );
+    else console.log('Generated ../client/ios/GoogleService-Info.plist');
+  },
+);
+// generate GoogleService-Info.plist for MASTER
+fs.writeFile(
+  '../MASTER/ios/GoogleService-Info.plist',
+  process.env.GOOGLE_SERVICE_INFO_PLIST,
+  err => {
+    if (err)
+      console.log(
+        'Error while writing ../MASTER/ios/GoogleService-Info.plist',
+        err,
+      );
+    else console.log('Generated ../MASTER/ios/GoogleService-Info.plist');
+  },
+);
 
-// generate google-services.json
-fs.writeFile('../client/android/app/google-services.json', process.env.GOOGLE_SERVICES_JSON, err => {
-  if (err) console.log('Error while writing ../client/android/app/google-services.json', err);
-  else console.log('Generated ../client/android/app/google-services.json');
-});
+// generate google-services.json for android
+fs.writeFile(
+  '../client/android/app/google-services.json',
+  process.env.GOOGLE_SERVICES_JSON,
+  err => {
+    if (err)
+      console.log(
+        'Error while writing ../client/android/app/google-services.json',
+        err,
+      );
+    else console.log('Generated ../client/android/app/google-services.json');
+  },
+);
+// generate google-services.json for android mapbox-version
+fs.writeFile(
+  '../MASTER/android/app/google-services.json',
+  process.env.GOOGLE_SERVICES_JSON,
+  err => {
+    if (err)
+      console.log(
+        'Error while writing ../MASTER/android/app/google-services.json',
+        err,
+      );
+    else console.log('Generated ../MASTER/android/app/google-services.json');
+  },
+);
 
 // Initialize socket.io
 require('./sockets/socketServer')(server);
