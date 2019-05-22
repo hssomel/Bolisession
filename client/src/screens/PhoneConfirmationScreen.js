@@ -3,11 +3,8 @@ import { StyleSheet, SafeAreaView, Dimensions } from 'react-native';
 import { Text, Button } from 'react-native-elements';
 // Components
 import PhoneNumberInput from '../components/PhoneNumberInput';
-import CountrySelector from '../components/CountrySelector';
-
 // Assets & Data
 import flagCollection from '../assets/flags/index';
-import countryData from '../assets/countryData';
 // Firebase
 import firebase from 'react-native-firebase';
 
@@ -72,7 +69,7 @@ export default function PhoneConfirmationScreen(props) {
         .confirm(codeInput)
         .then(user => {
           setMessage('Code Confirmed!');
-          props.navigation.navigate('Home');
+          props.navigation.navigate('Create');
         })
         .catch(error => setMessage(error.message));
     }

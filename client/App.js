@@ -17,6 +17,16 @@ import SearchScreen from './src/screens/SearchScreen';
 import { Provider } from 'react-redux';
 import store from './src/store/store';
 import PhoneConfirmationScreen from './src/screens/PhoneConfirmationScreen';
+import CreateAccountScreen from './src/screens/CreateAccountScreen';
+
+const CreateAccountStack = createStackNavigator({
+  Create: {
+    screen: CreateAccountScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
 
 const HomeStack = createStackNavigator({
   Home: {
@@ -116,7 +126,9 @@ const AppDrawerNavigator = createDrawerNavigator({
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
+  CreateAccount: CreateAccountStack,
   Auth: phoneAuthStack,
+  // CreateAccount: CreateAccountStack,
   Dashboard: { screen: AppDrawerNavigator },
 });
 

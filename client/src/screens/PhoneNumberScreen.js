@@ -54,7 +54,6 @@ export default function PhoneNumberScreen(props) {
   });
   const [popupVisibility, setPopupVisibility] = useState(false);
   const [flag, setFlag] = useState(flagCollection[country.alpha2Code]);
-  const [user, setUser] = useState(null);
   const [message, setMessage] = useState(''); // TO DO integrate into error
   const [confirmResult, setConfirmResult] = useState(null);
 
