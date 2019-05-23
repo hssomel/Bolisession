@@ -16,15 +16,17 @@ export default function CreateAccountScreen(props) {
   // Initial State
   const [textInputStyle, setTextInputStyle] = useState('50%');
   const [currentTeam, setCurrentTeam] = useState('');
-  const [focusOn, setFocusOn] = useState(false);
+  const [username, setUserName] = useState('');
 
   // Event Handlers
   const handleOnFocus = () => {
     setTextInputStyle('20%');
-    setFocusOn(true);
   };
   const handleOnScroll = () => setTextInputStyle('50%');
   const handleOnBlur = () => setTextInputStyle('50%');
+  const handlePress = () => {
+    props.navigation.navigate('ProfilePhoto');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,6 +50,7 @@ export default function CreateAccountScreen(props) {
             ...styles.textInput,
             marginTop: textInputStyle,
           }}
+          onChangeText={input => setUserName(input)}
         />
         <View style={styles.container2}>
           <Picker
@@ -64,8 +67,9 @@ export default function CreateAccountScreen(props) {
             />
           </Picker>
         </View>
-        {focusOn && (
+        {username.length > 5 && (
           <Button
+            onPress={handlePress}
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.buttonStyle}
             ViewComponent={LinearGradient}

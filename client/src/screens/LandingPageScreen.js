@@ -97,7 +97,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'Gill Sans',
-    fontFamily: 'Helvetica',
   },
   backgroundVideo: {
     position: 'absolute',

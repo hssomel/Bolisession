@@ -18,8 +18,15 @@ import { Provider } from 'react-redux';
 import store from './src/store/store';
 import PhoneConfirmationScreen from './src/screens/PhoneConfirmationScreen';
 import CreateAccountScreen from './src/screens/CreateAccountScreen';
+import ProfilePhotoScreen from './src/screens/ProfilePhotoScreen';
 
 const CreateAccountStack = createStackNavigator({
+  ProfilePhoto: {
+    screen: ProfilePhotoScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
   Create: {
     screen: CreateAccountScreen,
     navigationOptions: () => ({
