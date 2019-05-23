@@ -8,7 +8,6 @@ import {
   Image,
   Text,
   ScrollView,
-  View,
 } from 'react-native';
 
 export default function CreateAccountScreen(props) {
@@ -21,6 +20,7 @@ export default function CreateAccountScreen(props) {
     // paddingBottom: '-1%',
     '50%',
   );
+  const [currentTeam, setCurrentTeam] = useState('');
 
   // Event Handlers
   const handleOnFocus = () => setTextInputStyle('20%');
@@ -41,12 +41,12 @@ export default function CreateAccountScreen(props) {
         />
         <Text style={styles.text}>Create your account</Text>
         <TextInput
-          placeholder={'username'}
+          placeholder={'Username'}
           onFocus={handleOnFocus}
           onScroll={handleOnScroll}
           onBlur={handleOnBlur}
           style={{
-            borderBottomWidth: 2,
+            borderBottomWidth: 2.2,
             borderBottomColor: 'red',
             fontSize: 20,
             width: '80%',
@@ -54,6 +54,15 @@ export default function CreateAccountScreen(props) {
             marginTop: textInputStyle,
           }}
         />
+        <Picker
+          selectedValue={currentTeam}
+          style={styles.picker}
+          onValueChange={itemValue => setCurrentTeam(itemValue)}
+        >
+          <Picker.Item label="Free Agent" value="Free Agent" />
+          <Picker.Item label="Bhangra Empire" value="Bhangra Empire" />
+          <Picker.Item label="UCR Bhangra" value="UCR Bhangra" />
+        </Picker>
       </ScrollView>
     </SafeAreaView>
   );
@@ -88,11 +97,16 @@ const styles = StyleSheet.create({
     color: 'black',
     marginTop: '8%',
   },
-  textInput: {
-    borderBottomWidth: 2,
-    borderBottomColor: 'red',
-    fontSize: 20,
-    width: '80%',
-    paddingBottom: '-1%',
+  //   textInput: {
+  //     borderBottomWidth: 2,
+  //     borderBottomColor: 'red',
+  //     fontSize: 20,
+  //     width: '80%',
+  //     paddingBottom: '-1%',
+  //   },
+  picker: {
+    width: '85%',
+    height: 60,
+    marginTop: '12%',
   },
 });
