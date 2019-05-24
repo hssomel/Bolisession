@@ -77,8 +77,16 @@ fs.writeFile('../MASTER/env.js', data, err => {
   if (err) console.log('Error while writing ../MASTER/env.js', err);
   else console.log('Generated ../MASTER/env.js');
 });
+fs.writeFile('../gurkamal-experimental-version/env.js', data, err => {
+  if (err)
+    console.log(
+      'Error while writing ../gurkamal-experimental-version/env.js',
+      err,
+    );
+  else console.log('Generated ../gurkamal-experimental-version/env.js');
+});
 
-// generate GoogleService-Info.plist for IOS
+// generate GoogleService-Info.plist for client
 fs.writeFile(
   '../client/ios/GoogleService-Info.plist',
   process.env.GOOGLE_SERVICE_INFO_PLIST,
@@ -104,8 +112,24 @@ fs.writeFile(
     else console.log('Generated ../MASTER/ios/GoogleService-Info.plist');
   },
 );
+// generate GoogleService-Info.plist for gurkamal-experimental-version
+fs.writeFile(
+  '../gurkamal-experimental-version/ios/GoogleService-Info.plist',
+  process.env.GOOGLE_SERVICE_INFO_PLIST,
+  err => {
+    if (err)
+      console.log(
+        'Error while writing ../gurkamal-experimental-version/ios/GoogleService-Info.plist',
+        err,
+      );
+    else
+      console.log(
+        'Generated ../gurkamal-experimental-version/ios/GoogleService-Info.plist',
+      );
+  },
+);
 
-// generate google-services.json for android
+// generate google-services.json for client
 fs.writeFile(
   '../client/android/app/google-services.json',
   process.env.GOOGLE_SERVICES_JSON,
@@ -118,7 +142,7 @@ fs.writeFile(
     else console.log('Generated ../client/android/app/google-services.json');
   },
 );
-// generate google-services.json for android mapbox-version
+// generate google-services.json for android MASTER
 fs.writeFile(
   '../MASTER/android/app/google-services.json',
   process.env.GOOGLE_SERVICES_JSON,
@@ -129,6 +153,22 @@ fs.writeFile(
         err,
       );
     else console.log('Generated ../MASTER/android/app/google-services.json');
+  },
+);
+// generate google-services.json for android gurkamal-experimental-version
+fs.writeFile(
+  '../gurkamal-experimental-version/android/app/google-services.json',
+  process.env.GOOGLE_SERVICES_JSON,
+  err => {
+    if (err)
+      console.log(
+        'Error while writing ../gurkamal-experimental-version/android/app/google-services.json',
+        err,
+      );
+    else
+      console.log(
+        'Generated ../gurkamal-experimental-version/android/app/google-services.json',
+      );
   },
 );
 
