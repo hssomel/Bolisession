@@ -56,10 +56,9 @@ target 'bolisession' do
   pod 'Fabric', '~> 1.9.0'
   pod 'Crashlytics', '~> 3.12.0'
 
-
-
-
-
+  
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+  
   # Work around for folly error (https://github.com/facebook/react-native/issues/24192)
   post_install do |installer|
     installer.pods_project.targets.each do |target|
