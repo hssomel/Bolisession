@@ -13,6 +13,7 @@ import PhoneNumberScreen from './src/screens/PhoneNumberScreen';
 import LandingPageScreen from './src/screens/LandingPageScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import SearchScreen from './src/screens/SearchScreen';
+import UserBioScreen from './src/screens/UserBioScreen';
 
 import { Provider } from 'react-redux';
 import store from './src/store/store';
@@ -21,6 +22,12 @@ import CreateAccountScreen from './src/screens/CreateAccountScreen';
 import ProfilePhotoScreen from './src/screens/ProfilePhotoScreen';
 
 const CreateAccountStack = createStackNavigator({
+  Bio: {
+    screen: UserBioScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
   ProfilePhoto: {
     screen: ProfilePhotoScreen,
     navigationOptions: () => ({
