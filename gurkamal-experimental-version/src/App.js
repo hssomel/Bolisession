@@ -5,8 +5,9 @@ import HomeScreen from './screens/HomeScreen';
 import MapScreen from './screens/MapScreen';
 
 const TabNavigator = createBottomTabNavigator({
-  Home: HomeScreen,
   Map: MapScreen,
+  Home: HomeScreen,
+  MapScreenCopy: MapScreen,
 });
 
 export default createAppContainer(TabNavigator);
