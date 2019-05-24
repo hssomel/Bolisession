@@ -57,7 +57,7 @@ export default function ProfilePhotoScreen(props) {
       </View>
       <Text style={styles.text}>Add Profile Picture</Text>
       <Text style={styles.text1}>
-        Upload a selfie so your friends know it's you.
+        6 Upload a selfie so your friends know it's you.
       </Text>
       <Button
         onPress={handlePhotoUpload}

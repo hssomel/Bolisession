@@ -12,25 +12,25 @@ import { Button } from 'react-native-elements';
 export default function ProfilePhotoScreen(props) {
   // Initial State
   const [bio, setBio] = useState('');
+  const x = 120 - bio.length;
   // Event Handlers
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container1}>
-        <Image
-          source={require('../assets/images/bhangra.png')}
-          style={styles.image}
-        />
-      </View>
-      <Text style={styles.text}>Tell us about yourself</Text>
-      <Text style={styles.text1}>
-        What makes you unique? Write a couple lines for your bio.
-      </Text>
+      <Image
+        source={require('../assets/images/bhangra.png')}
+        style={styles.image}
+      />
+
+      <Text style={styles.text}>Describe yourself</Text>
+      <Text style={styles.text1}>What makes you unique?</Text>
+      <Text style={styles.text2}>Write a couple lines for your bio.</Text>
       <TextInput
         placeholder="Your bio"
         style={styles.textInput}
         onChangeText={input => setBio(input)}
       />
+      <Text style={styles.text3}>{x}</Text>
     </SafeAreaView>
   );
 }
@@ -39,19 +39,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     backgroundColor: 'white',
     height: '100%',
     width: '100%',
     flex: 1,
-    marginLeft: '4%',
-  },
-  container1: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: '4%',
   },
   text: {
     fontSize: 32,
@@ -66,17 +58,30 @@ const styles = StyleSheet.create({
     color: 'grey',
     marginTop: '3%',
   },
+  text2: {
+    fontSize: 16,
+    fontFamily: 'Gill Sans',
+    color: 'grey',
+    marginTop: '1%',
+  },
+  text3: {
+    fontSize: 17,
+    fontFamily: 'Gill Sans',
+    color: 'grey',
+    marginTop: '1%',
+    marginLeft: '75%',
+  },
   textInput: {
     borderBottomWidth: 2,
     borderBottomColor: 'red',
     fontSize: 20,
     width: '90%',
     paddingBottom: '-1%',
-    marginTop: '4%',
+    marginTop: '6%',
   },
   image: {
     height: 60,
     width: 60,
-    marginTop: '1%',
+    marginTop: '2%',
   },
 });
