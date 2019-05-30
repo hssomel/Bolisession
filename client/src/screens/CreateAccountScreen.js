@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   StyleSheet,
-  Picker,
   SafeAreaView,
   TextInput,
   Image,
@@ -9,8 +8,24 @@ import {
   ScrollView,
   View,
 } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 import { Button } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
+
+const sports = [
+  {
+    label: 'Football',
+    value: 'football',
+  },
+  {
+    label: 'Baseball',
+    value: 'baseball',
+  },
+  {
+    label: 'Hockey',
+    value: 'hockey',
+  },
+];
 
 export default function CreateAccountScreen(props) {
   // Initial State
@@ -53,21 +68,20 @@ export default function CreateAccountScreen(props) {
           onChangeText={input => setUserName(input)}
         />
         <View style={styles.container2}>
-          <Picker
-            selectedValue={currentTeam}
-            style={styles.picker}
-            onValueChange={itemValue => setCurrentTeam(itemValue)}
-          >
-            <Picker.Item label="Free Agent" value="Free Agent" />
-            <Picker.Item label="Bhangra Empire" value="Bhangra Empire" />
-            <Picker.Item label="UCR Bhangra" value="UCR Bhangra" />
-            <Picker.Item
-              label="Apni Sardari Apni Pechaan"
-              value="Apni Sardari Apni Pechaan"
-            />
-          </Picker>
+          <RNPickerSelect
+            placeholder={{
+              label: 'Select a team...',
+              value: null,
+              color: 'grey',
+            }}
+            items={sports}
+            onValueChange={value => setCurrentTeam(value)}
+            value={currentTeam}
+            useNativeAndroidPickerStyle={false}
+            style={pickerSelectStyles}
+          />
         </View>
-        {username.length > 5 && (
+        {username.length > 2 && (
           <Button
             onPress={handlePress}
             containerStyle={styles.buttonContainer}
@@ -106,9 +120,11 @@ const styles = StyleSheet.create({
   },
   container2: {
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-end',
     backgroundColor: 'white',
-    height: '50%',
+    marginTop: '7%',
+    height: '100%',
     width: '83%',
     flex: 1,
     borderBottomColor: 'red',
@@ -133,14 +149,6 @@ const styles = StyleSheet.create({
     width: '83%',
     paddingBottom: '-1%',
   },
-  picker: {
-    width: '105%',
-    height: 60,
-    marginTop: '10%',
-    marginBottom: '-3%',
-    fontSize: 8,
-    color: 'grey',
-  },
   buttonContainer: {
     marginTop: '15%',
     alignItems: 'center',
@@ -151,5 +159,29 @@ const styles = StyleSheet.create({
     height: 50,
     width: '85%',
     borderRadius: 25,
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  // inputIOS: {
+  //   fontSize: 16,
+  //   paddingVertical: 12,
+  //   paddingHorizontal: 10,
+  //   borderWidth: 1,
+  //   borderColor: 'gray',
+  //   borderRadius: 4,
+  //   color: 'black',
+  //   paddingRight: 30, // to ensure the text is never behind the icon
+  // },
+
+  inputAndroid: {
+    marginTop: '3%',
+    height: '100%',
+    paddingVertical: 3,
+    justifyContent: 'flex-end',
+    paddingRight: '35%',
+    fontSize: 20,
+    color: 'black',
+    height: '100%',
   },
 });

@@ -34,6 +34,10 @@ export default function ProfilePhotoScreen(props) {
     });
   };
 
+  const handlePress = () => {
+    props.navigation.navigate('Home');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container1}>
@@ -57,7 +61,7 @@ export default function ProfilePhotoScreen(props) {
       </View>
       <Text style={styles.text}>Add Profile Picture</Text>
       <Text style={styles.text1}>
-        6 Upload a selfie so your friends know it's you.
+        Upload a selfie so your friends know it's you.
       </Text>
       <Button
         onPress={handlePhotoUpload}
@@ -71,6 +75,11 @@ export default function ProfilePhotoScreen(props) {
         }}
         title="SET PROFILE PHOTO"
       />
+      {profilePhoto && (
+        <Text style={styles.text2} onPress={handlePress}>
+          CONTINUE
+        </Text>
+      )}
     </SafeAreaView>
   );
 }
@@ -104,7 +113,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Gill Sans',
     color: 'black',
-    marginTop: '3%',
+    marginTop: '4%',
+  },
+  text2: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: 'Gill Sans',
+    color: 'orangered',
+    marginTop: '1%',
   },
   buttonContainer: {
     marginTop: '15%',
