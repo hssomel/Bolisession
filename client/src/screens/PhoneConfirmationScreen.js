@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, Dimensions } from 'react-native';
+import { StyleSheet, SafeAreaView, Dimensions, TextInput } from 'react-native';
 import { Text, Button } from 'react-native-elements';
-// Components
-import PhoneNumberInput from '../components/PhoneNumberInput';
-// Assets & Data
-import flagCollection from '../assets/flags/index';
-// Firebase
 import firebase from 'react-native-firebase';
 
 // Style
@@ -17,23 +12,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    marginHorizontal: 20,
   },
   titleText: {
     marginTop: 50,
-    fontSize: 50,
+    fontSize: 34,
+    color: 'black',
   },
-  phoneNumberInput: {
+  textInput: {
     marginTop: 50,
     fontSize: pillFontSize,
+    flex: 0.1,
+    borderBottomWidth: 2,
+    borderBottomColor: 'red',
+    width: '100%',
+    paddingBottom: 0,
   },
   buttonContainer: {
-    marginTop: 50,
+    marginTop: 40,
   },
   button: {
     borderRadius: 50,
     height: pillHeight,
     width: pillWidth,
+    backgroundColor: 'orangered',
   },
   buttonTitle: {
     fontSize: pillFontSize,
@@ -49,8 +52,7 @@ export default function PhoneConfirmationScreen(props) {
     alpha2Code: 'us',
     callingCode: 1,
   });
-  const [popupVisibility, setPopupVisibility] = useState(false);
-  const [flag, setFlag] = useState(flagCollection[country.alpha2Code]);
+
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState(''); // TO DO integrate into error
   const [confirmResult, setConfirmResult] = useState(
@@ -58,7 +60,7 @@ export default function PhoneConfirmationScreen(props) {
   );
 
   // Event Handlers
-  const handleFlagTouch = () => setPopupVisibility(true);
+
   const handleSubmitButtonPress = () => {
     confirmCode();
   };
@@ -77,22 +79,19 @@ export default function PhoneConfirmationScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.titleText}>Enter verification</Text>
-      <PhoneNumberInput
-        style={styles.phoneNumberInput}
-        handleFlagTouch={handleFlagTouch}
-        callingCode={country.callingCode}
-        flag={flag}
-        phoneNumber={codeInput}
-        setPhoneNumber={setCodeInput}
-        message={message}
+      <Text style={styles.titleText}>My code is</Text>
+      <TextInput
+        placeholder="Verification code"
+        style={styles.textInput}
+        onChangeText={input => setCodeInput(input)}
       />
       <Button
         buttonStyle={styles.button}
         containerStyle={styles.buttonContainer}
-        title="Verify code"
+        title="Verify Code"
         onPress={handleSubmitButtonPress}
       />
+      <Text style={{ marginTop: 10, fontSize: 12 }}>{message}</Text>
     </SafeAreaView>
   );
 }

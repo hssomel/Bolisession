@@ -8,36 +8,36 @@ import {
   Dimensions,
 } from 'react-native';
 import { Text, Image } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 // To make this safe for all devices
 const { width } = Dimensions.get('window');
 const componentHeight = 50;
 const componentWidth = width * 0.9;
-const inputFontSize = componentWidth / 20;
+const inputFontSize = componentWidth / 18;
 const leftViewPercent = 40;
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     height: componentHeight,
     width: componentWidth,
-    borderRadius: componentHeight,
-    borderColor: 'lightgrey',
-    borderWidth: 1,
+    flex: 1,
   },
-  leftView: {
-    height: '100%',
-    width: (componentWidth * leftViewPercent) / 100,
-    flexDirection: 'row',
-    alignItems: 'center',
+  viewOne: {
+    flex: 0.3,
+    marginLeft: 5,
+    borderBottomColor: 'orangered',
+    borderBottomWidth: 2,
   },
   touchableOpacity: {
-    height: '100%',
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingLeft: 2,
+    height: 30,
   },
   flagImage: {
     height: inputFontSize, // max height
@@ -45,21 +45,21 @@ const styles = StyleSheet.create({
   },
   callingCode: {
     fontSize: inputFontSize,
+    marginLeft: 6,
   },
   rightView: {
-    height: '100%',
-    width: (componentWidth * (100 - leftViewPercent)) / 100,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginRight: componentHeight / 2,
+    marginLeft: '5%',
+    flex: 0.61,
+    borderBottomColor: 'orangered',
+    borderBottomWidth: 2,
   },
   textInput: {
-    height: '100%',
+    height: 35,
+    paddingVertical: 0,
     width: '100%',
     fontSize: inputFontSize,
   },
-  errorMessage: { marginTop: 12, fontSize: 12, color: 'red' },
+  // errorMessage: { marginTop: 12, fontSize: 12, color: 'red' },
 });
 
 export default function PhoneNumberInput(props) {
@@ -70,12 +70,11 @@ export default function PhoneNumberInput(props) {
     flag,
     setPhoneNumber,
     style,
-    message,
   } = props;
   return (
     <>
       <View style={{ ...styles.container, ...style }}>
-        <View style={styles.leftView}>
+        <View style={styles.viewOne}>
           <TouchableOpacity
             style={styles.touchableOpacity}
             onPress={handleFlagTouch}
@@ -87,11 +86,16 @@ export default function PhoneNumberInput(props) {
               style={styles.flagImage}
             />
             <Text style={styles.callingCode}> +{callingCode}</Text>
+            <Icon
+              name="md-arrow-dropdown"
+              size={25}
+              style={{ marginLeft: 20, marginTop: '1%' }}
+            />
           </TouchableOpacity>
         </View>
         <View style={styles.rightView}>
           <TextInput
-            placeholder="Enter Phone Number"
+            placeholder="Phone Number"
             style={styles.textInput}
             onChangeText={input => setPhoneNumber(input)}
             value={phoneNumber}
@@ -99,7 +103,6 @@ export default function PhoneNumberInput(props) {
           />
         </View>
       </View>
-      <Text style={styles.errorMessage}>{message}</Text>
     </>
   );
 }

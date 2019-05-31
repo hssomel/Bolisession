@@ -14,32 +14,42 @@ import firebase from 'react-native-firebase';
 // Style
 const { width } = Dimensions.get('window');
 const pillHeight = 50;
-const pillWidth = width * 0.9;
+const pillWidth = width * 0.88;
 const pillFontSize = pillWidth / 20;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    marginHorizontal: 20,
   },
   titleText: {
     marginTop: 50,
-    fontSize: 50,
+    fontSize: 36,
+    color: 'black',
   },
   phoneNumberInput: {
-    marginTop: 50,
+    marginTop: 40,
     fontSize: pillFontSize,
+    // backgroundColor: '#F1EF55',
+    flex: 0.1,
   },
   buttonContainer: {
-    marginTop: 50,
+    marginTop: 40,
   },
   button: {
     borderRadius: 50,
     height: pillHeight,
     width: pillWidth,
+    backgroundColor: 'orangered',
   },
   buttonTitle: {
     fontSize: pillFontSize,
+  },
+  text: {
+    marginTop: 20,
+    fontSize: 12,
+    color: 'grey',
   },
 });
 
@@ -82,7 +92,7 @@ export default function PhoneNumberScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.titleText}>Welcome</Text>
+      <Text style={styles.titleText}>My number is</Text>
       <PhoneNumberInput
         style={styles.phoneNumberInput}
         handleFlagTouch={handleFlagTouch}
@@ -90,7 +100,6 @@ export default function PhoneNumberScreen(props) {
         flag={flag}
         phoneNumber={phoneNumber}
         setPhoneNumber={setPhoneNumber}
-        message={message}
       />
       <CountrySelector
         setFlag={setFlag}
@@ -100,12 +109,18 @@ export default function PhoneNumberScreen(props) {
         setPopupVisibility={setPopupVisibility}
         flagCollection={flagCollection}
       />
+      <Text style={styles.text}>
+        When you tap Verify SMS, BholiSession will send a text with a
+        verification code. Message and data rates may apply. The verified phone
+        number can be used to login.
+      </Text>
       <Button
         buttonStyle={styles.button}
         containerStyle={styles.buttonContainer}
         title="Get SMS Code"
         onPress={handleSubmitButtonPress}
       />
+      <Text style={{ marginTop: 10, fontSize: 12 }}>{message}</Text>
     </SafeAreaView>
   );
 }
