@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, Dimensions, TextInput } from 'react-native';
+import {
+  StyleSheet,
+  SafeAreaView,
+  Dimensions,
+  TextInput,
+  Image,
+  View,
+} from 'react-native';
 import { Text, Button } from 'react-native-elements';
+import LinearGradient from 'react-native-linear-gradient';
 import firebase from 'react-native-firebase';
 
 // Style
@@ -14,14 +22,32 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     marginHorizontal: 20,
+    flexDirection: 'column',
+  },
+  container1: {
+    flex: 0.1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    width: '100%',
   },
   titleText: {
-    marginTop: 50,
-    fontSize: 34,
-    color: 'black',
+    marginTop: 20,
+    fontSize: 36,
+    color: '#606060',
+  },
+  titleText1: {
+    marginTop: 8,
+    fontSize: 16,
+    color: '#606060',
+  },
+  text1: {
+    marginTop: 10,
+    fontSize: 14,
+    color: '#606060',
   },
   textInput: {
-    marginTop: 50,
+    marginTop: 30,
     fontSize: pillFontSize,
     flex: 0.1,
     borderBottomWidth: 2,
@@ -40,6 +66,12 @@ const styles = StyleSheet.create({
   },
   buttonTitle: {
     fontSize: pillFontSize,
+  },
+  image: {
+    height: 60,
+    width: 60,
+    marginTop: '2.5%',
+    alignItems: 'center',
   },
 });
 
@@ -79,17 +111,36 @@ export default function PhoneConfirmationScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.container1}>
+        <Image
+          source={require('../assets/images/dhol.png')}
+          style={styles.image}
+        />
+      </View>
       <Text style={styles.titleText}>My code is</Text>
+      <Text style={styles.titleText1}>
+        Enter it below to verify +1 714-553-5985
+      </Text>
       <TextInput
-        placeholder="Verification code"
+        placeholder="Enter verification code"
         style={styles.textInput}
         onChangeText={input => setCodeInput(input)}
       />
+      <Text style={{ marginTop: 7, fontSize: 14, color: 'orangered' }}>
+        Didn't receive SMS?
+      </Text>
       <Button
-        buttonStyle={styles.button}
-        containerStyle={styles.buttonContainer}
-        title="Verify Code"
         onPress={handleSubmitButtonPress}
+        containerStyle={styles.buttonContainer}
+        buttonStyle={styles.button}
+        ViewComponent={LinearGradient}
+        linearGradientProps={{
+          colors: ['red', 'orange'],
+          start: { x: 0, y: 0.5 },
+          end: { x: 1, y: 0.5 },
+        }}
+        title="Verify Code"
+        fontSize={38}
       />
       <Text style={{ marginTop: 10, fontSize: 12 }}>{message}</Text>
     </SafeAreaView>

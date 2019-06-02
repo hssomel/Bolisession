@@ -10,6 +10,7 @@ import flagCollection from '../assets/flags/index';
 import countryData from '../assets/countryData';
 // Firebase
 import firebase from 'react-native-firebase';
+import LinearGradient from 'react-native-linear-gradient';
 
 // Style
 const { width } = Dimensions.get('window');
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
   titleText: {
     marginTop: 50,
     fontSize: 36,
-    color: 'black',
+    color: '#606060',
   },
   phoneNumberInput: {
     marginTop: 40,
@@ -115,10 +116,17 @@ export default function PhoneNumberScreen(props) {
         number can be used to login.
       </Text>
       <Button
-        buttonStyle={styles.button}
-        containerStyle={styles.buttonContainer}
-        title="Get SMS Code"
         onPress={handleSubmitButtonPress}
+        containerStyle={styles.buttonContainer}
+        buttonStyle={styles.button}
+        ViewComponent={LinearGradient}
+        linearGradientProps={{
+          colors: ['red', 'orange'],
+          start: { x: 0, y: 0.5 },
+          end: { x: 1, y: 0.5 },
+        }}
+        title="Get SMS Code"
+        fontSize={38}
       />
       <Text style={{ marginTop: 10, fontSize: 12 }}>{message}</Text>
     </SafeAreaView>

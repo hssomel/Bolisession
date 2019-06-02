@@ -54,13 +54,16 @@ const SearchStack = createStackNavigator({
   },
 });
 
-const phoneAuthStack = createStackNavigator({
+const LandingPageStack = createStackNavigator({
   Start: {
     screen: LandingPageScreen,
     navigationOptions: () => ({
       header: null,
     }),
   },
+});
+
+const phoneAuthStack = createStackNavigator({
   phone: {
     screen: PhoneNumberScreen,
     navigationOptions: () => ({
@@ -135,6 +138,7 @@ const AppDrawerNavigator = createDrawerNavigator({
 
 const AppSwitchNavigator = createSwitchNavigator({
   Auth: phoneAuthStack,
+  Landing: LandingPageStack,
   CreateAccount: CreateAccountStack,
   Dashboard: { screen: AppDrawerNavigator },
 });

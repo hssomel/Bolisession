@@ -52,7 +52,7 @@ export default function CreateAccountScreen(props) {
         }}
       >
         <Image
-          source={require('../assets/images/bhangra.png')}
+          source={require('../assets/images/dhol.png')}
           style={styles.image}
         />
         <Text style={styles.text}>Create your account</Text>
