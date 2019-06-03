@@ -1,0 +1,3 @@
+rootProject.name = 'boliSession2'
+
+include ':app'
