@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import { Avatar } from 'react-native-elements';
+import ImagePicker from 'react-native-image-crop-picker';
 
 export default function ProfilePhotoScreen(props) {
   // Initial State
