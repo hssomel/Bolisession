@@ -11,27 +11,51 @@ export default function ProfilePhotoScreen(props) {
   const [profilePhoto, setProfilePhoto] = useState(null);
 
   // Event Handlers
-  const handlePhotoUpload = () => {
-    const options = {
-      noData: true,
-    };
-    ImagePicker.showImagePicker(options, response => {
-      console.log('Response = ', response);
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-        ImagePicker.launchImageLibrary(options, response => {
-          if (response.uri) {
-            setProfilePhoto(response);
-          }
-        });
-      } else {
-        const source = { uri: response.uri };
-        setProfilePhoto(source);
-      }
+  // const handlePhotoUpload = () => {
+  //   const options = {
+  //     noData: true,
+  //   };
+  //   ImagePicker.showImagePicker(options, response => {
+  //     console.log('Response = ', response);
+  //     if (response.didCancel) {
+  //       console.log('User cancelled image picker');
+  //     } else if (response.error) {
+  //       console.log('ImagePicker Error: ', response.error);
+  //     } else if (response.customButton) {
+  //       console.log('User tapped custom button: ', response.customButton);
+  //       ImagePicker.launchImageLibrary(options, response => {
+  //         if (response.uri) {
+  //           setProfilePhoto(response);
+  //         }
+  //       });
+  //     } else {
+  //       const source = { uri: response.uri };
+  //       setProfilePhoto(source);
+  //     }
+  //   });
+  // };
+
+  const handlePhotoUpload1 = () => {
+    ImagePicker.openPicker({
+      width: 400,
+      height: 400,
+      cropping: true,
+      cropperCircleOverlay: true,
+    }).then(image => {
+      console.log(image);
+      setProfilePhoto(image);
+    });
+  };
+
+  const handlePhotoUpload2 = () => {
+    ImagePicker.openCamera({
+      width: 400,
+      height: 400,
+      cropping: true,
+      cropperCircleOverlay: true,
+    }).then(image => {
+      console.log(image);
+      setProfilePhoto(image);
     });
   };
 
@@ -55,7 +79,7 @@ export default function ProfilePhotoScreen(props) {
             rounded
             size={150}
             source={{
-              uri: profilePhoto.uri,
+              uri: profilePhoto.path,
             }}
           />
         )}
@@ -65,7 +89,7 @@ export default function ProfilePhotoScreen(props) {
         Upload a selfie so your friends know it's you.
       </Text>
       <Button
-        onPress={handlePhotoUpload}
+        onPress={handlePhotoUpload2}
         containerStyle={styles.buttonContainer}
         buttonStyle={styles.buttonStyle}
         ViewComponent={LinearGradient}
