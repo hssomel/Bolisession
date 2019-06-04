@@ -32,12 +32,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   titleText: {
-    marginTop: 20,
+    marginTop: 50,
     fontSize: 36,
     color: '#606060',
   },
   titleText1: {
-    marginTop: 8,
+    marginTop: 10,
     fontSize: 16,
     color: '#606060',
   },
@@ -111,12 +111,12 @@ export default function PhoneConfirmationScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container1}>
+      {/* <View style={styles.container1}>
         <Image
           source={require('../assets/images/dhol.png')}
           style={styles.image}
         />
-      </View>
+      </View> */}
       <Text style={styles.titleText}>My code is</Text>
       <Text style={styles.titleText1}>
         Enter it below to verify +1 714-553-5985

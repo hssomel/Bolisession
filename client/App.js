@@ -22,12 +22,12 @@ import CreateAccountScreen from './src/screens/CreateAccountScreen';
 import ProfilePhotoScreen from './src/screens/ProfilePhotoScreen';
 
 const CreateAccountStack = createStackNavigator({
-  // Create: {
-  //   screen: CreateAccountScreen,
-  //   navigationOptions: () => ({
-  //     header: null,
-  //   }),
-  // },
+  Create: {
+    screen: CreateAccountScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
   ProfilePhoto: {
     screen: ProfilePhotoScreen,
     navigationOptions: () => ({
@@ -137,9 +137,9 @@ const AppDrawerNavigator = createDrawerNavigator({
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
-  CreateAccount: CreateAccountStack,
   Auth: phoneAuthStack,
   Landing: LandingPageStack,
+  CreateAccount: CreateAccountStack,
   Dashboard: { screen: AppDrawerNavigator },
 });
 

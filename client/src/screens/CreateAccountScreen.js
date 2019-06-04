@@ -11,6 +11,7 @@ import {
 import RNPickerSelect from 'react-native-picker-select';
 import { Button } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
+import firebase from 'react-native-firebase';
 
 const sports = [
   {
@@ -39,9 +40,26 @@ export default function CreateAccountScreen(props) {
   };
   const handleOnScroll = () => setTextInputStyle('50%');
   const handleOnBlur = () => setTextInputStyle('50%');
-  const handlePress = () => {
-    props.navigation.navigate('ProfilePhoto');
+  // const handlePress = () => {
+  //   handleUserNameInputPress();
+  //   props.navigation.navigate('ProfilePhoto');
+  // };
+
+  const handleUserNameInputPress = () => {
+    user
+      .updateProfile({
+        displayName: username,
+      })
+      .then(function() {
+        console.log('update successful');
+        props.navigation.navigate('ProfilePhoto');
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   };
+
+  var user = firebase.auth().currentUser;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -83,7 +101,7 @@ export default function CreateAccountScreen(props) {
         </View>
         {username.length > 2 && (
           <Button
-            onPress={handlePress}
+            onPress={handleUserNameInputPress}
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.buttonStyle}
             ViewComponent={LinearGradient}

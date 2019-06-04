@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 // import ImagePicker from 'react-native-image-picker';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Modal,
+  Alert,
+} from 'react-native';
 import { Button } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import { Avatar } from 'react-native-elements';
 import ImagePicker from 'react-native-image-crop-picker';
+import firebase from 'react-native-firebase';
 
 export default function ProfilePhotoScreen(props) {
   // Initial State
   const [profilePhoto, setProfilePhoto] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // Event Handlers
   // const handlePhotoUpload = () => {
@@ -35,6 +44,9 @@ export default function ProfilePhotoScreen(props) {
   //   });
   // };
 
+  var user = firebase.auth().currentUser;
+  const name = user.displayName;
+
   const handlePhotoUpload1 = () => {
     ImagePicker.openPicker({
       width: 400,
@@ -44,6 +56,7 @@ export default function ProfilePhotoScreen(props) {
     }).then(image => {
       console.log(image);
       setProfilePhoto(image);
+      setModalVisible(false);
     });
   };
 
@@ -56,11 +69,16 @@ export default function ProfilePhotoScreen(props) {
     }).then(image => {
       console.log(image);
       setProfilePhoto(image);
+      setModalVisible(false);
     });
   };
 
   const handlePress = () => {
     props.navigation.navigate('Home');
+  };
+
+  const openModal = () => {
+    setModalVisible(true);
   };
 
   return (
@@ -89,7 +107,7 @@ export default function ProfilePhotoScreen(props) {
         Upload a selfie so your friends know it's you.
       </Text>
       <Button
-        onPress={handlePhotoUpload2}
+        onPress={openModal}
         containerStyle={styles.buttonContainer}
         buttonStyle={styles.buttonStyle}
         ViewComponent={LinearGradient}
@@ -98,13 +116,52 @@ export default function ProfilePhotoScreen(props) {
           start: { x: 0, y: 0.5 },
           end: { x: 1, y: 0.5 },
         }}
-        title="SET PROFILE PHOTO"
+        title="UPLOAD PROFILE PHOTO"
       />
       {profilePhoto && (
-        <Text style={styles.text2} onPress={handlePress}>
+        <Text style={styles.text3} onPress={handlePress}>
           CONTINUE
         </Text>
       )}
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <View
+          style={{
+            height: '100%',
+            width: '100%',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Button
+            onPress={handlePhotoUpload2}
+            containerStyle={styles.buttonContainer}
+            buttonStyle={styles.buttonStyle}
+            ViewComponent={LinearGradient}
+            linearGradientProps={{
+              colors: ['red', 'orange'],
+              start: { x: 0, y: 0.5 },
+              end: { x: 1, y: 0.5 },
+            }}
+            title="USE CAMERA TO TAKE SELFIE"
+          />
+          <Text style={styles.text2}>OR</Text>
+          <Button
+            onPress={handlePhotoUpload1}
+            containerStyle={styles.buttonContainer1}
+            buttonStyle={styles.buttonStyle1}
+            title="UPLOAD FROM GALLERY"
+            titleStyle={{ color: 'orangered' }}
+          />
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -141,6 +198,13 @@ const styles = StyleSheet.create({
     marginTop: '4%',
   },
   text2: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontFamily: 'Gill Sans',
+    color: 'orangered',
+    marginTop: '1%',
+  },
+  text3: {
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'Gill Sans',
@@ -153,9 +217,23 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
   },
+  buttonContainer1: {
+    marginTop: '10%',
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: 'center',
+  },
   buttonStyle: {
     height: 50,
     width: '85%',
     borderRadius: 25,
+  },
+  buttonStyle1: {
+    height: 50,
+    width: '85%',
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: 'orangered',
+    backgroundColor: 'transparent',
   },
 });
