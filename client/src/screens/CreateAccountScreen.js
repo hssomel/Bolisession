@@ -50,16 +50,15 @@ export default function CreateAccountScreen(props) {
       .updateProfile({
         displayName: username,
       })
-      .then(function() {
-        console.log('update successful');
+      .then(() => {
         props.navigation.navigate('ProfilePhoto');
       })
-      .catch(function(error) {
+      .catch(error => {
         console.log(error);
       });
   };
 
-  var user = firebase.auth().currentUser;
+  const user = firebase.auth().currentUser;
 
   return (
     <SafeAreaView style={styles.container}>

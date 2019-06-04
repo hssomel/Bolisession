@@ -121,7 +121,7 @@ export default function PhoneNumberScreen(props) {
         buttonStyle={styles.button}
         ViewComponent={LinearGradient}
         linearGradientProps={{
-          colors: ['red', 'orange'],
+          colors: ['#f12711', '#f5af19'],
           start: { x: 0, y: 0.5 },
           end: { x: 1, y: 0.5 },
         }}

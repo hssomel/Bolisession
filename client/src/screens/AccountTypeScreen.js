@@ -3,58 +3,18 @@ import { SafeAreaView, StyleSheet, Text, View, Modal } from 'react-native';
 import { Button } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import { Avatar } from 'react-native-elements';
-import ImagePicker from 'react-native-image-crop-picker';
 import firebase from 'react-native-firebase';
 
-export default function ProfilePhotoScreen(props) {
+export default function AccountTypeScreen(props) {
   // Initial State
-  const [profilePhoto, setProfilePhoto] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Event Handlers
-  const user = firebase.auth().currentUser;
-
-  const updateUserPhoto = () => {
-    user
-      .updateProfile({
-        photoURL: profilePhoto,
-      })
-      .then(() => {
-        console.log('update succesful');
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
-  const handlePhotoUpload1 = () => {
-    ImagePicker.openPicker({
-      width: 400,
-      height: 400,
-      cropping: true,
-      cropperCircleOverlay: true,
-    }).then(image => {
-      setProfilePhoto(image);
-      setModalVisible(false);
-      updateUserPhoto();
-    });
-  };
-
-  const handlePhotoUpload2 = () => {
-    ImagePicker.openCamera({
-      width: 400,
-      height: 400,
-      cropping: true,
-      cropperCircleOverlay: true,
-    }).then(image => {
-      setProfilePhoto(image);
-      setModalVisible(false);
-      updateUserPhoto();
-    });
-  };
+  var user = firebase.auth().currentUser;
+  const name = user.displayName;
+  const photoUrl = user.photoUrl;
 
   const handlePress = () => {
-    props.navigation.navigate('AccountType');
+    props.navigation.navigate('Home');
   };
 
   const openModal = () => {
@@ -63,29 +23,14 @@ export default function ProfilePhotoScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container1}>
-        {!profilePhoto && (
-          <Avatar
-            rounded
-            size={150}
-            icon={{ name: 'ios-camera', type: 'ionicon' }}
-            activeOpacity={0.7}
-          />
-        )}
-        {profilePhoto && (
-          <Avatar
-            rounded
-            size={150}
-            source={{
-              uri: profilePhoto.path,
-            }}
-          />
-        )}
-      </View>
-      <Text style={styles.text}>Add Profile Picture</Text>
-      <Text style={styles.text1}>
-        Upload a selfie so your friends know it's you.
-      </Text>
+      <Text style={styles.text}>Welcome, {name}</Text>
+      <Avatar
+        rounded
+        size={150}
+        source={{ uri: photoUrl }}
+        styles={{ marginTop: '8%' }}
+      />
+      <Text style={styles.text1}>Manager of a Team or Competition?</Text>
       <Button
         onPress={openModal}
         containerStyle={styles.buttonContainer}
@@ -96,13 +41,8 @@ export default function ProfilePhotoScreen(props) {
           start: { x: 0, y: 0.5 },
           end: { x: 1, y: 0.5 },
         }}
-        title="UPLOAD PROFILE PHOTO"
+        title="Create a Special Account"
       />
-      {profilePhoto && (
-        <Text style={styles.text3} onPress={handlePress}>
-          CONTINUE
-        </Text>
-      )}
       <Modal
         animationType="slide"
         transparent={false}
@@ -121,7 +61,7 @@ export default function ProfilePhotoScreen(props) {
           }}
         >
           <Button
-            onPress={handlePhotoUpload2}
+            onPress={handlePress}
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.buttonStyle}
             ViewComponent={LinearGradient}
@@ -130,14 +70,13 @@ export default function ProfilePhotoScreen(props) {
               start: { x: 0, y: 0.5 },
               end: { x: 1, y: 0.5 },
             }}
-            title="USE CAMERA TO TAKE SELFIE"
+            title="CREATE TEAM ACCOUNT"
           />
-          <Text style={styles.text2}>OR</Text>
           <Button
-            onPress={handlePhotoUpload1}
+            onPress={handlePress}
             containerStyle={styles.buttonContainer1}
             buttonStyle={styles.buttonStyle1}
-            title="UPLOAD FROM GALLERY"
+            title="CREATE COMPETITION ACCOUNT"
             titleStyle={{ color: 'orangered' }}
           />
         </View>
@@ -175,7 +114,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Gill Sans',
     color: 'black',
-    marginTop: '4%',
+    marginTop: '10%',
   },
   text2: {
     fontSize: 20,
@@ -198,7 +137,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonContainer1: {
-    marginTop: '10%',
+    marginTop: '15%',
     alignItems: 'center',
     width: '100%',
     justifyContent: 'center',
