@@ -14,19 +14,6 @@ export default function ProfilePhotoScreen(props) {
   // Event Handlers
   const user = firebase.auth().currentUser;
 
-  const updateUserPhoto = () => {
-    user
-      .updateProfile({
-        photoURL: profilePhoto,
-      })
-      .then(() => {
-        console.log('update succesful');
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
   const handlePhotoUpload1 = () => {
     ImagePicker.openPicker({
       width: 400,
@@ -36,7 +23,16 @@ export default function ProfilePhotoScreen(props) {
     }).then(image => {
       setProfilePhoto(image);
       setModalVisible(false);
-      updateUserPhoto();
+      user
+        .updateProfile({
+          photoURL: image.path,
+        })
+        .then(() => {
+          console.log('update succesful');
+        })
+        .catch(err => {
+          console.log(err);
+        });
     });
   };
 
@@ -49,7 +45,16 @@ export default function ProfilePhotoScreen(props) {
     }).then(image => {
       setProfilePhoto(image);
       setModalVisible(false);
-      updateUserPhoto();
+      user
+        .updateProfile({
+          photoURL: image.path,
+        })
+        .then(() => {
+          console.log('update succesful');
+        })
+        .catch(err => {
+          console.log(err);
+        });
     });
   };
 

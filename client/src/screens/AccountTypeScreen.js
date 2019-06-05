@@ -11,7 +11,7 @@ export default function AccountTypeScreen(props) {
 
   var user = firebase.auth().currentUser;
   const name = user.displayName;
-  const photoUrl = user.photoUrl;
+  const photoUrl = user.photoURL;
 
   const handlePress = () => {
     props.navigation.navigate('Home');
