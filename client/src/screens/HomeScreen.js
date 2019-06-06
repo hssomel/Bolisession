@@ -15,6 +15,7 @@ class HomeScreen extends React.Component {
 
   signOut = () => {
     firebase.auth().signOut();
+    console.log('Signed Out !');
     this.props.navigation.navigate('phone');
   };
 

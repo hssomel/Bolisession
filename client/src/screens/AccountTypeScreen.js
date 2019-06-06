@@ -24,12 +24,14 @@ export default function AccountTypeScreen(props) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.text}>Welcome, {name}</Text>
-      <Avatar
-        rounded
-        size={150}
-        source={{ uri: photoUrl }}
-        styles={{ marginTop: '8%' }}
-      />
+      <View style={styles.viewContainer}>
+        <Avatar
+          rounded
+          size={150}
+          source={{ uri: photoUrl }}
+          // icon={{ name: 'ios-camera', type: 'ionicon' }}
+        />
+      </View>
       <Text style={styles.text1}>Manager of a Team or Competition?</Text>
       <Button
         onPress={openModal}
@@ -42,7 +44,13 @@ export default function AccountTypeScreen(props) {
           end: { x: 1, y: 0.5 },
         }}
         title="Create a Special Account"
+        titleStyle={{ fontSize: 18 }}
       />
+      <View style={styles.viewContainer1}>
+        <Text style={styles.bottomText} onPress={handlePress}>
+          Skip and continue
+        </Text>
+      </View>
       <Modal
         animationType="slide"
         transparent={false}
@@ -95,13 +103,22 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
   },
-  container1: {
+  viewContainer: {
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
-    height: 150,
+    height: '100%',
     width: '100%',
-    marginTop: '4%',
+    flex: 0.3,
+  },
+  viewContainer1: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 0.1,
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: '4%',
   },
   text: {
     fontSize: 34,
@@ -111,10 +128,10 @@ const styles = StyleSheet.create({
     marginTop: '8%',
   },
   text1: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Gill Sans',
     color: 'black',
-    marginTop: '10%',
+    marginTop: '8%',
   },
   text2: {
     fontSize: 20,
@@ -130,8 +147,14 @@ const styles = StyleSheet.create({
     color: 'orangered',
     marginTop: '1%',
   },
+  bottomText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontFamily: 'Gill Sans',
+    color: 'orangered',
+  },
   buttonContainer: {
-    marginTop: '15%',
+    marginTop: '8%',
     alignItems: 'center',
     width: '100%',
     justifyContent: 'center',

@@ -34,16 +34,14 @@ export default function CreateAccountScreen(props) {
   const [currentTeam, setCurrentTeam] = useState('');
   const [username, setUserName] = useState('');
 
+  const user = firebase.auth().currentUser;
+
   // Event Handlers
   const handleOnFocus = () => {
     setTextInputStyle('20%');
   };
   const handleOnScroll = () => setTextInputStyle('50%');
   const handleOnBlur = () => setTextInputStyle('50%');
-  // const handlePress = () => {
-  //   handleUserNameInputPress();
-  //   props.navigation.navigate('ProfilePhoto');
-  // };
 
   const handleUserNameInputPress = () => {
     user
@@ -57,8 +55,6 @@ export default function CreateAccountScreen(props) {
         console.log(error);
       });
   };
-
-  const user = firebase.auth().currentUser;
 
   return (
     <SafeAreaView style={styles.container}>
