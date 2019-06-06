@@ -144,8 +144,8 @@ const AppDrawerNavigator = createDrawerNavigator({
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
-  Auth: phoneAuthStack,
   Landing: LandingPageStack,
+  Auth: phoneAuthStack,
   CreateAccount: CreateAccountStack,
   Dashboard: { screen: AppDrawerNavigator },
 });

@@ -1,15 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
-
 import Video from 'react-native-video';
 import LinearGradient from 'react-native-linear-gradient';
+import firebase from 'react-native-firebase';
 
 const LandingPageScreen = props => {
+  //Initial State
+  const [user, setUser] = useState(null);
+  // const [unsubscribe, setUnsubscribe] = useState(null);
+
   //Event Handlers
   const handleSignUpPress = () => {
     props.navigation.navigate('phone');
   };
+
+  useEffect(() => {
+    console.log('mounted');
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        setUser(user);
+        console.log(user);
+        props.navigation.navigate('Home');
+      } else {
+        // User has been signed out, reset the state
+        setUser(null);
+      }
+    });
+    return () => {
+      if (unsubscribe) unsubscribe();
+      console.log('unmounted');
+    };
+  });
 
   return (
     <View style={styles.container}>
