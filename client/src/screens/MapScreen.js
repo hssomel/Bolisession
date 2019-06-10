@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default class SearchScreen extends React.Component {
+export default class MapScreen extends React.Component {
   constructor() {
     super();
 
@@ -15,7 +15,7 @@ export default class SearchScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>WELCOME TO THE SEARCH SCREEN</Text>
+        <Text style={styles.text}>WELCOME TO THE MAP SCREEN</Text>
       </View>
     );
   }
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'salmon',
+    backgroundColor: 'yellow',
     height: '100%',
     width: '100%',
   },

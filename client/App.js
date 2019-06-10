@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import PhoneNumberScreen from './src/screens/PhoneNumberScreen';
 import LandingPageScreen from './src/screens/LandingPageScreen';
 import HomeScreen from './src/screens/HomeScreen';
-import SearchScreen from './src/screens/SearchScreen';
+import NotificationScreen from './src/screens/NotificationScreen';
 // import UserBioScreen from './src/screens/UserBioScreen';
 
 import { Provider } from 'react-redux';
@@ -21,6 +21,33 @@ import PhoneConfirmationScreen from './src/screens/PhoneConfirmationScreen';
 import CreateAccountScreen from './src/screens/CreateAccountScreen';
 import ProfilePhotoScreen from './src/screens/ProfilePhotoScreen';
 import AccountTypeScreen from './src/screens/AccountTypeScreen';
+import MapScreen from './src/screens/MapScreen';
+import PostContentScreen from './src/screens/PostContentScreen';
+import MessagingListScreen from './src/screens/MessagingListScreen';
+
+const LandingPageStack = createStackNavigator({
+  Start: {
+    screen: LandingPageScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
+
+const PhoneAuthStack = createStackNavigator({
+  phone: {
+    screen: PhoneNumberScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+  codeEntry: {
+    screen: PhoneConfirmationScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
 
 const CreateAccountStack = createStackNavigator({
   Create: {
@@ -43,6 +70,7 @@ const CreateAccountStack = createStackNavigator({
   },
 });
 
+// ---------- Bottom Tab Navigator Stacks ---------------------
 const HomeStack = createStackNavigator({
   Home: {
     screen: HomeScreen,
@@ -52,39 +80,45 @@ const HomeStack = createStackNavigator({
   },
 });
 
-const SearchStack = createStackNavigator({
-  Search: {
-    screen: SearchScreen,
+const NotificationStack = createStackNavigator({
+  Notification: {
+    screen: NotificationScreen,
     navigationOptions: () => ({
       header: null,
     }),
   },
 });
 
-const LandingPageStack = createStackNavigator({
-  Start: {
-    screen: LandingPageScreen,
+const MapStack = createStackNavigator({
+  Map: {
+    screen: MapScreen,
     navigationOptions: () => ({
       header: null,
     }),
   },
 });
 
-const phoneAuthStack = createStackNavigator({
-  phone: {
-    screen: PhoneNumberScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
-  },
-  codeEntry: {
-    screen: PhoneConfirmationScreen,
+const PostStack = createStackNavigator({
+  Post: {
+    screen: PostContentScreen,
     navigationOptions: () => ({
       header: null,
     }),
   },
 });
 
+const MessageStack = createStackNavigator({
+  Message: {
+    screen: MessagingListScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
+
+// -------- End of Bottom Tab Navigator Stacks
+
+// -------- Below is construction of Bottom Tab Navigator ------------
 const DashboardTabNavigator = createBottomTabNavigator(
   {
     Home: {
@@ -92,16 +126,43 @@ const DashboardTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarLabel: 'Home',
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-home" color={tintColor} size={30} />
+          <Icon name="md-home" color={tintColor} size={30} />
         ),
       },
     },
-    Search: {
-      screen: SearchStack,
+    Notification: {
+      screen: NotificationStack,
       navigationOptions: {
-        tabBarLabel: 'Search',
+        tabBarLabel: 'Notification',
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-search" color={tintColor} size={30} />
+          <Icon name="md-notifications" color={tintColor} size={30} />
+        ),
+      },
+    },
+    Post: {
+      screen: PostStack,
+      navigationOptions: {
+        tabBarLabel: 'Add',
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="md-add" color={tintColor} size={30} />
+        ),
+      },
+    },
+    Map: {
+      screen: MapStack,
+      navigationOptions: {
+        tabBarLabel: 'Map',
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="md-globe" color={tintColor} size={30} />
+        ),
+      },
+    },
+    Message: {
+      screen: MessageStack,
+      navigationOptions: {
+        tabBarLabel: 'Map',
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="md-mail" color={tintColor} size={30} />
         ),
       },
     },
@@ -117,6 +178,8 @@ const DashboardTabNavigator = createBottomTabNavigator(
     },
   },
 );
+
+//---------------------------------------------------------------------------
 
 const DashboardStackNavigator = createStackNavigator(
   {
@@ -145,7 +208,7 @@ const AppDrawerNavigator = createDrawerNavigator({
 
 const AppSwitchNavigator = createSwitchNavigator({
   Landing: LandingPageStack,
-  Auth: phoneAuthStack,
+  Auth: PhoneAuthStack,
   CreateAccount: CreateAccountStack,
   Dashboard: { screen: AppDrawerNavigator },
 });
