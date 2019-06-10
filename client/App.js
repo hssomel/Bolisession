@@ -24,6 +24,7 @@ import AccountTypeScreen from './src/screens/AccountTypeScreen';
 import MapScreen from './src/screens/MapScreen';
 import PostContentScreen from './src/screens/PostContentScreen';
 import MessagingListScreen from './src/screens/MessagingListScreen';
+import UserProfileScreen from './src/screens/UserProfileScreen';
 
 const LandingPageStack = createStackNavigator({
   Start: {
@@ -64,6 +65,15 @@ const CreateAccountStack = createStackNavigator({
   },
   AccountType: {
     screen: AccountTypeScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
+
+const UserProfileStack = createStackNavigator({
+  Profile: {
+    screen: UserProfileScreen,
     navigationOptions: () => ({
       header: null,
     }),
@@ -144,7 +154,7 @@ const DashboardTabNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarLabel: 'Add',
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="md-add" color={tintColor} size={30} />
+          <Icon name="md-add" color={tintColor} size={36} />
         ),
       },
     },
@@ -202,9 +212,29 @@ const DashboardStackNavigator = createStackNavigator(
   },
 );
 
-const AppDrawerNavigator = createDrawerNavigator({
-  Dashboard: DashboardStackNavigator,
-});
+const AppDrawerNavigator = createDrawerNavigator(
+  {
+    Dashboard: DashboardStackNavigator,
+    Profile: UserProfileStack,
+    Message: {
+      screen: MessageStack,
+      navigationOptions: {
+        tabBarLabel: 'Map',
+        drawerIcon: ({ tintColor }) => (
+          <Icon name="md-mail" color={tintColor} size={30} />
+        ),
+      },
+    },
+  },
+  {
+    drawerWidth: 300,
+    tabBarOptions: {
+      activeTintColor: 'red',
+      inactiveTintColor: 'grey',
+      showLabel: false,
+    },
+  },
+);
 
 const AppSwitchNavigator = createSwitchNavigator({
   Landing: LandingPageStack,
