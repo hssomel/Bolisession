@@ -4,33 +4,32 @@ import { Button } from 'react-native-elements';
 
 import firebase from 'react-native-firebase';
 
-class HomeScreen extends React.Component {
-  constructor() {
-    super();
-  }
-
-  componentDidMount() {
-    console.log('feedScreen loaded');
-  }
-
-  signOut = () => {
+export default function HomeScreen(props) {
+  const signOut = () => {
     firebase.auth().signOut();
     console.log('Signed Out !');
-    this.props.navigation.navigate('phone');
+    props.navigation.navigate('phone');
   };
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>Welcome!</Text>
-        <Text style={styles.text}>This will be your future feed!</Text>
-        <Button title="Sign Out" color="red" onPress={this.signOut} />
-      </View>
-    );
-  }
-}
+  const addDocument = (db) => {
+    // [START add_document]
+    // Add a new document with a generated id.
+    let addDoc = db.collection('cities').add({
+      name: 'Tokyo',
+      country: 'Japan'
+    }).then(ref => {
+      console.log('Added document with ID: ', ref.id);
+    });
+    // [END add_document]
 
-export default HomeScreen;
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>Welcome!</Text>
+      <Text style={styles.text}>This will be your future feed!</Text>
+      <Button title="Sign Out" color="red" onPress={signOut} />
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {

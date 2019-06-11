@@ -219,9 +219,9 @@ const AppDrawerNavigator = createDrawerNavigator(
     Message: {
       screen: MessageStack,
       navigationOptions: {
-        tabBarLabel: 'Map',
+        drawerLabel: 'Profile',
         drawerIcon: ({ tintColor }) => (
-          <Icon name="md-mail" color={tintColor} size={30} />
+          <Icon name="md-person" color={tintColor} size={25} />
         ),
       },
     },
@@ -231,7 +231,7 @@ const AppDrawerNavigator = createDrawerNavigator(
     tabBarOptions: {
       activeTintColor: 'red',
       inactiveTintColor: 'grey',
-      showLabel: false,
+      // showLabel: false,
     },
   },
 );
