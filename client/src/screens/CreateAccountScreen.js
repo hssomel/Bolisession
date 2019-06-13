@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -34,27 +34,24 @@ export default function CreateAccountScreen(props) {
   const [currentTeam, setCurrentTeam] = useState('');
   const [username, setUserName] = useState('');
   const [user, setUser] = useState(null);
-  const [uid, setUid] = useState(null);
+  const [dataKey, setDataKey] = useState(
+    props.navigation.getParam('dataKey', null),
+  );
 
-  // const user = firebase.auth().currentUser;
-  // useEffect(() => {
-  //   console.log('mounted to Create Account');
-  //   const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-  //     if (user) {
-  //       setUser(user);
-  //       setUid(user.uid);
-  //       console.log(user);
-  //       console.log(uid);
-  //     } else {
-  //       // User has been signed out, reset the state
-  //       setUser(null);
-  //     }
-  //   });
-  //   return () => {
-  //     if (unsubscribe) unsubscribe();
-  //     console.log('unmounted');
-  //   };
-  // });
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        setUser(user);
+      } else {
+        // User has been signed out, reset the state
+        setUser(null);
+      }
+    });
+    return () => {
+      if (unsubscribe) unsubscribe();
+      console.log('unmounted');
+    };
+  });
 
   // Event Handlers
   const handleOnFocus = () => {
@@ -64,11 +61,26 @@ export default function CreateAccountScreen(props) {
   const handleOnBlur = () => setTextInputStyle('50%');
 
   const handleUserNameInputPress = () => {
+    const verifyRef = firebase
+      .database()
+      .ref('people/')
+      .child('users/' + dataKey);
+
     user
       .updateProfile({
         displayName: username,
       })
       .then(() => {
+        verifyRef
+          .update({
+            username: username,
+          })
+          .then(data => {
+            console.log('data ', data);
+          })
+          .catch(error => {
+            console.log('error ', error);
+          });
         props.navigation.navigate('ProfilePhoto');
       })
       .catch(error => {

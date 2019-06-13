@@ -66,7 +66,6 @@ export default function PhoneNumberScreen(props) {
   const [popupVisibility, setPopupVisibility] = useState(false);
   const [flag, setFlag] = useState(flagCollection[country.alpha2Code]);
   const [message, setMessage] = useState(''); // TO DO integrate into error
-  const [confirmResult, setConfirmResult] = useState(null);
 
   // Event Handlers
   const handleFlagTouch = () => setPopupVisibility(true);
@@ -82,10 +81,10 @@ export default function PhoneNumberScreen(props) {
       .auth()
       .signInWithPhoneNumber(`+${country.callingCode}${phoneNumber}`)
       .then(confirmation => {
-        setConfirmResult(confirmation);
         setMessage('Code has been sent!');
         props.navigation.navigate('codeEntry', {
           confirmResult: confirmation,
+          phoneNumber: phoneNumber,
         });
       })
       .catch(error => setMessage(error.message));

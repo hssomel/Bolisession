@@ -57,6 +57,9 @@ export default function PhoneConfirmationScreen(props) {
   // Initial State
   const [codeInput, setCodeInput] = useState('');
   const [message, setMessage] = useState(''); // TO DO integrate into error
+  const [phoneNumber, setPhoneNumber] = useState(
+    props.navigation.getParam('phoneNumber', null),
+  );
   const [confirmResult, setConfirmResult] = useState(
     props.navigation.getParam('confirmResult', null),
   );
@@ -82,13 +85,18 @@ export default function PhoneConfirmationScreen(props) {
             .orderByChild('userID')
             .equalTo(user.uid)
             .once('value', snapshot => {
-              console.log(snapshot.val(), 'this is snapshot.val()');
               if (!snapshot.val()) {
                 verifyRef
-                  .push({ userID: user.uid })
+                  .push({
+                    userID: user.uid,
+                    username: user.displayName,
+                    userPhoto: user.photoURL,
+                    userPhoneNumber: user.phoneNumber,
+                  })
                   .then(data => {
-                    console.log('data ', data);
-                    props.navigation.navigate('Create');
+                    props.navigation.navigate('Create', {
+                      dataKey: data.key,
+                    });
                   })
                   .catch(error => {
                     console.log('error ', error);
@@ -109,7 +117,7 @@ export default function PhoneConfirmationScreen(props) {
     <SafeAreaView style={styles.container}>
       <Text style={styles.titleText}>My code is</Text>
       <Text style={styles.titleText1}>
-        Enter it below to verify +1 714-553-5985
+        Enter it below to verify {phoneNumber}
       </Text>
       <TextInput
         placeholder="Enter verification code"
