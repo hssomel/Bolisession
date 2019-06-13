@@ -33,8 +33,28 @@ export default function CreateAccountScreen(props) {
   const [textInputStyle, setTextInputStyle] = useState('50%');
   const [currentTeam, setCurrentTeam] = useState('');
   const [username, setUserName] = useState('');
+  const [user, setUser] = useState(null);
+  const [uid, setUid] = useState(null);
 
-  const user = firebase.auth().currentUser;
+  // const user = firebase.auth().currentUser;
+  // useEffect(() => {
+  //   console.log('mounted to Create Account');
+  //   const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+  //     if (user) {
+  //       setUser(user);
+  //       setUid(user.uid);
+  //       console.log(user);
+  //       console.log(uid);
+  //     } else {
+  //       // User has been signed out, reset the state
+  //       setUser(null);
+  //     }
+  //   });
+  //   return () => {
+  //     if (unsubscribe) unsubscribe();
+  //     console.log('unmounted');
+  //   };
+  // });
 
   // Event Handlers
   const handleOnFocus = () => {

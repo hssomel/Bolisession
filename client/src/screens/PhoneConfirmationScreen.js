@@ -1,12 +1,5 @@
-import React, { useState } from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  Dimensions,
-  TextInput,
-  Image,
-  View,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, SafeAreaView, Dimensions, TextInput } from 'react-native';
 import { Text, Button } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import firebase from 'react-native-firebase';
@@ -23,13 +16,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginHorizontal: 20,
     flexDirection: 'column',
-  },
-  container1: {
-    flex: 0.1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
-    width: '100%',
   },
   titleText: {
     marginTop: 50,
@@ -64,46 +50,56 @@ const styles = StyleSheet.create({
     width: pillWidth,
     backgroundColor: 'orangered',
   },
-  buttonTitle: {
-    fontSize: pillFontSize,
-  },
-  image: {
-    height: 60,
-    width: 60,
-    marginTop: '2.5%',
-    alignItems: 'center',
-  },
 });
 
 // Component
 export default function PhoneConfirmationScreen(props) {
   // Initial State
   const [codeInput, setCodeInput] = useState('');
-  const [country, setCountry] = useState({
-    name: 'United States of America',
-    alpha2Code: 'us',
-    callingCode: 1,
-  });
-
-  const [user, setUser] = useState(null);
   const [message, setMessage] = useState(''); // TO DO integrate into error
   const [confirmResult, setConfirmResult] = useState(
     props.navigation.getParam('confirmResult', null),
   );
 
   // Event Handlers
-
   const handleSubmitButtonPress = () => {
     confirmCode();
   };
 
   const confirmCode = () => {
+    const verifyRef = firebase
+      .database()
+      .ref('people/')
+      .child('users');
+
     if (confirmResult && codeInput.length) {
       confirmResult
         .confirm(codeInput)
         .then(user => {
           setMessage('Code Confirmed!');
-          props.navigation.navigate('Create');
+          console.log('user.uid: ', user.uid);
+          verifyRef
+            .orderByChild('userID')
+            .equalTo(user.uid)
+            .once('value', snapshot => {
+              console.log(snapshot.val(), 'this is snapshot.val()');
+              if (!snapshot.val()) {
+                verifyRef
+                  .push({ userID: user.uid })
+                  .then(data => {
+                    console.log('data ', data);
+                    props.navigation.navigate('Create');
+                  })
+                  .catch(error => {
+                    console.log('error ', error);
+                  });
+              } else {
+                snapshot.forEach(data => {
+                  console.log(data.key);
+                  props.navigation.navigate('Home');
+                });
+              }
+            });
         })
         .catch(error => setMessage(error.message));
     }
@@ -111,12 +107,6 @@ export default function PhoneConfirmationScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <View style={styles.container1}>
-        <Image
-          source={require('../assets/images/dhol.png')}
-          style={styles.image}
-        />
-      </View> */}
       <Text style={styles.titleText}>My code is</Text>
       <Text style={styles.titleText1}>
         Enter it below to verify +1 714-553-5985
