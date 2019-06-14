@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Modal } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Avatar } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-import { Avatar } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 
 export default function AccountTypeScreen(props) {

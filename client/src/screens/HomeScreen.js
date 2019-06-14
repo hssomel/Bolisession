@@ -9,23 +9,6 @@ export default function HomeScreen(props) {
   const [tweet, setTweet] = useState('');
   const [user, setUser] = useState(null);
 
-  // useEffect(() => {
-  //   const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-  //     if (user) {
-  //       console.log('currently signed in user: ', user.displayName);
-  //       setUser(user);
-  //     } else {
-  //       console.log('no existing user.. signing out');
-  //       setUser(null);
-  //       signOut();
-  //     }
-  //   });
-  //   return () => {
-  //     if (unsubscribe) unsubscribe();
-  //     console.log('firebase listener unmounted from home screen');
-  //   };
-  // });
-
   useEffect(() => {
     const verifyRef = firebase
       .database()
