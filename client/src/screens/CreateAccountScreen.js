@@ -49,7 +49,7 @@ export default function CreateAccountScreen(props) {
     });
     return () => {
       if (unsubscribe) unsubscribe();
-      console.log('unmounted');
+      console.log('unmounted from create account screen');
     };
   });
 
@@ -81,7 +81,9 @@ export default function CreateAccountScreen(props) {
           .catch(error => {
             console.log('error ', error);
           });
-        props.navigation.navigate('ProfilePhoto');
+        props.navigation.navigate('ProfilePhoto', {
+          dataKey: dataKey,
+        });
       })
       .catch(error => {
         console.log(error);

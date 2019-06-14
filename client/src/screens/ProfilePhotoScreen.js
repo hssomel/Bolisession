@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Modal } from 'react-native';
 import { Button } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
@@ -10,11 +10,33 @@ export default function ProfilePhotoScreen(props) {
   // Initial State
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [user, setUser] = useState(null);
+  const [dataKey, setDataKey] = useState(
+    props.navigation.getParam('dataKey', null),
+  );
+
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        setUser(user);
+      } else {
+        // User has been signed out, reset the state
+        setUser(null);
+      }
+    });
+    return () => {
+      if (unsubscribe) unsubscribe();
+      console.log('unmounted from profile photo screen');
+    };
+  });
 
   // Event Handlers
-  const user = firebase.auth().currentUser;
-
   const handlePhotoUpload1 = () => {
+    const verifyRef = firebase
+      .database()
+      .ref('people/')
+      .child('users/' + dataKey);
+
     ImagePicker.openPicker({
       width: 400,
       height: 400,
@@ -28,6 +50,16 @@ export default function ProfilePhotoScreen(props) {
           photoURL: image.path,
         })
         .then(() => {
+          verifyRef
+            .update({
+              profilePhoto: image.path,
+            })
+            .then(data => {
+              console.log('data ', data);
+            })
+            .catch(error => {
+              console.log('error ', error);
+            });
           console.log('update succesful');
         })
         .catch(err => {
@@ -37,6 +69,11 @@ export default function ProfilePhotoScreen(props) {
   };
 
   const handlePhotoUpload2 = () => {
+    const verifyRef = firebase
+      .database()
+      .ref('people/')
+      .child('users/' + dataKey);
+
     ImagePicker.openCamera({
       width: 400,
       height: 400,
@@ -50,6 +87,16 @@ export default function ProfilePhotoScreen(props) {
           photoURL: image.path,
         })
         .then(() => {
+          verifyRef
+            .update({
+              profilePhoto: image.path,
+            })
+            .then(data => {
+              console.log('data ', data);
+            })
+            .catch(error => {
+              console.log('error ', error);
+            });
           console.log('update succesful');
         })
         .catch(err => {

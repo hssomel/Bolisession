@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { Button } from 'react-native-elements';
 
@@ -7,6 +7,51 @@ import firebase from 'react-native-firebase';
 export default function HomeScreen(props) {
   // Initial State
   const [tweet, setTweet] = useState('');
+  const [user, setUser] = useState(null);
+
+  // useEffect(() => {
+  //   const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+  //     if (user) {
+  //       console.log('currently signed in user: ', user.displayName);
+  //       setUser(user);
+  //     } else {
+  //       console.log('no existing user.. signing out');
+  //       setUser(null);
+  //       signOut();
+  //     }
+  //   });
+  //   return () => {
+  //     if (unsubscribe) unsubscribe();
+  //     console.log('firebase listener unmounted from home screen');
+  //   };
+  // });
+
+  useEffect(() => {
+    const verifyRef = firebase
+      .database()
+      .ref('people/')
+      .child('users');
+
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      verifyRef
+        .orderByChild('userID')
+        .equalTo(user.uid)
+        .once('value', snapshot => {
+          if (!snapshot.val()) {
+            console.log('no existing user.. signing out');
+            signOut();
+          } else {
+            setUser(user);
+            console.log('currently signed in user: ', user.displayName);
+          }
+        });
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+      console.log('firebase listener unmounted from home screen');
+    };
+  });
 
   const signOut = () => {
     firebase.auth().signOut();

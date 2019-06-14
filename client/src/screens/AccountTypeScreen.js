@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Modal } from 'react-native';
 import { Button } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
@@ -8,10 +8,26 @@ import firebase from 'react-native-firebase';
 export default function AccountTypeScreen(props) {
   // Initial State
   const [modalVisible, setModalVisible] = useState(false);
+  const [user, setUser] = useState(null);
+  const [username, setUserName] = useState('');
+  const [profilePhoto, setProfilePhoto] = useState(null);
 
-  var user = firebase.auth().currentUser;
-  const name = user.displayName;
-  const photoUrl = user.photoURL;
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        setUser(user);
+        setUserName(user.displayName);
+        setProfilePhoto(user.photoURL);
+      } else {
+        // User has been signed out, reset the state
+        setUser(null);
+      }
+    });
+    return () => {
+      if (unsubscribe) unsubscribe();
+      console.log('unmounted from create account screen');
+    };
+  });
 
   const handlePress = () => {
     props.navigation.navigate('Home');
@@ -23,12 +39,12 @@ export default function AccountTypeScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.text}>Welcome, {name}</Text>
+      <Text style={styles.text}>Welcome, {username}</Text>
       <View style={styles.viewContainer}>
         <Avatar
           rounded
           size={150}
-          source={{ uri: photoUrl }}
+          source={{ uri: profilePhoto }}
           // icon={{ name: 'ios-camera', type: 'ionicon' }}
         />
       </View>
