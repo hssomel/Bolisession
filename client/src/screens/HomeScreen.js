@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Avatar } from 'react-native-elements';
 
 import firebase from 'react-native-firebase';
 
@@ -8,6 +8,7 @@ export default function HomeScreen(props) {
   // Initial State
   const [tweet, setTweet] = useState('');
   const [user, setUser] = useState(null);
+  const [profilePhoto, setProfilePhoto] = useState(null);
 
   useEffect(() => {
     const verifyRef = firebase
@@ -28,6 +29,7 @@ export default function HomeScreen(props) {
             console.log('currently signed in user: ', user.displayName);
           }
         });
+      setProfilePhoto(user.photoURL);
     });
 
     return () => {
@@ -48,6 +50,7 @@ export default function HomeScreen(props) {
       .ref('posts/')
       .push({
         text: tweet,
+        username: user.displayName,
       })
       .then(data => {
         //success callback
@@ -62,7 +65,8 @@ export default function HomeScreen(props) {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome!</Text>
-      <Text style={styles.text}>This will be your future feed!</Text>
+      <Text style={styles.text}>This will be future feed!</Text>
+
       <Button
         title="Sign Out"
         color="red"
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'chartreuse',
+    backgroundColor: 'pink',
     height: '100%',
     width: '100%',
     flex: 1,
