@@ -38,7 +38,6 @@ export default function UserProfileScreen(props) {
 
   const handlePress = () => {
     console.log(feedData);
-    props.navigation.navigate('test');
   };
 
   const renderSeparator = () => {
@@ -53,6 +52,7 @@ export default function UserProfileScreen(props) {
       />
     );
   };
+
   return (
     <SafeAreaView>
       <View style={{ justifyContent: 'flex-start' }}>
@@ -61,77 +61,53 @@ export default function UserProfileScreen(props) {
           keyExtractor={item => item.key}
           renderItem={({ item }) => (
             <View style={styles.tweet}>
-              <TouchableHighlight underlayColor="white" activeOpacity={0.75}>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                  <Avatar
-                    source={{
-                      uri: 'http://www.gravatar.com/avatar/?d=identicon',
-                    }}
-                    rounded
-                    size={50}
-                  />
-                  <View
-                    style={{
-                      flexDirection: 'column',
-                      justifyContent: 'flex-start',
-                    }}
-                  >
-                    <Text
-                      style={{
-                        paddingLeft: 15,
-                        fontWeight: 'bold',
-                        fontSize: 20,
+              <View style={styles.firstContainer}>
+                <TouchableHighlight underlayColor="white" activeOpacity={0.75}>
+                  <View>
+                    <Avatar
+                      source={{
+                        uri: 'http://www.gravatar.com/avatar/?d=identicon',
                       }}
-                    >
-                      username1
-                    </Text>
-
-                    <Text
-                      style={{
-                        paddingLeft: 15,
-                        color: '#aaa',
-                        fontSize: 16,
-                      }}
-                    >
-                      @username1
-                    </Text>
+                      rounded
+                      size={50}
+                    />
                   </View>
-                </View>
-              </TouchableHighlight>
-              <Text style={styles.tweetText}>
-                this is the body of the tweet we are going to make this tweet
-                long to see how much it can hold
-              </Text>
-              <View style={styles.tweetFooter}>
-                <View style={styles.footerIcons}>
-                  <TouchableHighlight>
-                    <View
-                      style={{ flexDirection: 'row', alignItems: 'center' }}
-                    >
-                      <Icon name="ios-chatboxes" size={18} />
-                      <Text style={styles.badgeCount}>14</Text>
-                    </View>
-                  </TouchableHighlight>
-                </View>
-                <View style={styles.footerIcons}>
-                  <TouchableHighlight>
-                    <View
-                      style={{ flexDirection: 'row', alignItems: 'center' }}
-                    >
-                      <Icon name="md-repeat" size={18} />
-                      <Text style={styles.badgeCount}>19</Text>
-                    </View>
-                  </TouchableHighlight>
-                </View>
-                <View style={styles.footerIcons}>
-                  <TouchableHighlight>
-                    <View
-                      style={{ flexDirection: 'row', alignItems: 'center' }}
-                    >
-                      <Icon name="ios-heart-empty" size={18} />
-                      <Text style={styles.badgeCount}>27</Text>
-                    </View>
-                  </TouchableHighlight>
+                </TouchableHighlight>
+              </View>
+              <View style={styles.secondaryContainer}>
+                <Text style={styles.usernameText}>{item._value.username}</Text>
+                <Text style={styles.tweetText}>{item._value.text}</Text>
+                <View style={styles.tweetFooter}>
+                  <View style={styles.footerIcons}>
+                    <TouchableHighlight>
+                      <View
+                        style={{ flexDirection: 'row', alignItems: 'center' }}
+                      >
+                        <Icon name="md-chatboxes" size={18} />
+                        <Text style={styles.badgeCount}>14</Text>
+                      </View>
+                    </TouchableHighlight>
+                  </View>
+                  <View style={styles.footerIcons}>
+                    <TouchableHighlight>
+                      <View
+                        style={{ flexDirection: 'row', alignItems: 'center' }}
+                      >
+                        <Icon name="md-repeat" size={18} />
+                        <Text style={styles.badgeCount}>19</Text>
+                      </View>
+                    </TouchableHighlight>
+                  </View>
+                  <View style={styles.footerIcons}>
+                    <TouchableHighlight onPress={handlePress}>
+                      <View
+                        style={{ flexDirection: 'row', alignItems: 'center' }}
+                      >
+                        <Icon name="ios-heart-empty" size={18} />
+                        <Text style={styles.badgeCount}>27</Text>
+                      </View>
+                    </TouchableHighlight>
+                  </View>
                 </View>
               </View>
             </View>
@@ -142,18 +118,37 @@ export default function UserProfileScreen(props) {
   );
 }
 const styles = StyleSheet.create({
-  tweet: {
-    paddingTop: 20,
-    paddingBottom: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    borderBottomColor: '#bbb',
-    borderBottomWidth: 1,
+  firstContainer: {
+    flex: 0.175,
     flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  secondaryContainer: {
+    flex: 0.825,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingLeft: 5,
+  },
+  usernameText: {
+    fontWeight: 'bold',
+    fontSize: 17,
+  },
+  tweet: {
+    paddingTop: 10,
+    paddingBottom: 5,
+    paddingLeft: 5,
+    paddingRight: 15,
+    borderBottomColor: 'red',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    flex: 1,
   },
   tweetText: {
-    marginTop: 10,
-    fontSize: 18,
+    marginTop: 1,
+    fontSize: 17,
     color: '#555',
   },
   tweetFooter: {
@@ -161,13 +156,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     padding: 0,
     flex: 1,
-    // backgroundColor: 'yellow',
+    marginTop: 15,
+    paddingBottom: 5,
   },
   footerIcons: {
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    // backgroundColor: 'red',
+    justifyContent: 'space-evenly',
     flex: 0.25,
   },
   badgeCount: {
