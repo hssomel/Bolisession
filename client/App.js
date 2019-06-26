@@ -26,7 +26,6 @@ import MapScreen from './src/screens/MapScreen';
 import PostContentScreen from './src/screens/PostContentScreen';
 import MessagingListScreen from './src/screens/MessagingListScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';
-import testScreen from './src/screens/testScreen';
 
 const LandingPageStack = createStackNavigator({
   Start: {
@@ -76,12 +75,6 @@ const CreateAccountStack = createStackNavigator({
 const UserProfileStack = createStackNavigator({
   Profile: {
     screen: UserProfileScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
-  },
-  test: {
-    screen: testScreen,
     navigationOptions: () => ({
       header: null,
     }),

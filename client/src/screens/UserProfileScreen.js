@@ -36,24 +36,24 @@ export default function UserProfileScreen(props) {
       });
   };
 
-  const handlePress = () => {
-    console.log(feedData);
-  };
-
   const handleLikePress = (item, key) => {
-    console.log('item.key25: ', key);
-    const likeRef = firebase
-      .database()
-      .ref('posts/' + key)
-      .child('likes');
-
-    console.log('likeRef', likeRef);
-    likeRef.transaction(current_value => {
+    const likeRef = firebase.database().ref('posts/' + key);
+    likeRef.child('likes').transaction(current_value => {
       return (current_value || 0) + 1;
     });
-    // likeRef.update({
-    //   likes: likes + 1,
-    // });
+
+    const whoLikes = [];
+    likeRef
+      .child('usersLiked')
+      .once('value', snapshot => {
+        snapshot.forEach(data => {
+          whoLikes.push(data.val());
+        });
+      })
+      .then(() => {
+        console.log('whoLikes........', whoLikes);
+      });
+
     console.log('heart icon pressed');
   };
 
