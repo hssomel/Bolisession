@@ -51,6 +51,10 @@ export default function HomeScreen(props) {
       .push({
         text: tweet,
         username: user.displayName,
+        userPhoto: user.photoURL,
+        likes: 0,
+        comments: 0,
+        retweets: 0,
       })
       .then(data => {
         //success callback
