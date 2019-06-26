@@ -13,6 +13,7 @@ import PhoneNumberScreen from './src/screens/PhoneNumberScreen';
 import LandingPageScreen from './src/screens/LandingPageScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import NotificationScreen from './src/screens/NotificationScreen';
+
 // import UserBioScreen from './src/screens/UserBioScreen';
 
 import { Provider } from 'react-redux';
@@ -25,6 +26,7 @@ import MapScreen from './src/screens/MapScreen';
 import PostContentScreen from './src/screens/PostContentScreen';
 import MessagingListScreen from './src/screens/MessagingListScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';
+import testScreen from './src/screens/testScreen';
 
 const LandingPageStack = createStackNavigator({
   Start: {
@@ -74,6 +76,12 @@ const CreateAccountStack = createStackNavigator({
 const UserProfileStack = createStackNavigator({
   Profile: {
     screen: UserProfileScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+  test: {
+    screen: testScreen,
     navigationOptions: () => ({
       header: null,
     }),

@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, SafeAreaView } from 'react-native';
-import Post from '../components/Post';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  SafeAreaView,
+  TouchableHighlight,
+} from 'react-native';
 import firebase from 'react-native-firebase';
-import LinearGradient from 'react-native-linear-gradient';
-import { Button } from 'react-native-elements';
+import { Button, Avatar } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function UserProfileScreen(props) {
   // Initial State
@@ -32,6 +38,7 @@ export default function UserProfileScreen(props) {
 
   const handlePress = () => {
     console.log(feedData);
+    props.navigation.navigate('test');
   };
 
   const renderSeparator = () => {
@@ -47,73 +54,124 @@ export default function UserProfileScreen(props) {
     );
   };
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.viewContainer1}>
-        <Button
-          containerStyle={styles.buttonContainer}
-          buttonStyle={styles.buttonStyle}
-          ViewComponent={LinearGradient}
-          linearGradientProps={{
-            colors: ['red', 'orange'],
-            start: { x: 0, y: 0.5 },
-            end: { x: 1, y: 0.5 },
-          }}
-          title="Sign in with phone number"
-          titleStyle={styles.text2}
-          onPress={handlePress}
-        />
-      </View>
-      <View style={styles.viewContainer2}>
+    <SafeAreaView>
+      <View style={{ justifyContent: 'flex-start' }}>
         <FlatList
-          style={styles.listcontainer}
           data={feedData}
-          renderItem={({ item }) => <Post navigation={props.navigation} />}
           keyExtractor={item => item.key}
-          ItemSeparatorComponent={renderSeparator}
+          renderItem={({ item }) => (
+            <View style={styles.tweet}>
+              <TouchableHighlight underlayColor="white" activeOpacity={0.75}>
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                  <Avatar
+                    source={{
+                      uri: 'http://www.gravatar.com/avatar/?d=identicon',
+                    }}
+                    rounded
+                    size={50}
+                  />
+                  <View
+                    style={{
+                      flexDirection: 'column',
+                      justifyContent: 'flex-start',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        paddingLeft: 15,
+                        fontWeight: 'bold',
+                        fontSize: 20,
+                      }}
+                    >
+                      username1
+                    </Text>
+
+                    <Text
+                      style={{
+                        paddingLeft: 15,
+                        color: '#aaa',
+                        fontSize: 16,
+                      }}
+                    >
+                      @username1
+                    </Text>
+                  </View>
+                </View>
+              </TouchableHighlight>
+              <Text style={styles.tweetText}>
+                this is the body of the tweet we are going to make this tweet
+                long to see how much it can hold
+              </Text>
+              <View style={styles.tweetFooter}>
+                <View style={styles.footerIcons}>
+                  <TouchableHighlight>
+                    <View
+                      style={{ flexDirection: 'row', alignItems: 'center' }}
+                    >
+                      <Icon name="ios-chatboxes" size={18} />
+                      <Text style={styles.badgeCount}>14</Text>
+                    </View>
+                  </TouchableHighlight>
+                </View>
+                <View style={styles.footerIcons}>
+                  <TouchableHighlight>
+                    <View
+                      style={{ flexDirection: 'row', alignItems: 'center' }}
+                    >
+                      <Icon name="md-repeat" size={18} />
+                      <Text style={styles.badgeCount}>19</Text>
+                    </View>
+                  </TouchableHighlight>
+                </View>
+                <View style={styles.footerIcons}>
+                  <TouchableHighlight>
+                    <View
+                      style={{ flexDirection: 'row', alignItems: 'center' }}
+                    >
+                      <Icon name="ios-heart-empty" size={18} />
+                      <Text style={styles.badgeCount}>27</Text>
+                    </View>
+                  </TouchableHighlight>
+                </View>
+              </View>
+            </View>
+          )}
         />
       </View>
     </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
+  tweet: {
+    paddingTop: 20,
+    paddingBottom: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderBottomColor: '#bbb',
+    borderBottomWidth: 1,
+    flexDirection: 'column',
+  },
+  tweetText: {
+    marginTop: 10,
+    fontSize: 18,
+    color: '#555',
+  },
+  tweetFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    padding: 0,
+    flex: 1,
+    // backgroundColor: 'yellow',
+  },
+  footerIcons: {
+    flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: '#EC8EEC',
-    height: '100%',
-    width: '100%',
-    flex: 10,
-  },
-  viewContainer1: {
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#EC8EEC',
-    height: '100%',
-    width: '100%',
-    flex: 2,
+    // backgroundColor: 'red',
+    flex: 0.25,
   },
-  viewContainer2: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#EC8EEC',
-    height: '100%',
-    width: '100%',
-    flex: 8,
-  },
-  listContainer: {
-    width: '100%',
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    marginBottom: '20%',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'center',
-  },
-  buttonStyle: {
-    height: 55,
-    width: '85%',
-    borderRadius: 10,
+  badgeCount: {
+    fontSize: 14,
+    paddingLeft: 7,
   },
 });

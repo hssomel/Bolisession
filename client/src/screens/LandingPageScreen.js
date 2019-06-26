@@ -8,7 +8,6 @@ import firebase from 'react-native-firebase';
 const LandingPageScreen = props => {
   //Initial State
   const [user, setUser] = useState(null);
-  // const [unsubscribe, setUnsubscribe] = useState(null);
 
   //Event Handlers
   const handleSignUpPress = () => {
@@ -16,20 +15,19 @@ const LandingPageScreen = props => {
   };
 
   useEffect(() => {
-    console.log('mounted');
+    console.log('mounted to Landing Page');
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         setUser(user);
         console.log(user);
         props.navigation.navigate('Home');
       } else {
-        // User has been signed out, reset the state
         setUser(null);
       }
     });
     return () => {
       if (unsubscribe) unsubscribe();
-      console.log('unmounted');
+      console.log('unmounted from Landing Page');
     };
   });
 
