@@ -55,7 +55,7 @@ export default function HomeScreen(props) {
         likes: 0,
         comments: 0,
         retweets: 0,
-        usersLiked: [user.displayName, 'john', 'jesus', 'mary'],
+        usersLiked: {},
       })
       .then(data => {
         //success callback
