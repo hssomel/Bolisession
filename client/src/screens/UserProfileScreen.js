@@ -7,7 +7,7 @@ export default function UserProfileScreen(props) {
   // Initial State
   const [feedData, setFeedData] = useState([]);
   const [user, setUser] = useState(null);
-  const [hasLiked, setHasLiked] = useState(null);
+  const [liked, setHasLiked] = useState(null);
   //Initial database references
   const postsRef = firebase.database().ref('posts/');
   const verifyRef = firebase
@@ -35,7 +35,7 @@ export default function UserProfileScreen(props) {
   useEffect(() => {
     console.log('useEffect triggered by getItems()');
     getItems();
-  }, []);
+  }, [liked]);
 
   // function called to get all posts
   const getItems = () => {

@@ -22,7 +22,7 @@ export default function Post(props) {
       .then(snapshot => {
         setHasLiked(snapshot.val());
       });
-  }, []);
+  }, [handleLikePress]);
 
   return (
     <View style={styles.tweet}>
