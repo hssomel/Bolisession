@@ -7,7 +7,6 @@ export default function UserProfileScreen(props) {
   // Initial State
   const [feedData, setFeedData] = useState([]);
   const [user, setUser] = useState(null);
-  const [liked, setHasLiked] = useState(null);
   //Initial database references
   const postsRef = firebase.database().ref('posts/');
   const verifyRef = firebase
@@ -35,7 +34,7 @@ export default function UserProfileScreen(props) {
   useEffect(() => {
     console.log('useEffect triggered by getItems()');
     getItems();
-  }, [liked]);
+  }, []);
 
   // function called to get all posts
   const getItems = () => {
@@ -61,16 +60,11 @@ export default function UserProfileScreen(props) {
       .equalTo(user.displayName)
       .once('value', snapshot => {
         if (!snapshot.val()) {
-          // means user has not liked post
-          console.log('user has not liked post so we will like it');
           increaseLikeByOne(key);
           addUserToLikesArray(key);
-          setHasLiked(true);
         } else {
           decreaseLikeByOne(key);
           removeUserFromLikesArray(key);
-          console.log('user has aleady liked post');
-          setHasLiked(false);
         }
       });
   };

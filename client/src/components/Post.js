@@ -9,6 +9,7 @@ export default function Post(props) {
   const { item, user, handleLikePress } = props;
   const postsRef = firebase.database().ref('posts/');
   const [liked, setHasLiked] = useState(null);
+  const [likeCounter, setLikeCounter] = useState(null);
 
   useEffect(() => {
     console.log('useEffect on INDIVIDUAL POSTS');
@@ -21,8 +22,22 @@ export default function Post(props) {
       .once('value')
       .then(snapshot => {
         setHasLiked(snapshot.val());
+        setLikeCounter(item._value.likes);
       });
-  }, [handleLikePress]);
+  }, [handleLocalLikePress]);
+
+  const handleLocalLikePress = item => {
+    handleLikePress(item, item.key);
+    if (liked) {
+      setHasLiked(null);
+      const counter = likeCounter - 1;
+      setLikeCounter(counter);
+    } else {
+      setHasLiked(true);
+      const positivecounter = likeCounter + 1;
+      setLikeCounter(positivecounter);
+    }
+  };
 
   return (
     <View style={styles.tweet}>
@@ -66,19 +81,19 @@ export default function Post(props) {
               {liked && (
                 <Icon
                   name="ios-heart"
-                  size={20}
+                  size={25}
                   color="red"
-                  onPress={() => handleLikePress(item, item.key)}
+                  onPress={() => handleLocalLikePress(item)}
                 />
               )}
               {!liked && (
                 <Icon
                   name="ios-heart-empty"
-                  size={20}
-                  onPress={() => handleLikePress(item, item.key)}
+                  size={25}
+                  onPress={() => handleLocalLikePress(item)}
                 />
               )}
-              <Text style={styles.badgeCount}>{item._value.likes}</Text>
+              <Text style={styles.badgeCount}>{likeCounter}</Text>
             </View>
           </TouchableHighlight>
         </View>
