@@ -23,11 +23,9 @@ export default function UserProfileScreen(props) {
           setUser(user);
         });
     });
-    console.log('useEffect triggered on UserProfileScreen onAuthStateChanged');
 
     return () => {
       if (unsubscribe) unsubscribe();
-      console.log('listener unmounted from userProfile screen');
     };
   }, []);
 
@@ -98,19 +96,23 @@ export default function UserProfileScreen(props) {
   };
 
   const removeUserFromLikesArray = key => {
-    const removeUserRef = postsRef
-      .child(key)
-      .child('usersLiked')
-      .orderByChild('user_name')
-      .equalTo(user.displayName);
+    const removeUserRef = postsRef.child(key).child('usersLiked');
 
     removeUserRef
-      .remove()
-      .then(data => {
-        console.log('successfully removed ');
-      })
-      .catch(error => {
-        console.log('error ', error);
+      .orderByChild('user_name')
+      .equalTo(user.displayName)
+      .once('value', snapshot => {
+        snapshot.forEach(data => {
+          const finalRemoveRef = removeUserRef.child(data.key);
+          finalRemoveRef
+            .remove()
+            .then(data => {
+              console.log('successfully removed ');
+            })
+            .catch(error => {
+              console.log('error ', error);
+            });
+        });
       });
   };
 
