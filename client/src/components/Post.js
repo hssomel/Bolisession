@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  SafeAreaView,
-  TouchableHighlight,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 // import HeartRed from '../components/heartRed';
 
 export default function Post(props) {
-  const {
-    // tweet,
-    // name,
-    // handle,
-    // time,
-    // retweeted,
-    // liked,
-    // picture,
-    navigation,
-    // thekey,
-    // isReply,
-  } = props;
+  const { item, user, handleLikePress } = props;
+  const postsRef = firebase.database().ref('posts/');
+  const [liked, setHasLiked] = useState(null);
+
+  useEffect(() => {
+    console.log('useEffect on INDIVIDUAL POSTS');
+
+    const heartRef = postsRef
+      .child(item.key)
+      .child('usersLiked')
+      .orderByChild('user_name')
+      .equalTo(user.displayName)
+      .once('value')
+      .then(snapshot => {
+        setHasLiked(snapshot.val());
+      });
+  }, []);
 
   return (
     <View style={styles.tweet}>
@@ -65,7 +63,21 @@ export default function Post(props) {
 
           <TouchableHighlight>
             <View style={styles.iconContainer}>
-              {/* <HeartRed item={item} user={user} liked={hasLiked} /> */}
+              {liked && (
+                <Icon
+                  name="ios-heart"
+                  size={20}
+                  color="red"
+                  onPress={() => handleLikePress(item, item.key)}
+                />
+              )}
+              {!liked && (
+                <Icon
+                  name="ios-heart-empty"
+                  size={20}
+                  onPress={() => handleLikePress(item, item.key)}
+                />
+              )}
               <Text style={styles.badgeCount}>{item._value.likes}</Text>
             </View>
           </TouchableHighlight>
