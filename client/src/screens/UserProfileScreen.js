@@ -10,11 +10,13 @@ import {
 import firebase from 'react-native-firebase';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
+// import HeartRed from '../components/heartRed';
 
 export default function UserProfileScreen(props) {
   // Initial State
   const [feedData, setFeedData] = useState([]);
   const [user, setUser] = useState(null);
+  const [hasLiked, setHasLiked] = useState(null);
   //Initial database references
   const postsRef = firebase.database().ref('posts/');
   const verifyRef = firebase
@@ -31,12 +33,17 @@ export default function UserProfileScreen(props) {
           setUser(user);
         });
     });
-    getItems();
+    console.log('useEffect triggered on UserProfileScreen onAuthStateChanged');
 
     return () => {
       if (unsubscribe) unsubscribe();
-      console.log('firebase listener unmounted from userProfile screen');
+      console.log('listener unmounted from userProfile screen');
     };
+  }, []);
+
+  useEffect(() => {
+    console.log('useEffect triggered by getItems()');
+    getItems();
   }, []);
 
   // function called to get all posts
@@ -64,14 +71,15 @@ export default function UserProfileScreen(props) {
       .once('value', snapshot => {
         if (!snapshot.val()) {
           // means user has not liked post
-          console.log('we are here');
+          console.log('user has not liked post so we will like it');
           increaseLikeByOne(key);
           addUserToLikesArray(key);
+          setHasLiked(true);
         } else {
-          console.log('now we are here');
           decreaseLikeByOne(key);
           removeUserFromLikesArray(key);
           console.log('user has aleady liked post');
+          setHasLiked(false);
         }
       });
   };
@@ -120,6 +128,62 @@ export default function UserProfileScreen(props) {
         console.log('error ', error);
       });
   };
+
+  function HeartRed(props) {
+    const { item, user, liked } = props;
+    let snap = true;
+
+    const heartRef = postsRef
+      .child(item.key)
+      .child('usersLiked')
+      .orderByChild('user_name')
+      .equalTo(user.displayName);
+
+    heartRef.once('value', snapshot => {
+      if (!snapshot.val()) {
+        snap = false;
+        console.log('SNAP SHOULD BE FALSE');
+        return <HeartReddd snap={snap} item={item} />;
+      } else {
+        snap = true;
+        console.log('SNAP SHOULD BE TRUE');
+        return <HeartReddd snap={snap} item={item} />;
+      }
+    });
+
+    // useEffect(() => {
+    //   heartRef.once(
+    //     'value',
+    //     snapshot => {
+    //       if (!snapshot.val()) {
+    //         snap = false;
+    //         return <HeartReddd snap={snap} item={item} />;
+    //         // console.log('SNAP SHOULD BE TRUE');
+    //       }
+    //     },
+    //     [],
+    //   );
+    // });
+    console.log('we rendered this component');
+    return <HeartReddd snap={snap} item={item} />;
+  }
+
+  function HeartReddd(props) {
+    const { snap, item } = props;
+
+    if (snap) {
+      return (
+        <Icon
+          name="ios-heart-empty"
+          size={20}
+          color="red"
+          onPress={() => handleLikePress(item, item.key)}
+        />
+      );
+    }
+
+    return <Text>Hello world</Text>;
+  }
 
   const renderSeparator = () => {
     return (
@@ -185,11 +249,7 @@ export default function UserProfileScreen(props) {
 
                   <TouchableHighlight>
                     <View style={styles.iconContainer}>
-                      <Icon
-                        name="ios-heart-empty"
-                        size={20}
-                        onPress={() => handleLikePress(item, item.key)}
-                      />
+                      {/* <HeartRed item={item} user={user} liked={hasLiked} /> */}
                       <Text style={styles.badgeCount}>{item._value.likes}</Text>
                     </View>
                   </TouchableHighlight>

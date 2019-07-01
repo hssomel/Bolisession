@@ -22,11 +22,9 @@ export default function HomeScreen(props) {
         .equalTo(user.uid)
         .once('value', snapshot => {
           if (!snapshot.val()) {
-            console.log('no existing user.. signing out');
             signOut();
           } else {
             setUser(user);
-            console.log('currently signed in user: ', user.displayName);
           }
         });
       setProfilePhoto(user.photoURL);
@@ -34,7 +32,7 @@ export default function HomeScreen(props) {
 
     return () => {
       if (unsubscribe) unsubscribe();
-      console.log('firebase listener unmounted from home screen');
+      console.log('listener unmounted from HomeScreen');
     };
   });
 
