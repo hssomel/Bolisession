@@ -56,7 +56,7 @@ export default function Post(props) {
       </View>
       <View style={styles.secondaryContainer}>
         <View style={styles.usernameContainer}>
-          <Text style={styles.usernameText}>{item._value.username}</Text>
+          <Text style={styles.usernameText}>{'@' + item._value.username}</Text>
         </View>
         <View style={styles.tweetBodyContainer}>
           <Text style={styles.tweetText}>{item._value.text}</Text>
