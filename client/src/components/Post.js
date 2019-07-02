@@ -28,15 +28,17 @@ export default function Post(props) {
 
   const handleLocalLikePress = item => {
     handleLikePress(item, item.key);
-    if (liked) {
-      setHasLiked(null);
-      const counter = likeCounter - 1;
-      setLikeCounter(counter);
-    } else {
-      setHasLiked(true);
-      const positivecounter = likeCounter + 1;
-      setLikeCounter(positivecounter);
-    }
+    setTimeout(() => {
+      if (liked) {
+        setHasLiked(null);
+        const counter = likeCounter - 1;
+        setLikeCounter(counter);
+      } else {
+        setHasLiked(true);
+        const positivecounter = likeCounter + 1;
+        setLikeCounter(positivecounter);
+      }
+    }, 100);
   };
 
   return (

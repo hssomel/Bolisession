@@ -58,10 +58,8 @@ export default function UserProfileScreen(props) {
       .equalTo(user.displayName)
       .once('value', snapshot => {
         if (!snapshot.val()) {
-          increaseLikeByOne(key);
           addUserToLikesArray(key);
         } else {
-          decreaseLikeByOne(key);
           removeUserFromLikesArray(key);
         }
       });
@@ -89,6 +87,7 @@ export default function UserProfileScreen(props) {
       })
       .then(data => {
         console.log('successfully added ');
+        increaseLikeByOne(key);
       })
       .catch(error => {
         console.log('error ', error);
@@ -108,6 +107,7 @@ export default function UserProfileScreen(props) {
             .remove()
             .then(data => {
               console.log('successfully removed ');
+              decreaseLikeByOne(key);
             })
             .catch(error => {
               console.log('error ', error);
