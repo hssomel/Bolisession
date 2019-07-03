@@ -55,12 +55,11 @@ export default function ProfilePhotoScreen(props) {
               profilePhoto: image.path,
             })
             .then(data => {
-              console.log('data ', data);
+              console.log('update succesful');
             })
             .catch(error => {
               console.log('error ', error);
             });
-          console.log('update succesful');
         })
         .catch(err => {
           console.log(err);

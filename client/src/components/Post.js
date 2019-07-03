@@ -3,17 +3,16 @@ import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
-// import HeartRed from '../components/heartRed';
 
 export default function Post(props) {
-  const { item, user, handleLikePress } = props;
-  const postsRef = firebase.database().ref('posts/');
+  // Initial State
+  const { item, user } = props;
   const [liked, setHasLiked] = useState(null);
   const [likeCounter, setLikeCounter] = useState(null);
+  // Firebase Reference
+  const postsRef = firebase.database().ref('posts/');
 
   useEffect(() => {
-    console.log('useEffect on INDIVIDUAL POSTS');
-
     const heartRef = postsRef
       .child(item.key)
       .child('usersLiked')
@@ -25,6 +24,72 @@ export default function Post(props) {
         setLikeCounter(item._value.likes);
       });
   }, [handleLocalLikePress]);
+
+  // function called when user likes a post
+  const handleLikePress = (item, key) => {
+    const userLikedRef = postsRef.child(key).child('usersLiked');
+
+    userLikedRef
+      .orderByChild('user_name')
+      .equalTo(user.displayName)
+      .once('value', snapshot => {
+        if (!snapshot.val()) {
+          addUserToLikesArray(key);
+        } else {
+          removeUserFromLikesArray(key);
+        }
+      });
+  };
+
+  const addUserToLikesArray = key => {
+    const addUserRef = postsRef.child(key).child('usersLiked');
+    addUserRef
+      .push({
+        user_name: user.displayName,
+      })
+      .then(data => {
+        console.log('successfully added ');
+        increaseLikeByOne(key);
+      })
+      .catch(error => {
+        console.log('error ', error);
+      });
+  };
+
+  const removeUserFromLikesArray = key => {
+    const removeUserRef = postsRef.child(key).child('usersLiked');
+    removeUserRef
+      .orderByChild('user_name')
+      .equalTo(user.displayName)
+      .once('value', snapshot => {
+        snapshot.forEach(data => {
+          const finalRemoveRef = removeUserRef.child(data.key);
+          finalRemoveRef
+            .remove()
+            .then(data => {
+              decreaseLikeByOne(key);
+              console.log('successfully removed ');
+            })
+            .catch(error => {
+              console.log('error ', error);
+            });
+        });
+      });
+  };
+
+  const increaseLikeByOne = key => {
+    const increaseLikeRef = postsRef.child(key).child('likes');
+    increaseLikeRef.transaction(current_value => {
+      return (current_value || 0) + 1;
+    });
+  };
+
+  const decreaseLikeByOne = key => {
+    const decreaseLikeRef = postsRef.child(key).child('likes');
+    decreaseLikeRef.transaction(current_value => {
+      return (current_value || 0) - 1;
+    });
+  };
 
   const handleLocalLikePress = item => {
     handleLikePress(item, item.key);
@@ -56,6 +121,7 @@ export default function Post(props) {
           </View>
         </TouchableHighlight>
       </View>
+
       <View style={styles.secondaryContainer}>
         <View style={styles.usernameContainer}>
           <Text style={styles.usernameText}>{'@' + item._value.username}</Text>
@@ -117,7 +183,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    paddingLeft: 5,
+    paddingLeft: 10,
     // backgroundColor: '#cccccc',
   },
   usernameText: {
@@ -138,7 +204,8 @@ const styles = StyleSheet.create({
   tweetText: {
     marginTop: 1,
     fontSize: 17,
-    color: '#555',
+    color: 'black',
+    paddingLeft: 2,
   },
   tweetFooter: {
     flexDirection: 'row',

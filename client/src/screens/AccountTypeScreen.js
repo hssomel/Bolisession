@@ -13,14 +13,9 @@ export default function AccountTypeScreen(props) {
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        setUser(user);
-        setUserName(user.displayName);
-        setProfilePhoto(user.photoURL);
-      } else {
-        // User has been signed out, reset the state
-        setUser(null);
-      }
+      setUser(user);
+      setUserName(user.displayName);
+      setProfilePhoto(user.photoURL);
     });
     return () => {
       if (unsubscribe) unsubscribe();

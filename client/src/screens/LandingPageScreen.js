@@ -19,8 +19,7 @@ const LandingPageScreen = props => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         setUser(user);
-        console.log(user);
-        props.navigation.navigate('Home');
+        props.navigation.navigate('Dashboard');
       } else {
         setUser(null);
       }

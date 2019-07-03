@@ -3,21 +3,15 @@ import {
   createAppContainer,
   createSwitchNavigator,
   createStackNavigator,
-  createDrawerNavigator,
   createBottomTabNavigator,
 } from 'react-navigation';
-import { StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Provider } from 'react-redux';
+import store from './src/store/store';
 // Screens
 import PhoneNumberScreen from './src/screens/PhoneNumberScreen';
 import LandingPageScreen from './src/screens/LandingPageScreen';
 import HomeScreen from './src/screens/HomeScreen';
-import NotificationScreen from './src/screens/NotificationScreen';
-
-// import UserBioScreen from './src/screens/UserBioScreen';
-
-import { Provider } from 'react-redux';
-import store from './src/store/store';
 import PhoneConfirmationScreen from './src/screens/PhoneConfirmationScreen';
 import CreateAccountScreen from './src/screens/CreateAccountScreen';
 import ProfilePhotoScreen from './src/screens/ProfilePhotoScreen';
@@ -72,46 +66,62 @@ const CreateAccountStack = createStackNavigator({
   },
 });
 
-const UserProfileStack = createStackNavigator({
-  Profile: {
-    screen: UserProfileScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
-  },
-});
-
 // ---------- Bottom Tab Navigator Stacks ---------------------
-const HomeStack = createStackNavigator({
-  Home: {
-    screen: HomeScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
+const HomeStack = createStackNavigator(
+  {
+    Home: {
+      screen: HomeScreen,
+    },
+    Profile: {
+      screen: UserProfileScreen,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
+    Post: {
+      screen: PostContentScreen,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
   },
-});
-
-const NotificationStack = createStackNavigator({
-  Notification: {
-    screen: NotificationScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
+  {
+    defaultNavigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: (
+          <Icon
+            name="ios-contact"
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 20,
+            }}
+            onPress={() => navigation.navigate('Profile')}
+            color="grey"
+            size={36}
+          />
+        ),
+        headerRight: (
+          <Icon
+            name="ios-create"
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: 20,
+            }}
+            onPress={() => navigation.navigate('Post')}
+            color="grey"
+            size={30}
+          />
+        ),
+      };
+    },
   },
-});
+);
 
 const MapStack = createStackNavigator({
   Map: {
     screen: MapScreen,
-    navigationOptions: () => ({
-      header: null,
-    }),
-  },
-});
-
-const PostStack = createStackNavigator({
-  Post: {
-    screen: PostContentScreen,
     navigationOptions: () => ({
       header: null,
     }),
@@ -141,24 +151,7 @@ const DashboardTabNavigator = createBottomTabNavigator(
         ),
       },
     },
-    Notification: {
-      screen: NotificationStack,
-      navigationOptions: {
-        tabBarLabel: 'Notification',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="md-notifications" color={tintColor} size={30} />
-        ),
-      },
-    },
-    Post: {
-      screen: PostStack,
-      navigationOptions: {
-        tabBarLabel: 'Add',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="md-add" color={tintColor} size={36} />
-        ),
-      },
-    },
+
     Map: {
       screen: MapStack,
       navigationOptions: {
@@ -192,56 +185,11 @@ const DashboardTabNavigator = createBottomTabNavigator(
 
 //---------------------------------------------------------------------------
 
-const DashboardStackNavigator = createStackNavigator(
-  {
-    DashboardTabNavigator: DashboardTabNavigator,
-  },
-  {
-    defaultNavigationOptions: ({ navigation }) => {
-      return {
-        headerLeft: (
-          <Icon
-            name="ios-menu"
-            style={styles.button1}
-            onPress={() => navigation.openDrawer()}
-            color="grey"
-            size={30}
-          />
-        ),
-      };
-    },
-  },
-);
-
-const AppDrawerNavigator = createDrawerNavigator(
-  {
-    Dashboard: DashboardStackNavigator,
-    Profile: UserProfileStack,
-    Message: {
-      screen: MessageStack,
-      navigationOptions: {
-        drawerLabel: 'Profile',
-        drawerIcon: ({ tintColor }) => (
-          <Icon name="md-person" color={tintColor} size={25} />
-        ),
-      },
-    },
-  },
-  {
-    drawerWidth: 300,
-    tabBarOptions: {
-      activeTintColor: 'red',
-      inactiveTintColor: 'grey',
-      // showLabel: false,
-    },
-  },
-);
-
 const AppSwitchNavigator = createSwitchNavigator({
   Landing: LandingPageStack,
   Auth: PhoneAuthStack,
   CreateAccount: CreateAccountStack,
-  Dashboard: { screen: AppDrawerNavigator },
+  Dashboard: DashboardTabNavigator,
 });
 
 const AppContainer = createAppContainer(AppSwitchNavigator);
@@ -251,11 +199,3 @@ export default (App = () => (
     <AppContainer />
   </Provider>
 ));
-
-const styles = StyleSheet.create({
-  button1: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 20,
-  },
-});

@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, SafeAreaView, StyleSheet, Modal } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
+import firebase from 'react-native-firebase';
 
 export default function PostContentScreen(props) {
   // Initial State
   const [modalVisible, setModalVisible] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     setModalVisible(true);
@@ -14,7 +17,33 @@ export default function PostContentScreen(props) {
       setModalVisible(false);
       console.log('unmounted from post content screen');
     };
+  }, []);
+
+  useEffect(() => {
+    const verifyRef = firebase
+      .database()
+      .ref('people/')
+      .child('users');
+
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      verifyRef
+        .orderByChild('userID')
+        .equalTo(user.uid)
+        .once('value', snapshot => {
+          setUser(user);
+        });
+      setProfilePhoto(user.photoURL);
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+      console.log('listener unmounted from PostContentScreen');
+    };
   });
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -51,6 +80,7 @@ export default function PostContentScreen(props) {
               end: { x: 1, y: 0.5 },
             }}
             title="CREATE TEAM ACCOUNT"
+            onPress={() => props.navigation.goBack()}
           />
           <Button
             containerStyle={styles.buttonContainer1}

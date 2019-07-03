@@ -40,12 +40,7 @@ export default function CreateAccountScreen(props) {
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        setUser(user);
-      } else {
-        // User has been signed out, reset the state
-        setUser(null);
-      }
+      setUser(user);
     });
     return () => {
       if (unsubscribe) unsubscribe();
