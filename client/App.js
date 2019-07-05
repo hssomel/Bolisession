@@ -17,7 +17,6 @@ import CreateAccountScreen from './src/screens/CreateAccountScreen';
 import ProfilePhotoScreen from './src/screens/ProfilePhotoScreen';
 import AccountTypeScreen from './src/screens/AccountTypeScreen';
 import MapScreen from './src/screens/MapScreen';
-import PostContentScreen from './src/screens/PostContentScreen';
 import MessagingListScreen from './src/screens/MessagingListScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';
 
@@ -78,12 +77,6 @@ const HomeStack = createStackNavigator(
         header: null,
       }),
     },
-    Post: {
-      screen: PostContentScreen,
-      navigationOptions: () => ({
-        header: null,
-      }),
-    },
   },
   {
     defaultNavigationOptions: ({ navigation }) => {
@@ -103,13 +96,12 @@ const HomeStack = createStackNavigator(
         ),
         headerRight: (
           <Icon
-            name="ios-create"
+            name="md-settings"
             style={{
               alignItems: 'center',
               justifyContent: 'center',
               marginRight: 20,
             }}
-            onPress={() => navigation.navigate('Post')}
             color="grey"
             size={30}
           />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import firebase from 'react-native-firebase';
 import UniversalFeed from '../components/UniversalFeed';
+import HomeFeedHeader from '../components/HomeFeedHeader';
 
 export default function HomeScreen(props) {
   const [modalOpen, setModalOpen] = useState(
@@ -61,6 +62,9 @@ export default function HomeScreen(props) {
   };
 
   return (
-    <View>{!modalOpen && <UniversalFeed ListHeaderComponent={null} />}</View>
+    <View>
+      {!modalOpen && <UniversalFeed ListHeaderComponent={HomeFeedHeader} />}
+      {/* <Icon name="md-globe" size={30} /> */}
+    </View>
   );
 }

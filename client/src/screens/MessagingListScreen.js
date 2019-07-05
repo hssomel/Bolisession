@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import firebase from 'react-native-firebase';
 
 export default class MessagingListScreen extends React.Component {
   constructor() {
