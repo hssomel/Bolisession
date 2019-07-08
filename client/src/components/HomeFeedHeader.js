@@ -17,7 +17,8 @@ export default function HomeFeedHeader(props) {
   // Intial State
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [username, setUsername] = useState(null);
+  const [tweet, setTweet] = useState('null');
+  const [username1, setUsername] = useState(null);
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
@@ -32,6 +33,29 @@ export default function HomeFeedHeader(props) {
 
   const openPostModal = () => {
     setModalOpen(true);
+  };
+
+  const writeUserData = () => {
+    firebase
+      .database()
+      .ref('posts/')
+      .push({
+        text: tweet,
+        username: username1,
+        userPhoto: profilePhoto,
+        likes: 0,
+        comments: 0,
+        retweets: 0,
+        usersLiked: {},
+      })
+      .then(data => {
+        //success callback
+        console.log('data ', data);
+      })
+      .catch(error => {
+        //error callback
+        console.log('error ', error);
+      });
   };
 
   return (
@@ -77,7 +101,16 @@ export default function HomeFeedHeader(props) {
             source={{ uri: profilePhoto }}
             // icon={{ name: 'ios-camera', type: 'ionicon' }}
           />
-          <TextInput placeholder="Username" />
+          <TextInput
+            placeholder="What's on your mind?"
+            onChangeText={input => setTweet(input)}
+          />
+          <TouchableOpacity
+            style={styles.messageButton}
+            onPress={writeUserData}
+          >
+            <Text style={styles.messageButtonText}>Post</Text>
+          </TouchableOpacity>
         </View>
       </Modal>
     </View>

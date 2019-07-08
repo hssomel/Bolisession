@@ -10,33 +10,42 @@ export default function ProfilePhotoScreen(props) {
   // Initial State
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(props.navigation.getParam('user', null));
   const [dataKey, setDataKey] = useState(
     props.navigation.getParam('dataKey', null),
   );
 
-  useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        setUser(user);
-      } else {
-        // User has been signed out, reset the state
-        setUser(null);
-      }
-    });
-    return () => {
-      if (unsubscribe) unsubscribe();
-      console.log('unmounted from profile photo screen');
-    };
-  });
+  // Firebase References
+  const storeImageRef = firebase.storage().ref(`images/${user.uid}`);
+  const verifyRef = firebase
+    .database()
+    .ref('people/')
+    .child('users/' + dataKey);
 
   // Event Handlers
-  const handlePhotoUpload1 = () => {
-    const verifyRef = firebase
-      .database()
-      .ref('people/')
-      .child('users/' + dataKey);
+  const updateUser = image => {
+    user
+      .updateProfile({
+        photoURL: image.path,
+      })
+      .then(() => {
+        verifyRef
+          .update({
+            profilePhoto: image.path,
+          })
+          .then(data => {
+            console.log('data ', data);
+          })
+          .catch(error => {
+            console.log('error ', error);
+          });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
+  const handlePhotoUpload1 = () => {
     ImagePicker.openPicker({
       width: 400,
       height: 400,
@@ -45,34 +54,16 @@ export default function ProfilePhotoScreen(props) {
     }).then(image => {
       setProfilePhoto(image);
       setModalVisible(false);
-      user
-        .updateProfile({
-          photoURL: image.path,
-        })
-        .then(() => {
-          verifyRef
-            .update({
-              profilePhoto: image.path,
-            })
-            .then(data => {
-              console.log('update succesful');
-            })
-            .catch(error => {
-              console.log('error ', error);
-            });
-        })
-        .catch(err => {
-          console.log(err);
+      storeImageRef
+        .put(image.path, { contentType: 'image/jpeg' })
+        .then(snapshot => {
+          console.log(JSON.stringify(snapshot.metadata));
         });
+      updateUser(image);
     });
   };
 
   const handlePhotoUpload2 = () => {
-    const verifyRef = firebase
-      .database()
-      .ref('people/')
-      .child('users/' + dataKey);
-
     ImagePicker.openCamera({
       width: 400,
       height: 400,
@@ -81,26 +72,12 @@ export default function ProfilePhotoScreen(props) {
     }).then(image => {
       setProfilePhoto(image);
       setModalVisible(false);
-      user
-        .updateProfile({
-          photoURL: image.path,
-        })
-        .then(() => {
-          verifyRef
-            .update({
-              profilePhoto: image.path,
-            })
-            .then(data => {
-              console.log('data ', data);
-            })
-            .catch(error => {
-              console.log('error ', error);
-            });
-          console.log('update succesful');
-        })
-        .catch(err => {
-          console.log(err);
+      storeImageRef
+        .put(image.path, { contentType: 'image/jpeg' })
+        .then(snapshot => {
+          console.log(JSON.stringify(snapshot.metadata));
         });
+      updateUser(image);
     });
   };
 

@@ -78,6 +78,7 @@ export default function CreateAccountScreen(props) {
           });
         props.navigation.navigate('ProfilePhoto', {
           dataKey: dataKey,
+          user: user,
         });
       })
       .catch(error => {
