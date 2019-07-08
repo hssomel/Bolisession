@@ -23,15 +23,15 @@ export default function ProfilePhotoScreen(props) {
     .child('users/' + dataKey);
 
   // Event Handlers
-  const updateUser = image => {
+  const updateUser = url => {
     user
       .updateProfile({
-        photoURL: image.path,
+        photoURL: url,
       })
       .then(() => {
         verifyRef
           .update({
-            profilePhoto: image.path,
+            profilePhoto: url,
           })
           .then(data => {
             console.log('data ', data);
@@ -45,21 +45,35 @@ export default function ProfilePhotoScreen(props) {
       });
   };
 
+  const uploadToFirebase = image => {
+    storeImageRef
+      .put(image.path, { contentType: 'image/jpeg' })
+      .then(snapshot => {
+        console.log(JSON.stringify(snapshot.metadata));
+        storeImageRef
+          .getDownloadURL()
+          .then(url => {
+            updateUser(url);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   const handlePhotoUpload1 = () => {
     ImagePicker.openPicker({
-      width: 400,
-      height: 400,
+      width: 300,
+      height: 300,
       cropping: true,
       cropperCircleOverlay: true,
     }).then(image => {
       setProfilePhoto(image);
       setModalVisible(false);
-      storeImageRef
-        .put(image.path, { contentType: 'image/jpeg' })
-        .then(snapshot => {
-          console.log(JSON.stringify(snapshot.metadata));
-        });
-      updateUser(image);
+      uploadToFirebase(image);
     });
   };
 
@@ -72,12 +86,7 @@ export default function ProfilePhotoScreen(props) {
     }).then(image => {
       setProfilePhoto(image);
       setModalVisible(false);
-      storeImageRef
-        .put(image.path, { contentType: 'image/jpeg' })
-        .then(snapshot => {
-          console.log(JSON.stringify(snapshot.metadata));
-        });
-      updateUser(image);
+      uploadToFirebase(image);
     });
   };
 
