@@ -9,6 +9,7 @@ import {
   TextInput,
 } from 'react-native';
 import { Avatar } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 
 const { width } = Dimensions.get('window');
@@ -18,11 +19,10 @@ export default function HomeFeedHeader(props) {
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [tweet, setTweet] = useState(null);
-  const [username1, setUsername] = useState(null);
-
+  const [username, setUsername] = useState(null);
   // Firebase Reference
   const dataRef = firebase.database().ref('posts/');
-
+  // Event Handlers
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
@@ -30,7 +30,6 @@ export default function HomeFeedHeader(props) {
         setProfilePhoto(user.photoURL);
       }
     });
-
     return () => {
       if (unsubscribe) unsubscribe();
     };
@@ -44,7 +43,7 @@ export default function HomeFeedHeader(props) {
     dataRef
       .push({
         text: tweet,
-        username: username1,
+        username: username,
         userPhoto: profilePhoto,
         likes: 0,
         comments: 0,
@@ -53,6 +52,7 @@ export default function HomeFeedHeader(props) {
       })
       .then(data => {
         console.log('data ', data);
+        setModalOpen(false);
       })
       .catch(error => {
         console.log('error ', error);
@@ -75,9 +75,10 @@ export default function HomeFeedHeader(props) {
           marginBottom: 10,
         }}
       />
-      <TouchableOpacity style={styles.messageButton} onPress={openPostModal}>
-        <Text style={styles.messageButtonText}>What's on your mind?</Text>
+      <TouchableOpacity style={styles.openModal} onPress={openPostModal}>
+        <Text style={styles.buttonText}>What's going on?</Text>
       </TouchableOpacity>
+
       <Modal
         animationType="slide"
         transparent={false}
@@ -86,32 +87,32 @@ export default function HomeFeedHeader(props) {
           setModalOpen(false);
         }}
       >
-        <View
-          style={{
-            height: '100%',
-            width: '100%',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flex: 1,
-          }}
-        >
-          <Avatar
-            rounded
-            size={150}
-            source={{ uri: profilePhoto }}
-            // icon={{ name: 'ios-camera', type: 'ionicon' }}
-          />
-          <TextInput
-            placeholder="What's on your mind?"
-            onChangeText={input => setTweet(input)}
-          />
-          <TouchableOpacity
-            style={styles.messageButton}
-            onPress={writeUserData}
-          >
-            <Text style={styles.messageButtonText}>Post</Text>
-          </TouchableOpacity>
+        <View style={styles.outerModalContainer}>
+          <View style={styles.topContainer}>
+            <Icon
+              name="md-close"
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginLeft: 20,
+              }}
+              onPress={() => setModalOpen(false)}
+              color="orangered"
+              size={32}
+            />
+            <TouchableOpacity style={styles.postButton} onPress={writeUserData}>
+              <Text style={styles.postText}>Post</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.bottomContainer}>
+            <Avatar rounded size={60} source={{ uri: profilePhoto }} />
+            <TextInput
+              placeholder="What's the latest in bhangra?"
+              onChangeText={input => setTweet(input)}
+              style={styles.textInput}
+            />
+          </View>
         </View>
       </Modal>
     </View>
@@ -123,13 +124,60 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    height: '100%',
-    width: '100%',
-    flex: 1,
     paddingBottom: 20,
     paddingLeft: 10,
   },
-  messageButton: {
+  outerModalContainer: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flex: 1,
+  },
+  topContainer: {
+    height: '100%',
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flex: 1,
+    paddingTop: 15,
+  },
+  bottomContainer: {
+    height: '100%',
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flex: 9,
+    paddingLeft: 10,
+    paddingTop: 5,
+  },
+  postButton: {
+    height: 32,
+    width: width * 0.22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    backgroundColor: 'orangered',
+    position: 'absolute',
+    right: 0,
+    marginRight: 25,
+    marginTop: 15,
+  },
+  postText: {
+    color: 'white',
+    fontSize: 20,
+    fontFamily: 'Roboto',
+    fontWeight: 'bold',
+  },
+  textInput: {
+    fontSize: 20,
+    width: width * 0.8,
+    paddingBottom: '-1%',
+    marginLeft: 10,
+    marginTop: 8,
+  },
+  openModal: {
     height: 45,
     width: width * 0.7,
     alignItems: 'flex-start',
@@ -141,7 +189,7 @@ const styles = StyleSheet.create({
     marginLeft: 65,
     paddingLeft: 20,
   },
-  messageButtonText: {
+  buttonText: {
     color: '#808B96',
     fontSize: 18,
     fontFamily: 'Roboto',
