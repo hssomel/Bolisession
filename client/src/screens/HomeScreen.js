@@ -5,6 +5,7 @@ import UniversalFeed from '../components/UniversalFeed';
 import HomeFeedHeader from '../components/HomeFeedHeader';
 
 export default function HomeScreen(props) {
+  const [user, setUser] = useState(null);
   const [modalOpen, setModalOpen] = useState(
     props.navigation.getParam('modalOn', false),
   );
@@ -16,49 +17,31 @@ export default function HomeScreen(props) {
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      verifyRef
-        .orderByChild('userID')
-        .equalTo(user.uid)
-        .once('value', snapshot => {
-          if (!snapshot.val()) {
-            signOut();
-          }
-        });
+      if (user) {
+        setUser(user);
+        verifyRef
+          .orderByChild('userID')
+          .equalTo(user.uid)
+          .once('value', snapshot => {
+            if (!snapshot.val()) {
+              signOut();
+            }
+          });
+      } else {
+        setUser(null);
+      }
     });
 
     return () => {
       if (unsubscribe) unsubscribe();
       console.log('listener unmounted from HomeScreen');
     };
-  });
+  }, []);
 
   const signOut = () => {
     firebase.auth().signOut();
     console.log('Signed Out !');
     props.navigation.navigate('phone');
-  };
-
-  const writeUserData = () => {
-    firebase
-      .database()
-      .ref('posts/')
-      .push({
-        text: tweet,
-        username: user.displayName,
-        userPhoto: user.photoURL,
-        likes: 0,
-        comments: 0,
-        retweets: 0,
-        usersLiked: {},
-      })
-      .then(data => {
-        //success callback
-        console.log('data ', data);
-      })
-      .catch(error => {
-        //error callback
-        console.log('error ', error);
-      });
   };
 
   return (

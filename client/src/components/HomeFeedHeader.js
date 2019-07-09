@@ -17,13 +17,18 @@ export default function HomeFeedHeader(props) {
   // Intial State
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [tweet, setTweet] = useState('null');
+  const [tweet, setTweet] = useState(null);
   const [username1, setUsername] = useState(null);
+
+  // Firebase Reference
+  const dataRef = firebase.database().ref('posts/');
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      setUsername(user.displayName);
-      setProfilePhoto(user.photoURL);
+      if (user) {
+        setUsername(user.displayName);
+        setProfilePhoto(user.photoURL);
+      }
     });
 
     return () => {
@@ -36,9 +41,7 @@ export default function HomeFeedHeader(props) {
   };
 
   const writeUserData = () => {
-    firebase
-      .database()
-      .ref('posts/')
+    dataRef
       .push({
         text: tweet,
         username: username1,
@@ -49,11 +52,9 @@ export default function HomeFeedHeader(props) {
         usersLiked: {},
       })
       .then(data => {
-        //success callback
         console.log('data ', data);
       })
       .catch(error => {
-        //error callback
         console.log('error ', error);
       });
   };

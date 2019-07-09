@@ -15,7 +15,6 @@ const LandingPageScreen = props => {
   };
 
   useEffect(() => {
-    console.log('mounted to Landing Page');
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         setUser(user);
@@ -28,7 +27,7 @@ const LandingPageScreen = props => {
       if (unsubscribe) unsubscribe();
       console.log('unmounted from Landing Page');
     };
-  });
+  }, []);
 
   return (
     <View style={styles.container}>

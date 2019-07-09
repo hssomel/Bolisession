@@ -22,8 +22,10 @@ export default function ProfileFeedHeader(props) {
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      setUsername(user.displayName);
-      setProfilePhoto(user.photoURL);
+      if (user) {
+        setUsername(user.displayName);
+        setProfilePhoto(user.photoURL);
+      }
     });
 
     return () => {

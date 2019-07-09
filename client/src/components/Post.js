@@ -48,7 +48,6 @@ export default function Post(props) {
         user_name: user.displayName,
       })
       .then(data => {
-        console.log('successfully added ');
         increaseLikeByOne(key);
       })
       .catch(error => {
@@ -68,7 +67,6 @@ export default function Post(props) {
             .remove()
             .then(data => {
               decreaseLikeByOne(key);
-              console.log('successfully removed ');
             })
             .catch(error => {
               console.log('error ', error);

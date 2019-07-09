@@ -33,20 +33,16 @@ export default function CreateAccountScreen(props) {
   const [textInputStyle, setTextInputStyle] = useState('50%');
   const [currentTeam, setCurrentTeam] = useState('');
   const [username, setUserName] = useState('');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(props.navigation.getParam('user', null));
   const [dataKey, setDataKey] = useState(
     props.navigation.getParam('dataKey', null),
   );
 
-  useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      setUser(user);
-    });
-    return () => {
-      if (unsubscribe) unsubscribe();
-      console.log('unmounted from create account screen');
-    };
-  });
+  // Firebase References
+  const verifyRef = firebase
+    .database()
+    .ref('people/')
+    .child('users/' + dataKey);
 
   // Event Handlers
   const handleOnFocus = () => {
@@ -56,11 +52,6 @@ export default function CreateAccountScreen(props) {
   const handleOnBlur = () => setTextInputStyle('50%');
 
   const handleUserNameInputPress = () => {
-    const verifyRef = firebase
-      .database()
-      .ref('people/')
-      .child('users/' + dataKey);
-
     user
       .updateProfile({
         displayName: username,

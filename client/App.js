@@ -19,6 +19,7 @@ import AccountTypeScreen from './src/screens/AccountTypeScreen';
 import MapScreen from './src/screens/MapScreen';
 import MessagingListScreen from './src/screens/MessagingListScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
 
 const LandingPageStack = createStackNavigator({
   Start: {
@@ -77,6 +78,12 @@ const HomeStack = createStackNavigator(
         header: null,
       }),
     },
+    Settings: {
+      screen: SettingsScreen,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
   },
   {
     defaultNavigationOptions: ({ navigation }) => {
@@ -102,6 +109,7 @@ const HomeStack = createStackNavigator(
               justifyContent: 'center',
               marginRight: 20,
             }}
+            onPress={() => navigation.navigate('Settings')}
             color="grey"
             size={30}
           />

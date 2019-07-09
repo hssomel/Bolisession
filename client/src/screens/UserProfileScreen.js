@@ -19,6 +19,7 @@ export default function UserProfileScreen(props) {
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
+      console.log('we have reached the userProfileScreen');
     });
 
     return () => {

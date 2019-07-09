@@ -7,7 +7,7 @@ import firebase from 'react-native-firebase';
 export default function AccountTypeScreen(props) {
   // Initial State
   const [modalVisible, setModalVisible] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(props.navigation.getParam('user', null));
   const [username, setUserName] = useState('');
   const [profilePhoto, setProfilePhoto] = useState(null);
 

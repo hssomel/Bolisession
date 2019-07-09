@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
   phoneNumberInput: {
     marginTop: 40,
     fontSize: pillFontSize,
-    // backgroundColor: '#F1EF55',
     flex: 0.1,
   },
   buttonContainer: {

@@ -91,7 +91,9 @@ export default function ProfilePhotoScreen(props) {
   };
 
   const handlePress = () => {
-    props.navigation.navigate('AccountType');
+    props.navigation.navigate('AccountType', {
+      user: user,
+    });
   };
 
   const openModal = () => {
