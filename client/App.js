@@ -20,6 +20,7 @@ import MapScreen from './src/screens/MapScreen';
 import MessagingListScreen from './src/screens/MessagingListScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
+import PrivateMessageScreen from './src/screens/PrivateMessageScreen';
 
 const LandingPageStack = createStackNavigator({
   Start: {
@@ -131,6 +132,12 @@ const MapStack = createStackNavigator({
 const MessageStack = createStackNavigator({
   Message: {
     screen: MessagingListScreen,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+  PrivateMessage: {
+    screen: PrivateMessageScreen,
     navigationOptions: () => ({
       header: null,
     }),

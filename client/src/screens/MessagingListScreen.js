@@ -57,6 +57,15 @@ export default function MessagingListScreen(props) {
     );
   };
 
+  const onIconPress = item => {
+    const idVal = user.uid.concat(item._value.userID);
+    props.navigation.navigate('PrivateMessage', {
+      item: item,
+      user: user,
+      threadID: idVal,
+    });
+  };
+
   return (
     <FlatList
       style={styles.listcontainer}
@@ -68,7 +77,7 @@ export default function MessagingListScreen(props) {
             rounded: true,
             source: { uri: item._value.profilePhoto },
           }}
-          onPress={this.testChatPress}
+          onPress={() => onIconPress(item)}
           containerStyle={{ borderBottomWidth: 0 }}
         />
       )}
