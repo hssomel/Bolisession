@@ -6,9 +6,10 @@ import firebase from 'react-native-firebase';
 
 export default function UniversalFeed(props) {
   const { ListHeaderComponent } = props;
-  //Initial State
+  // Initial State
   const [feedData, setFeedData] = useState([]);
   const [user, setUser] = useState(null);
+  // Firebase References
   const postsRef = firebase.database().ref('posts/');
 
   useEffect(() => {
