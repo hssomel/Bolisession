@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import firebase from 'react-native-firebase';
 import UniversalFeed from '../components/UniversalFeed';
 import HomeFeedHeader from '../components/HomeFeedHeader';
@@ -13,6 +13,7 @@ export default function HomeScreen(props) {
         setUser(user);
       } else {
         setUser(null);
+        signOut();
       }
     });
 

@@ -9,6 +9,7 @@ import firebase from 'react-native-firebase';
 export default function ProfilePhotoScreen(props) {
   // Initial State
   const [profilePhoto, setProfilePhoto] = useState(null);
+  const [allowContinue, setAllowContinue] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [user, setUser] = useState(props.navigation.getParam('user', null));
   const [dataKey, setDataKey] = useState(
@@ -35,6 +36,7 @@ export default function ProfilePhotoScreen(props) {
           })
           .then(data => {
             console.log('data ', data);
+            setAllowContinue(true);
           })
           .catch(error => {
             console.log('error ', error);
@@ -65,6 +67,7 @@ export default function ProfilePhotoScreen(props) {
   };
 
   const handlePhotoUpload1 = () => {
+    console.log('this function triggered');
     ImagePicker.openPicker({
       width: 300,
       height: 300,
@@ -137,7 +140,7 @@ export default function ProfilePhotoScreen(props) {
         }}
         title="UPLOAD PROFILE PHOTO"
       />
-      {profilePhoto && (
+      {allowContinue && (
         <Text style={styles.text3} onPress={handlePress}>
           CONTINUE
         </Text>
