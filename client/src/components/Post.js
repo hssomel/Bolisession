@@ -26,21 +26,6 @@ function Post(props) {
       });
   };
 
-  // function called when user likes a post
-  const handleLikePress = (item, key) => {
-    const userLikedRef = postsRef.child(key).child('usersLiked');
-    userLikedRef
-      .orderByChild('user_name')
-      .equalTo(user.displayName)
-      .once('value', snapshot => {
-        if (!snapshot.val()) {
-          addUserToLikesArray(key);
-        } else {
-          removeUserFromLikesArray(key);
-        }
-      });
-  };
-
   const addUserToLikesArray = key => {
     const addUserRef = postsRef.child(key).child('usersLiked');
     addUserRef
@@ -77,16 +62,31 @@ function Post(props) {
 
   const increaseLikeByOne = key => {
     const increaseLikeRef = postsRef.child(key).child('likes');
-    increaseLikeRef.transaction(current_value => {
-      return (current_value || 0) + 1;
+    increaseLikeRef.transaction(currentVal => {
+      return (currentVal || 0) + 1;
     });
   };
 
   const decreaseLikeByOne = key => {
     const decreaseLikeRef = postsRef.child(key).child('likes');
-    decreaseLikeRef.transaction(current_value => {
-      return (current_value || 0) - 1;
+    decreaseLikeRef.transaction(currentVal => {
+      return (currentVal || 0) - 1;
     });
+  };
+
+  // function called when user likes a post
+  const handleLikePress = (item, key) => {
+    const userLikedRef = postsRef.child(key).child('usersLiked');
+    userLikedRef
+      .orderByChild('user_name')
+      .equalTo(user.displayName)
+      .once('value', snapshot => {
+        if (!snapshot.val()) {
+          addUserToLikesArray(key);
+        } else {
+          removeUserFromLikesArray(key);
+        }
+      });
   };
 
   const handleLocalLikePress = item => {
@@ -105,7 +105,6 @@ function Post(props) {
   };
 
   const handleAvatarPress = () => {
-    console.log('the item being logged is', item._value.username);
     props.navigation.navigate('Profile', {
       item: item,
     });
@@ -131,7 +130,6 @@ function Post(props) {
           </View>
         </TouchableHighlight>
       </View>
-
       <View style={styles.secondaryContainer}>
         <View style={styles.usernameContainer}>
           <Text style={styles.usernameText}>{'@' + item._value.username}</Text>
@@ -146,14 +144,12 @@ function Post(props) {
               <Text style={styles.badgeCount}>{item._value.comments}</Text>
             </View>
           </TouchableHighlight>
-
           <TouchableHighlight>
             <View style={styles.iconContainer}>
               <Icon name="md-repeat" size={20} />
               <Text style={styles.badgeCount}>{item._value.retweets}</Text>
             </View>
           </TouchableHighlight>
-
           <TouchableHighlight>
             <View style={styles.iconContainer}>
               {liked && (

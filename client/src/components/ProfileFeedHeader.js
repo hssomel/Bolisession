@@ -6,31 +6,32 @@ import {
   Text,
   Dimensions,
 } from 'react-native';
-import { Image, Avatar } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Avatar } from 'react-native-elements';
 import Video from 'react-native-video';
-import firebase from 'react-native-firebase';
-
 const { width } = Dimensions.get('window');
+
 const componentWidth = width;
 const videoHeight = width * 0.6;
-const avatarOffset = -75;
 
 export default function ProfileFeedHeader(props) {
+  const { itemUser, user } = props;
+  // Initial State
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [username, setUsername] = useState(null);
-
+  const [sameUser, setSameUser] = useState(false);
+  // Event Handlers
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        setUsername(user.displayName);
-        setProfilePhoto(user.photoURL);
+    if (itemUser) {
+      setProfilePhoto(itemUser._value.userPhoto);
+      setUsername(itemUser._value.username);
+      if (itemUser._value.username === user.displayName) {
+        setSameUser(true);
       }
-    });
-
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
+    } else {
+      setProfilePhoto(user.photoURL);
+      setUsername(user.displayName);
+      setSameUser(true);
+    }
   }, []);
 
   return (
@@ -70,10 +71,16 @@ export default function ProfileFeedHeader(props) {
           <Text style={{ fontSize: 16, paddingLeft: 15 }}> Following: </Text>
           <Text style={styles.followCount}>2,781</Text>
         </View>
-
-        <TouchableOpacity style={styles.messageButton}>
-          <Text style={styles.messageButtonText}>Message</Text>
-        </TouchableOpacity>
+        {!sameUser && (
+          <TouchableOpacity style={styles.messageButton}>
+            <Text style={styles.messageButtonText}>Message</Text>
+          </TouchableOpacity>
+        )}
+        {sameUser && (
+          <TouchableOpacity style={styles.editButton}>
+            <Text style={styles.editText}>Edit Profile</Text>
+          </TouchableOpacity>
+        )}
 
         <Text style={styles.bioText}>
           This is a sample user bio where they can post their location,
@@ -154,11 +161,28 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10,
+    marginTop: 12.5,
+    borderRadius: 15,
+    marginBottom: 15,
+  },
+  editButton: {
+    color: 'red',
+    height: 30,
+    width: '35%',
+    backgroundColor: 'red',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12.5,
     borderRadius: 15,
     marginBottom: 15,
   },
   messageButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: 'Roboto',
+  },
+  editText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 18,

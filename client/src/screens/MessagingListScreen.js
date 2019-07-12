@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, SafeAreaView, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
-
 import firebase from 'react-native-firebase';
 
 export default function MessagingListScreen(props) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -15,26 +15,15 @@ import firebase from 'react-native-firebase';
 const { width } = Dimensions.get('window');
 
 export default function HomeFeedHeader(props) {
+  const { user } = props;
   // Intial State
-  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [profilePhoto] = useState(user.photoURL);
   const [modalOpen, setModalOpen] = useState(false);
   const [tweet, setTweet] = useState(null);
-  const [username, setUsername] = useState(null);
+  const [username] = useState(user.displayName);
   // Firebase Reference
   const dataRef = firebase.database().ref('posts/');
   // Event Handlers
-  useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        setUsername(user.displayName);
-        setProfilePhoto(user.photoURL);
-      }
-    });
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
-  }, []);
-
   const openPostModal = () => {
     setModalOpen(true);
   };

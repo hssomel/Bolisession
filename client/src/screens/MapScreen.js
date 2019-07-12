@@ -36,7 +36,7 @@ export default function MapScreen(props) {
     <View style={styles.container}>
       <Text style={styles.text}>WELCOME TO THE MAP SCREEN</Text>
       <TouchableOpacity style={styles.messageButton} onPress={signOut}>
-        <Text style={styles.messageButtonText}>What's on your mind?</Text>
+        <Text style={styles.messageButtonText}>Sign Out</Text>
       </TouchableOpacity>
     </View>
   );
@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'yellow',
     height: '100%',
     width: '100%',
   },
@@ -57,17 +56,15 @@ const styles = StyleSheet.create({
   messageButton: {
     height: 45,
     width: '60%',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 25,
     marginTop: 45,
     borderColor: '#808B96',
     borderWidth: 1,
-    marginLeft: 65,
-    paddingLeft: 20,
   },
   messageButtonText: {
-    color: '#808B96',
+    color: 'red',
     fontSize: 18,
     fontFamily: 'Roboto',
   },

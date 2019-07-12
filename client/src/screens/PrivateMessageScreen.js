@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ActivityIndicator, View, SafeAreaView } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 
 import firebase from 'react-native-firebase';
@@ -38,20 +38,28 @@ export default function PrivateMessageScreen(props) {
   };
 
   const ImportExistingThread = () => {
-    messageRef
-      .orderByChild('_threadID')
-      .equalTo(threadID)
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          setThreadKey(data.key);
-          getExistingMessages(data.key);
+    return new Promise((resolve, reject) => {
+      messageRef
+        .orderByChild('_threadID')
+        .equalTo(threadID)
+        .once('value', snapshot => {
+          snapshot.forEach(data => {
+            setThreadKey(data.key);
+            resolve(data.key);
+          });
         });
-      });
+    });
   };
 
   useEffect(() => {
     if (!threadKey) {
-      ImportExistingThread();
+      ImportExistingThread()
+        .then(res => {
+          getExistingMessages(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }, []);
 

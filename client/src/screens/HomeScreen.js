@@ -5,12 +5,15 @@ import UniversalFeed from '../components/UniversalFeed';
 import HomeFeedHeader from '../components/HomeFeedHeader';
 
 export default function HomeScreen(props) {
-  const [user, setUser] = useState(null);
-
+  // Initial State
+  const [thisUser, setUser] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  // Event Handlers
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         setUser(user);
+        setIsLoaded(true);
       } else {
         setUser(null);
         signOut();
@@ -31,7 +34,21 @@ export default function HomeScreen(props) {
 
   return (
     <View>
-      <UniversalFeed ListHeaderComponent={HomeFeedHeader} />
+      <View>
+        {!isLoaded && (
+          <View style={{ justifyContent: 'center' }}>
+            <ActivityIndicator size="large" color="orangered" />
+          </View>
+        )}
+        {isLoaded && (
+          <View>
+            <UniversalFeed
+              user={thisUser}
+              ListHeaderComponent={<HomeFeedHeader user={thisUser} />}
+            />
+          </View>
+        )}
+      </View>
     </View>
   );
 }
