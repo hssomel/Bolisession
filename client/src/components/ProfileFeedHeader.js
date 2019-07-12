@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Text,
   Dimensions,
+  Switch,
 } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import Video from 'react-native-video';
@@ -14,17 +15,18 @@ const componentWidth = width;
 const videoHeight = width * 0.6;
 
 export default function ProfileFeedHeader(props) {
-  const { itemUser, user } = props;
+  const { user, toggleSwitch, switchValue, UserOfPost } = props;
   // Initial State
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [username, setUsername] = useState(null);
   const [sameUser, setSameUser] = useState(false);
+
   // Event Handlers
   useEffect(() => {
-    if (itemUser) {
-      setProfilePhoto(itemUser._value.userPhoto);
-      setUsername(itemUser._value.username);
-      if (itemUser._value.username === user.displayName) {
+    if (UserOfPost) {
+      setProfilePhoto(UserOfPost._value.userPhoto);
+      setUsername(UserOfPost._value.username);
+      if (UserOfPost._value.username === user.displayName) {
         setSameUser(true);
       }
     } else {
@@ -47,7 +49,6 @@ export default function ProfileFeedHeader(props) {
           resizeMode={'cover'}
         />
       </View>
-
       <View style={styles.viewTwo}>
         <View style={styles.viewThree}>
           <Text style={styles.username}>{'@' + username}</Text>
@@ -64,7 +65,6 @@ export default function ProfileFeedHeader(props) {
             }}
           />
         </View>
-
         <View style={styles.viewFour}>
           <Text style={{ fontSize: 16 }}> Followers: </Text>
           <Text style={styles.followCount}>1,539</Text>
@@ -81,7 +81,26 @@ export default function ProfileFeedHeader(props) {
             <Text style={styles.editText}>Edit Profile</Text>
           </TouchableOpacity>
         )}
-
+        {!sameUser && (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 10,
+            }}
+          >
+            <Switch
+              onValueChange={toggleSwitch}
+              value={switchValue}
+              thumbColor={'orangered'}
+            />
+            <Text
+              style={{ fontSize: 18, color: 'orangered', fontWeight: 'bold' }}
+            >
+              Follow
+            </Text>
+          </View>
+        )}
         <Text style={styles.bioText}>
           This is a sample user bio where they can post their location,
           interests, and favorite dance teams etc.
@@ -99,7 +118,7 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     flex: 1,
-    paddingBottom: 50,
+    paddingBottom: 40,
   },
   viewOne: {
     flexDirection: 'column',
@@ -188,9 +207,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Roboto',
   },
-  biotext: {
+  bioText: {
     color: 'black',
-    fontSize: 26,
+    fontSize: 16,
     paddingRight: 10,
   },
 });

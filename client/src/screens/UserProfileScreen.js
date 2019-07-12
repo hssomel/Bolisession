@@ -7,13 +7,37 @@ import UserProfileFeed from '../components/UserProfileFeed';
 export default function UserProfileScreen(props) {
   // Initial State
   const [thisUser, setUser] = useState(null);
-  const [itemUser] = useState(props.navigation.getParam('item', null));
+  const [UserOfPost] = useState(props.navigation.getParam('item', null));
   const [isLoaded, setIsLoaded] = useState(false);
-  //Initial database references
+  const [switchValue, setSwitchValue] = useState(false);
+  const [currentUserKey, setCurrentUserParentKey] = useState(null);
+  // Firebase references
+  const usersRef = firebase
+    .database()
+    .ref('people/')
+    .child('users');
+
+  // Event Handlers
+  const toggleSwitch = value => {
+    setSwitchValue(value);
+  };
+
+  const getCurrentUserParentKey = user => {
+    usersRef
+      .orderByChild('userID')
+      .equalTo(user.uid)
+      .once('value', snapshot => {
+        snapshot.forEach(data => {
+          setCurrentUserParentKey(data.key);
+          console.log(data.key);
+        });
+      });
+  };
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
+      getCurrentUserParentKey(user);
       setIsLoaded(true);
     });
     return () => {
@@ -32,9 +56,14 @@ export default function UserProfileScreen(props) {
         {isLoaded && (
           <View>
             <UserProfileFeed
-              itemUser={itemUser}
+              UserOfPost={UserOfPost}
               ListHeaderComponent={
-                <ProfileFeedHeader itemUser={itemUser} user={thisUser} />
+                <ProfileFeedHeader
+                  UserOfPost={UserOfPost}
+                  user={thisUser}
+                  toggleSwitch={toggleSwitch}
+                  switchValue={switchValue}
+                />
               }
             />
           </View>

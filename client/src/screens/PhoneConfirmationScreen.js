@@ -15,14 +15,14 @@ export default function PhoneConfirmationScreen(props) {
   // Initial State
   const [codeInput, setCodeInput] = useState('');
   const [message, setMessage] = useState(''); // TO DO integrate into error
-  const [phoneNumber, setPhoneNumber] = useState(
+  const [phoneNumber] = useState(
     props.navigation.getParam('phoneNumber', null),
   );
-  const [confirmResult, setConfirmResult] = useState(
+  const [confirmResult] = useState(
     props.navigation.getParam('confirmResult', null),
   );
   // Firebase References
-  const verifyRef = firebase
+  const usersRef = firebase
     .database()
     .ref('people/')
     .child('users');
@@ -33,12 +33,12 @@ export default function PhoneConfirmationScreen(props) {
   };
 
   const updateFirebaseRef = user => {
-    verifyRef
+    usersRef
       .orderByChild('userID')
       .equalTo(user.uid)
       .once('value', snapshot => {
         if (!snapshot.val()) {
-          verifyRef
+          usersRef
             .push({
               userID: user.uid,
               userPhoneNumber: user.phoneNumber,

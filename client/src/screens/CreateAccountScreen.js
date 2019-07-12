@@ -33,13 +33,11 @@ export default function CreateAccountScreen(props) {
   const [textInputStyle, setTextInputStyle] = useState('50%');
   const [currentTeam, setCurrentTeam] = useState('');
   const [username, setUserName] = useState('');
-  const [user, setUser] = useState(props.navigation.getParam('user', null));
-  const [dataKey, setDataKey] = useState(
-    props.navigation.getParam('dataKey', null),
-  );
+  const [user] = useState(props.navigation.getParam('user', null));
+  const [dataKey] = useState(props.navigation.getParam('dataKey', null));
 
   // Firebase References
-  const verifyRef = firebase
+  const usersRef = firebase
     .database()
     .ref('people/')
     .child('users/' + dataKey);
@@ -57,7 +55,7 @@ export default function CreateAccountScreen(props) {
         displayName: username,
       })
       .then(() => {
-        verifyRef
+        usersRef
           .update({
             username: username,
           })
