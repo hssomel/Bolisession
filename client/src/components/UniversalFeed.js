@@ -8,10 +8,14 @@ export default function UniversalFeed(props) {
   const { ListHeaderComponent } = props;
   // Initial State
   const [feedData, setFeedData] = useState([]);
-  const [user, setUser] = useState(null);
+  const [thisUser, setUser] = useState(null); //
   const [isLoaded, setIsLoaded] = useState(false);
   // Firebase References
   const postsRef = firebase.database().ref('posts/');
+  const usersRef = firebase
+    .database()
+    .ref('people/')
+    .child('users');
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
@@ -54,7 +58,7 @@ export default function UniversalFeed(props) {
         <FlatList
           data={feedData}
           keyExtractor={item => item.key}
-          renderItem={({ item }) => <Post item={item} user={user} />}
+          renderItem={({ item }) => <Post item={item} user={thisUser} />}
           ListHeaderComponent={ListHeaderComponent}
         />
       </View>

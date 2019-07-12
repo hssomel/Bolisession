@@ -3,17 +3,18 @@ import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { withNavigation } from 'react-navigation';
 
-export default function Post(props) {
+function Post(props) {
   // Initial State
   const { item, user } = props;
   const [liked, setHasLiked] = useState(null);
   const [likeCounter, setLikeCounter] = useState(null);
   // Firebase Reference
   const postsRef = firebase.database().ref('posts/');
-
-  useEffect(() => {
-    const heartRef = postsRef
+  // Event Handlers
+  const hasUserLiked = () => {
+    postsRef
       .child(item.key)
       .child('usersLiked')
       .orderByChild('user_name')
@@ -23,12 +24,11 @@ export default function Post(props) {
         setHasLiked(snapshot.val());
         setLikeCounter(item._value.likes);
       });
-  }, [handleLocalLikePress]);
+  };
 
   // function called when user likes a post
   const handleLikePress = (item, key) => {
     const userLikedRef = postsRef.child(key).child('usersLiked');
-
     userLikedRef
       .orderByChild('user_name')
       .equalTo(user.displayName)
@@ -47,7 +47,7 @@ export default function Post(props) {
       .push({
         user_name: user.displayName,
       })
-      .then(data => {
+      .then(() => {
         increaseLikeByOne(key);
       })
       .catch(error => {
@@ -65,7 +65,7 @@ export default function Post(props) {
           const finalRemoveRef = removeUserRef.child(data.key);
           finalRemoveRef
             .remove()
-            .then(data => {
+            .then(() => {
               decreaseLikeByOne(key);
             })
             .catch(error => {
@@ -104,6 +104,17 @@ export default function Post(props) {
     }, 100);
   };
 
+  const handleAvatarPress = () => {
+    console.log('the item being logged is', item._value.username);
+    props.navigation.navigate('Profile', {
+      item: item,
+    });
+  };
+
+  useEffect(() => {
+    hasUserLiked();
+  }, []);
+
   return (
     <View style={styles.tweet}>
       <View style={styles.firstContainer}>
@@ -115,6 +126,7 @@ export default function Post(props) {
               }}
               rounded
               size={60}
+              onPress={handleAvatarPress}
             />
           </View>
         </TouchableHighlight>
@@ -167,6 +179,7 @@ export default function Post(props) {
     </View>
   );
 }
+export default withNavigation(Post);
 
 const styles = StyleSheet.create({
   firstContainer: {
