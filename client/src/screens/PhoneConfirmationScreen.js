@@ -42,6 +42,8 @@ export default function PhoneConfirmationScreen(props) {
             .push({
               userID: user.uid,
               userPhoneNumber: user.phoneNumber,
+              following: 0,
+              follower: 0,
             })
             .then(data => {
               props.navigation.navigate('Create', {

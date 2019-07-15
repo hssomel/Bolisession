@@ -107,6 +107,7 @@ function Post(props) {
   const handleAvatarPress = () => {
     props.navigation.navigate('Profile', {
       item: item,
+      name: item._value.username,
     });
   };
 

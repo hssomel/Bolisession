@@ -5,10 +5,10 @@ import {
   TouchableOpacity,
   Text,
   Dimensions,
-  Switch,
 } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import Video from 'react-native-video';
+import ToggleSwitch from './ToggleSwitch';
 const { width } = Dimensions.get('window');
 
 const componentWidth = width;
@@ -20,7 +20,6 @@ export default function ProfileFeedHeader(props) {
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [username, setUsername] = useState(null);
   const [sameUser, setSameUser] = useState(false);
-
   // Event Handlers
   useEffect(() => {
     if (UserOfPost) {
@@ -72,34 +71,20 @@ export default function ProfileFeedHeader(props) {
           <Text style={styles.followCount}>2,781</Text>
         </View>
         {!sameUser && (
-          <TouchableOpacity style={styles.messageButton}>
-            <Text style={styles.messageButtonText}>Message</Text>
-          </TouchableOpacity>
+          <View style={{ width: '100%' }}>
+            <TouchableOpacity style={styles.messageButton}>
+              <Text style={styles.messageButtonText}>Message</Text>
+            </TouchableOpacity>
+            <ToggleSwitch
+              toggleSwitch={toggleSwitch}
+              switchValue={switchValue}
+            />
+          </View>
         )}
         {sameUser && (
           <TouchableOpacity style={styles.editButton}>
             <Text style={styles.editText}>Edit Profile</Text>
           </TouchableOpacity>
-        )}
-        {!sameUser && (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginBottom: 10,
-            }}
-          >
-            <Switch
-              onValueChange={toggleSwitch}
-              value={switchValue}
-              thumbColor={'orangered'}
-            />
-            <Text
-              style={{ fontSize: 18, color: 'orangered', fontWeight: 'bold' }}
-            >
-              Follow
-            </Text>
-          </View>
         )}
         <Text style={styles.bioText}>
           This is a sample user bio where they can post their location,
@@ -176,7 +161,7 @@ const styles = StyleSheet.create({
   messageButton: {
     color: 'red',
     height: 30,
-    width: '28%',
+    width: '30%',
     backgroundColor: 'red',
     alignItems: 'center',
     justifyContent: 'center',
