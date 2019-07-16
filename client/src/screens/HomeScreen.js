@@ -8,8 +8,30 @@ export default function HomeScreen(props) {
   // Initial State
   const [thisUser, setUser] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  // Firebase Reference
+  const postsRef = firebase.database().ref('posts/');
   // Event Handlers
+  const writeUserData = tweet => {
+    postsRef
+      .push({
+        text: tweet,
+        username: thisUser.displayName,
+        userPhoto: thisUser.photoURL,
+        likes: 0,
+        comments: 0,
+        retweets: 0,
+        usersLiked: {},
+      })
+      .then(data => {
+        console.log('data ', data);
+      })
+      .catch(error => {
+        console.log('error ', error);
+      });
+  };
+
   useEffect(() => {
+    console.log('mounted to home screen');
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         setUser(user);
@@ -19,7 +41,6 @@ export default function HomeScreen(props) {
         signOut();
       }
     });
-
     return () => {
       if (unsubscribe) unsubscribe();
       console.log('listener unmounted from HomeScreen');
@@ -44,7 +65,9 @@ export default function HomeScreen(props) {
           <View>
             <UniversalFeed
               user={thisUser}
-              ListHeaderComponent={<HomeFeedHeader user={thisUser} />}
+              ListHeaderComponent={
+                <HomeFeedHeader user={thisUser} writeUserData={writeUserData} />
+              }
             />
           </View>
         )}

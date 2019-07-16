@@ -12,6 +12,7 @@ export default function UserProfileScreen(props) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [switchValue, setSwitchValue] = useState(null);
   const [currentUserKey, setCurrentUserParentKey] = useState(null);
+  const [postUserParentKey, setPostUserParentKey] = useState(null);
   // Firebase references
   const usersRef = firebase
     .database()
@@ -38,21 +39,21 @@ export default function UserProfileScreen(props) {
     });
   };
 
-  const increaseFollowingByOne = key => {
-    const increaseFollowingRef = usersRef.child(key).child('following');
+  const increaseFollowingCount = key => {
+    const increaseFollowingRef = usersRef.child(key).child('followingCount');
     increaseFollowingRef.transaction(currentVal => {
       return (currentVal || 0) + 1;
     });
   };
 
-  const decreaseFollowingByOne = key => {
-    const decreaseFollowingRef = usersRef.child(key).child('following');
+  const decreaseFollowingCount = key => {
+    const decreaseFollowingRef = usersRef.child(key).child('followingCount');
     decreaseFollowingRef.transaction(currentVal => {
       return (currentVal || 0) - 1;
     });
   };
 
-  const increaseFollowing = () => {
+  const increaseFollowingList = () => {
     usersRef
       .child(currentUserKey)
       .child('following')
@@ -60,14 +61,14 @@ export default function UserProfileScreen(props) {
         user_name: UserOfPostName,
       })
       .then(() => {
-        increaseFollowingByOne(currentUserKey);
+        increaseFollowingCount(currentUserKey);
       })
       .catch(err => {
         console.log(err);
       });
   };
 
-  const decreaseFollowing = () => {
+  const decreaseFollowingList = () => {
     const removeUserRef = usersRef.child(currentUserKey).child('following');
     removeUserRef
       .orderByChild('user_name')
@@ -78,7 +79,60 @@ export default function UserProfileScreen(props) {
           finalRemoveRef
             .remove()
             .then(() => {
-              decreaseFollowingByOne(currentUserKey);
+              decreaseFollowingCount(currentUserKey);
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        });
+      });
+  };
+
+  const increaseFollowerCount = () => {
+    const increaseFollowersRef = usersRef
+      .child(postUserParentKey)
+      .child('followersCount');
+    increaseFollowersRef.transaction(currentVal => {
+      return (currentVal || 0) + 1;
+    });
+  };
+
+  const decreaseFollowerCount = () => {
+    const decreaseFollowersRef = usersRef
+      .child(postUserParentKey)
+      .child('followersCount');
+    decreaseFollowersRef.transaction(currentVal => {
+      return (currentVal || 0) - 1;
+    });
+  };
+
+  const increaseFollowerList = () => {
+    usersRef
+      .child(postUserParentKey)
+      .child('followers')
+      .push({
+        user_name: thisUser.displayName,
+      })
+      .then(() => {
+        increaseFollowerCount();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const decreaseFollowersList = () => {
+    const removeUserRef = usersRef.child(postUserParentKey).child('followers');
+    removeUserRef
+      .orderByChild('user_name')
+      .equalTo(thisUser.displayName)
+      .once('value', snapshot => {
+        snapshot.forEach(data => {
+          const finalRemoveRef = removeUserRef.child(data.key);
+          finalRemoveRef
+            .remove()
+            .then(() => {
+              decreaseFollowerCount();
             })
             .catch(err => {
               console.log(err);
@@ -90,9 +144,11 @@ export default function UserProfileScreen(props) {
   const toggleSwitch = value => {
     setSwitchValue(value);
     if (!value) {
-      decreaseFollowing();
+      decreaseFollowingList();
+      decreaseFollowersList();
     } else {
-      increaseFollowing();
+      increaseFollowingList();
+      increaseFollowerList();
     }
   };
 
@@ -110,6 +166,20 @@ export default function UserProfileScreen(props) {
     });
   };
 
+  const getPostUserParentKey = () => {
+    return new Promise((resolve, reject) => {
+      usersRef
+        .orderByChild('username')
+        .equalTo(UserOfPostName)
+        .once('value', snapshot => {
+          snapshot.forEach(data => {
+            setPostUserParentKey(data.key);
+            resolve();
+          });
+        });
+    });
+  };
+
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
@@ -118,7 +188,13 @@ export default function UserProfileScreen(props) {
           if (UserOfPost) {
             initialSwitchValue(res)
               .then(() => {
-                setIsLoaded(true);
+                getPostUserParentKey()
+                  .then(() => {
+                    setIsLoaded(true);
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
               })
               .catch(err => {
                 console.log(err);

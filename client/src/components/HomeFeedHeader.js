@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,43 +10,25 @@ import {
 } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
-import firebase from 'react-native-firebase';
 
 const { width } = Dimensions.get('window');
 
 export default function HomeFeedHeader(props) {
-  const { user } = props;
+  const { user, writeUserData } = props;
   // Intial State
   const [profilePhoto] = useState(user.photoURL);
   const [modalOpen, setModalOpen] = useState(false);
   const [tweet, setTweet] = useState(null);
-  const [username] = useState(user.displayName);
-  // Firebase Reference
-  const dataRef = firebase.database().ref('posts/');
+
   // Event Handlers
   const openPostModal = () => {
     setModalOpen(true);
   };
-
-  const writeUserData = () => {
-    dataRef
-      .push({
-        text: tweet,
-        username: username,
-        userPhoto: profilePhoto,
-        likes: 0,
-        comments: 0,
-        retweets: 0,
-        usersLiked: {},
-      })
-      .then(data => {
-        console.log('data ', data);
-        setModalOpen(false);
-      })
-      .catch(error => {
-        console.log('error ', error);
-      });
+  const handlePress = tweet => {
+    writeUserData(tweet);
+    setModalOpen(false);
   };
+  useEffect(() => {}, [handlePress]);
 
   return (
     <View style={styles.container}>
@@ -89,7 +71,10 @@ export default function HomeFeedHeader(props) {
               color="orangered"
               size={32}
             />
-            <TouchableOpacity style={styles.postButton} onPress={writeUserData}>
+            <TouchableOpacity
+              style={styles.postButton}
+              onPress={() => handlePress(tweet)}
+            >
               <Text style={styles.postText}>Post</Text>
             </TouchableOpacity>
           </View>

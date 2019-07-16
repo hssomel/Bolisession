@@ -29,7 +29,7 @@ export default function UniversalFeed(props) {
 
   useEffect(() => {
     getAllPosts();
-  }, []);
+  }, [feedData]);
 
   return (
     <SafeAreaView>

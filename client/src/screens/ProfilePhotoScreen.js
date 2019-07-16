@@ -67,7 +67,6 @@ export default function ProfilePhotoScreen(props) {
   };
 
   const handlePhotoUpload1 = () => {
-    console.log('this function triggered');
     ImagePicker.openPicker({
       width: 300,
       height: 300,
