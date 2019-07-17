@@ -4,6 +4,10 @@ import firebase from 'react-native-firebase';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { withNavigation } from 'react-navigation';
+import {
+  addUserToLikesArray,
+  removeUserFromLikesArray,
+} from '../actions/userProfileActions';
 
 function Post(props) {
   // Initial State
@@ -26,72 +30,23 @@ function Post(props) {
       });
   };
 
-  const addUserToLikesArray = key => {
-    const addUserRef = postsRef.child(key).child('usersLiked');
-    addUserRef
-      .push({
-        user_name: user.displayName,
-      })
-      .then(() => {
-        increaseLikeByOne(key);
-      })
-      .catch(error => {
-        console.log('error ', error);
-      });
-  };
-
-  const removeUserFromLikesArray = key => {
-    const removeUserRef = postsRef.child(key).child('usersLiked');
-    removeUserRef
-      .orderByChild('user_name')
-      .equalTo(user.displayName)
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          const finalRemoveRef = removeUserRef.child(data.key);
-          finalRemoveRef
-            .remove()
-            .then(() => {
-              decreaseLikeByOne(key);
-            })
-            .catch(error => {
-              console.log('error ', error);
-            });
-        });
-      });
-  };
-
-  const increaseLikeByOne = key => {
-    const increaseLikeRef = postsRef.child(key).child('likes');
-    increaseLikeRef.transaction(currentVal => {
-      return (currentVal || 0) + 1;
-    });
-  };
-
-  const decreaseLikeByOne = key => {
-    const decreaseLikeRef = postsRef.child(key).child('likes');
-    decreaseLikeRef.transaction(currentVal => {
-      return (currentVal || 0) - 1;
-    });
-  };
-
-  // function called when user likes a post
-  const handleLikePress = (item, key) => {
+  const adjustLikes = key => {
     const userLikedRef = postsRef.child(key).child('usersLiked');
     userLikedRef
       .orderByChild('user_name')
       .equalTo(user.displayName)
       .once('value', snapshot => {
         if (!snapshot.val()) {
-          addUserToLikesArray(key);
+          addUserToLikesArray(key, user.displayName);
         } else {
-          removeUserFromLikesArray(key);
+          removeUserFromLikesArray(key, user.displayName);
         }
       });
   };
 
-  const handleLocalLikePress = item => {
-    handleLikePress(item, item.key);
+  const handlePress = item => {
     setTimeout(() => {
+      adjustLikes(item.key);
       if (liked) {
         setHasLiked(null);
         const counter = likeCounter - 1;
@@ -158,14 +113,14 @@ function Post(props) {
                   name="ios-heart"
                   size={25}
                   color="red"
-                  onPress={() => handleLocalLikePress(item)}
+                  onPress={() => handlePress(item)}
                 />
               )}
               {!liked && (
                 <Icon
                   name="ios-heart-empty"
                   size={25}
-                  onPress={() => handleLocalLikePress(item)}
+                  onPress={() => handlePress(item)}
                 />
               )}
               <Text style={styles.badgeCount}>{likeCounter}</Text>
@@ -184,7 +139,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    // backgroundColor: '#8acafe',
   },
   secondaryContainer: {
     flex: 5,
@@ -192,7 +146,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     paddingLeft: 10,
-    // backgroundColor: '#cccccc',
   },
   usernameText: {
     fontWeight: 'bold',
@@ -207,7 +160,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    // flex: 1,
   },
   tweetText: {
     marginTop: 1,
@@ -222,19 +174,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff3333',
   },
   usernameContainer: {
-    // backgroundColor: '#ff7f50', // light orange
     height: '100%',
     width: '100%',
     flex: 1,
   },
   tweetBodyContainer: {
-    // backgroundColor: '#00ff00', // lime green
     height: '100%',
     width: '100%',
     flex: 1,
   },
   footerContainer: {
-    // backgroundColor: 'red',
     height: '100%',
     width: '100%',
     flexDirection: 'row',
@@ -246,7 +195,6 @@ const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor: 'purple',
     height: '100%',
     width: '100%',
     flex: 1,

@@ -4,7 +4,7 @@ import firebase from 'react-native-firebase';
 import Post from './Post';
 
 export default function UserProfileFeed(props) {
-  const { ListHeaderComponent, UserOfPost } = props;
+  const { ListHeaderComponent, postData } = props;
   // Initial State
   const [feedData, setFeedData] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -43,11 +43,11 @@ export default function UserProfileFeed(props) {
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
-      if (!UserOfPost) {
+      if (!postData) {
         // client used navigation icon
         getItemsbyUser(user.displayName);
       } else {
-        getItemsbyUser(UserOfPost._value.username);
+        getItemsbyUser(postData._value.username);
       }
     });
     return () => {

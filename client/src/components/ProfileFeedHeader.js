@@ -15,23 +15,36 @@ const componentWidth = width;
 const videoHeight = width * 0.6;
 
 export default function ProfileFeedHeader(props) {
-  const { user, toggleSwitch, switchValue, UserOfPost } = props;
+  const {
+    user,
+    toggleSwitch,
+    switchValue,
+    postData,
+    currentUser,
+    postCreator,
+  } = props;
   // Initial State
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [username, setUsername] = useState(null);
   const [sameUser, setSameUser] = useState(false);
+  const [followers, setFollowers] = useState(null);
+  const [following, setFollowing] = useState(null);
   // Event Handlers
   useEffect(() => {
-    if (UserOfPost) {
-      setProfilePhoto(UserOfPost._value.userPhoto);
-      setUsername(UserOfPost._value.username);
-      if (UserOfPost._value.username === user.displayName) {
+    if (postData) {
+      setProfilePhoto(postData._value.userPhoto);
+      setUsername(postData._value.username);
+      setFollowers(postCreator.followersCount);
+      setFollowing(postCreator.followingCount);
+      if (postData._value.username === user.displayName) {
         setSameUser(true);
       }
     } else {
       setProfilePhoto(user.photoURL);
       setUsername(user.displayName);
       setSameUser(true);
+      setFollowers(currentUser.followersCount);
+      setFollowing(currentUser.followingCount);
     }
   }, []);
 
@@ -66,9 +79,9 @@ export default function ProfileFeedHeader(props) {
         </View>
         <View style={styles.viewFour}>
           <Text style={{ fontSize: 16 }}> Followers: </Text>
-          <Text style={styles.followCount}>1,539</Text>
+          <Text style={styles.followCount}>{followers}</Text>
           <Text style={{ fontSize: 16, paddingLeft: 15 }}> Following: </Text>
-          <Text style={styles.followCount}>2,781</Text>
+          <Text style={styles.followCount}>{following}</Text>
         </View>
         {!sameUser && (
           <View style={{ width: '100%' }}>
