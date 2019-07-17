@@ -132,6 +132,7 @@ export default function UserProfileScreen(props) {
                   switchValue={switchValue}
                   postCreator={postCreatorData}
                   currentUser={currentUserData}
+                  currentUserKey={currentUserKey}
                 />
               }
             />

@@ -79,11 +79,8 @@ export default function SettingsScreen(props) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.messageButton}
-        onPress={removeFromUsersDB}
-      >
-        <Text style={styles.messageButtonText}>Delete Account</Text>
+      <TouchableOpacity style={styles.deleteButton} onPress={removeFromUsersDB}>
+        <Text style={styles.ButtonText}>Delete Account</Text>
       </TouchableOpacity>
     </View>
   );
@@ -100,17 +97,17 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingLeft: 10,
   },
-  messageButton: {
+  deleteButton: {
     height: 45,
     width: '80%',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 25,
-    marginTop: 15,
+    marginTop: 20,
     borderColor: 'red',
     borderWidth: 2,
   },
-  messageButtonText: {
+  ButtonText: {
     color: '#808B96',
     fontSize: 18,
     fontFamily: 'Roboto',

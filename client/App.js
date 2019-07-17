@@ -21,6 +21,7 @@ import MessagingListScreen from './src/screens/MessagingListScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import PrivateMessageScreen from './src/screens/PrivateMessageScreen';
+import UserBioScreen from './src/screens/UserBioScreen';
 
 const LandingPageStack = createStackNavigator({
   Start: {
@@ -81,6 +82,12 @@ const HomeStack = createStackNavigator(
     },
     Settings: {
       screen: SettingsScreen,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
+    Bio: {
+      screen: UserBioScreen,
       navigationOptions: () => ({
         header: null,
       }),

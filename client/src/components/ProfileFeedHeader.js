@@ -8,13 +8,14 @@ import {
 } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import Video from 'react-native-video';
+import { withNavigation } from 'react-navigation';
 import ToggleSwitch from './ToggleSwitch';
 const { width } = Dimensions.get('window');
 
 const componentWidth = width;
 const videoHeight = width * 0.6;
 
-export default function ProfileFeedHeader(props) {
+function ProfileFeedHeader(props) {
   const {
     user,
     toggleSwitch,
@@ -22,6 +23,7 @@ export default function ProfileFeedHeader(props) {
     postData,
     currentUser,
     postCreator,
+    currentUserKey,
   } = props;
   // Initial State
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -29,13 +31,23 @@ export default function ProfileFeedHeader(props) {
   const [sameUser, setSameUser] = useState(false);
   const [followers, setFollowers] = useState(null);
   const [following, setFollowing] = useState(null);
+  const [bio, setBio] = useState(null);
   // Event Handlers
+  const editButtonPress = () => {
+    props.navigation.navigate('Bio', {
+      currentUserKey: currentUserKey,
+    });
+  };
+
   useEffect(() => {
     if (postData) {
       setProfilePhoto(postData._value.userPhoto);
       setUsername(postData._value.username);
       setFollowers(postCreator.followersCount);
       setFollowing(postCreator.followingCount);
+      if (postCreator.bio) {
+        setBio(postCreator.bio);
+      }
       if (postData._value.username === user.displayName) {
         setSameUser(true);
       }
@@ -45,6 +57,9 @@ export default function ProfileFeedHeader(props) {
       setSameUser(true);
       setFollowers(currentUser.followersCount);
       setFollowing(currentUser.followingCount);
+      if (currentUser.bio) {
+        setBio(currentUser.bio);
+      }
     }
   }, []);
 
@@ -95,18 +110,16 @@ export default function ProfileFeedHeader(props) {
           </View>
         )}
         {sameUser && (
-          <TouchableOpacity style={styles.editButton}>
+          <TouchableOpacity style={styles.editButton} onPress={editButtonPress}>
             <Text style={styles.editText}>Edit Profile</Text>
           </TouchableOpacity>
         )}
-        <Text style={styles.bioText}>
-          This is a sample user bio where they can post their location,
-          interests, and favorite dance teams etc.
-        </Text>
+        <Text style={styles.bioText}>{bio}</Text>
       </View>
     </View>
   );
 }
+export default withNavigation(ProfileFeedHeader);
 
 const styles = StyleSheet.create({
   container: {
