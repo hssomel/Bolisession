@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
+import YouTube, {
+  YouTubeStandaloneIOS,
+  YouTubeStandaloneAndroid,
+} from 'react-native-youtube';
 
 export default function SettingsScreen(props) {
   // Intial State
   const [user, setUser] = useState(null);
+  const [youtubeRef, setYoutubeRef] = useState(null);
+  const [currentTime, setCurrentTime] = useState(null);
+  const [isLoop, setIsLoop] = useState(false);
   // Firebase References
   const postsRef = firebase.database().ref('posts/');
   const usersRef = firebase
@@ -14,6 +21,7 @@ export default function SettingsScreen(props) {
 
   //Event Handlers
   useEffect(() => {
+    console.log('useEffect triggered');
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
     });
@@ -77,10 +85,66 @@ export default function SettingsScreen(props) {
     props.navigation.navigate('phone');
   };
 
+  const customFunction = () => {
+    console.log('custom function');
+    youtubeRef
+      .currentTime()
+      .then(res => {
+        setCurrentTime({ res });
+        console.log('currentTime', { res });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const customFunction2 = () => {
+    console.log('custom function222');
+    setIsLoop(true);
+    youtubeRef
+      .currentTime()
+      .then(res => {
+        setCurrentTime({ res });
+        console.log('res', { res });
+        customFunction3();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const customFunction3 = () => {
+    console.log('custom function3');
+    setIsLoop(true);
+    youtubeRef.seekTo(2);
+  };
+
   return (
     <View style={styles.container}>
+      <YouTube
+        ref={component => {
+          _youTubeRef = component;
+          setYoutubeRef(component);
+        }}
+        apiKey=""
+        videoId="2GFeHRlJf1A"
+        play={true}
+        loop={isLoop}
+        fullscreen={true}
+        controls={1}
+        style={{ height: '30%', width: '85%' }}
+        // onError={e => this.setState({ error: e.error })}
+        onReady={customFunction}
+        // onChangeState={e => this.setState({ status: e.state })}
+        // onChangeQuality={e => this.setState({ quality: e.quality })}
+        onChangeFullscreen={e => customFunction(e)}
+      />
+
       <TouchableOpacity style={styles.deleteButton} onPress={removeFromUsersDB}>
         <Text style={styles.ButtonText}>Delete Account</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.deleteButton} onPress={customFunction2}>
+        <Text style={styles.ButtonText}>Console log</Text>
       </TouchableOpacity>
     </View>
   );

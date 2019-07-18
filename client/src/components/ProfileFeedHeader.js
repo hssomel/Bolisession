@@ -10,6 +10,7 @@ import { Avatar } from 'react-native-elements';
 import Video from 'react-native-video';
 import { withNavigation } from 'react-navigation';
 import ToggleSwitch from './ToggleSwitch';
+
 const { width } = Dimensions.get('window');
 
 const componentWidth = width;
@@ -32,9 +33,20 @@ function ProfileFeedHeader(props) {
   const [followers, setFollowers] = useState(null);
   const [following, setFollowing] = useState(null);
   const [bio, setBio] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [youtubeVid, setYoutubeVid] = useState(null);
+  const [url, setURL] = useState(null);
   // Event Handlers
   const editButtonPress = () => {
     props.navigation.navigate('Bio', {
+      currentUserKey: currentUserKey,
+    });
+  };
+
+  const navigateToVideo = () => {
+    props.navigation.navigate('Video', {
+      user: user,
+      currentUser: currentUser,
       currentUserKey: currentUserKey,
     });
   };
@@ -63,18 +75,38 @@ function ProfileFeedHeader(props) {
     }
   }, []);
 
+  const handlePress = () => {
+    setModalOpen(false);
+  };
+  useEffect(() => {}, [handlePress]);
+
   return (
     <View style={styles.container}>
       <View style={styles.viewOne}>
-        <Video
-          source={require('../assets/videos/sample1.mp4')}
-          ref={ref => {
-            player = ref;
-          }}
-          repeat={true}
-          style={styles.backgroundVideo}
-          resizeMode={'cover'}
-        />
+        {youtubeVid && (
+          <Video
+            source={require('../assets/videos/sample1.mp4')}
+            ref={ref => {
+              player = ref;
+            }}
+            repeat={true}
+            style={styles.backgroundVideo}
+            resizeMode={'cover'}
+          />
+        )}
+        {!youtubeVid && (
+          <Avatar
+            // rounded
+            size="large"
+            icon={{ name: 'md-add-circle', type: 'ionicon', size: 72 }}
+            activeOpacity={0.7}
+            containerStyle={{
+              height: '100%',
+              width: '100%',
+            }}
+            onPress={navigateToVideo}
+          />
+        )}
       </View>
       <View style={styles.viewTwo}>
         <View style={styles.viewThree}>
@@ -133,7 +165,7 @@ const styles = StyleSheet.create({
   },
   viewOne: {
     flexDirection: 'column',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
     height: videoHeight,
     width: componentWidth,

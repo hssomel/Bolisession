@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Modal } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Avatar } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-import { Avatar } from 'react-native-elements';
 import ImagePicker from 'react-native-image-crop-picker';
 import firebase from 'react-native-firebase';
 
@@ -11,10 +10,8 @@ export default function ProfilePhotoScreen(props) {
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [allowContinue, setAllowContinue] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [user, setUser] = useState(props.navigation.getParam('user', null));
-  const [dataKey, setDataKey] = useState(
-    props.navigation.getParam('dataKey', null),
-  );
+  const [user] = useState(props.navigation.getParam('user', null));
+  const [dataKey] = useState(props.navigation.getParam('dataKey', null));
 
   // Firebase References
   const storeImageRef = firebase.storage().ref(`images/${user.uid}`);

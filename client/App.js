@@ -22,6 +22,7 @@ import UserProfileScreen from './src/screens/UserProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import PrivateMessageScreen from './src/screens/PrivateMessageScreen';
 import UserBioScreen from './src/screens/UserBioScreen';
+import SetUpProfileVideo from './src/screens/SetupProfileVideo';
 
 const LandingPageStack = createStackNavigator({
   Start: {
@@ -88,6 +89,12 @@ const HomeStack = createStackNavigator(
     },
     Bio: {
       screen: UserBioScreen,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
+    Video: {
+      screen: SetUpProfileVideo,
       navigationOptions: () => ({
         header: null,
       }),
