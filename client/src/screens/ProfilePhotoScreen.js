@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Modal } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import ImagePicker from 'react-native-image-crop-picker';
-import firebase from 'react-native-firebase';
+import GradientButton from '../components/GradientButton';
+import { uploadImageToFirebase } from '../actions/userProfileActions';
 
 export default function ProfilePhotoScreen(props) {
   // Initial State
@@ -12,86 +13,36 @@ export default function ProfilePhotoScreen(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [user] = useState(props.navigation.getParam('user', null));
   const [dataKey] = useState(props.navigation.getParam('dataKey', null));
+  const pickerProps = {
+    width: 300,
+    height: 300,
+    cropping: true,
+    cropperCircleOverlay: true,
+  };
 
-  // Firebase References
-  const storeImageRef = firebase.storage().ref(`images/${user.uid}`);
-  const verifyRef = firebase
-    .database()
-    .ref('people/')
-    .child('users/' + dataKey);
+  const handlePhotoUpload = value => {
+    const picker = value
+      ? ImagePicker.openPicker(pickerProps)
+      : ImagePicker.openCamera(pickerProps);
 
-  // Event Handlers
-  const updateUser = url => {
-    user
-      .updateProfile({
-        photoURL: url,
-      })
-      .then(() => {
-        verifyRef
-          .update({
-            profilePhoto: url,
-          })
-          .then(data => {
-            console.log('data ', data);
+    picker.then(image => {
+      setProfilePhoto(image);
+      setModalVisible(false);
+      uploadImageToFirebase(image, user, dataKey)
+        .then(res => {
+          if (res) {
             setAllowContinue(true);
-          })
-          .catch(error => {
-            console.log('error ', error);
-          });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
-  const uploadToFirebase = image => {
-    storeImageRef
-      .put(image.path, { contentType: 'image/jpeg' })
-      .then(snapshot => {
-        console.log(JSON.stringify(snapshot.metadata));
-        storeImageRef
-          .getDownloadURL()
-          .then(url => {
-            updateUser(url);
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
-  const handlePhotoUpload1 = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 300,
-      cropping: true,
-      cropperCircleOverlay: true,
-    }).then(image => {
-      setProfilePhoto(image);
-      setModalVisible(false);
-      uploadToFirebase(image);
-    });
-  };
-
-  const handlePhotoUpload2 = () => {
-    ImagePicker.openCamera({
-      width: 400,
-      height: 400,
-      cropping: true,
-      cropperCircleOverlay: true,
-    }).then(image => {
-      setProfilePhoto(image);
-      setModalVisible(false);
-      uploadToFirebase(image);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     });
   };
 
   const handlePress = () => {
     props.navigation.navigate('AccountType', {
-      user: user,
+      user,
     });
   };
 
@@ -159,7 +110,7 @@ export default function ProfilePhotoScreen(props) {
           }}
         >
           <Button
-            onPress={handlePhotoUpload2}
+            onPress={() => handlePhotoUpload(false)}
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.buttonStyle}
             ViewComponent={LinearGradient}
@@ -172,7 +123,7 @@ export default function ProfilePhotoScreen(props) {
           />
           <Text style={styles.text2}>OR</Text>
           <Button
-            onPress={handlePhotoUpload1}
+            onPress={() => handlePhotoUpload(true)}
             containerStyle={styles.buttonContainer1}
             buttonStyle={styles.buttonStyle1}
             title="UPLOAD FROM GALLERY"

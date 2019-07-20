@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
-import YouTube, {
-  YouTubeStandaloneIOS,
-  YouTubeStandaloneAndroid,
-} from 'react-native-youtube';
+import YouTube from 'react-native-youtube';
 
 export default function SettingsScreen(props) {
   // Intial State

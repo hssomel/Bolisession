@@ -9,9 +9,8 @@ import {
   View,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { Button } from 'react-native-elements';
-import LinearGradient from 'react-native-linear-gradient';
 import firebase from 'react-native-firebase';
+import GradientButton from '../components/GradientButton';
 
 const sports = [
   {
@@ -57,7 +56,7 @@ export default function CreateAccountScreen(props) {
       .then(() => {
         usersRef
           .update({
-            username: username,
+            username,
           })
           .then(data => {
             console.log('data ', data);
@@ -66,8 +65,8 @@ export default function CreateAccountScreen(props) {
             console.log('error ', error);
           });
         props.navigation.navigate('ProfilePhoto', {
-          dataKey: dataKey,
-          user: user,
+          dataKey,
+          user,
         });
       })
       .catch(error => {
@@ -114,19 +113,7 @@ export default function CreateAccountScreen(props) {
           />
         </View>
         {username.length > 2 && (
-          <Button
-            onPress={handleUserNameInputPress}
-            containerStyle={styles.buttonContainer}
-            buttonStyle={styles.buttonStyle}
-            ViewComponent={LinearGradient}
-            linearGradientProps={{
-              colors: ['red', 'orange'],
-              start: { x: 0, y: 0.5 },
-              end: { x: 1, y: 0.5 },
-            }}
-            title="CONTINUE"
-            fontSize={38}
-          />
+          <GradientButton onPress={handleUserNameInputPress} title="CONTINUE" />
         )}
       </ScrollView>
     </SafeAreaView>

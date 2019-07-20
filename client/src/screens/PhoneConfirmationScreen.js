@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, Dimensions, TextInput } from 'react-native';
-import { Text, Button } from 'react-native-elements';
-import LinearGradient from 'react-native-linear-gradient';
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  SafeAreaView,
+  Dimensions,
+  TextInput,
+  View,
+} from 'react-native';
+import { Text } from 'react-native-elements';
 import firebase from 'react-native-firebase';
+import GradientButton from '../components/GradientButton';
 
-// Style
 const { width } = Dimensions.get('window');
-const pillHeight = 50;
 const pillWidth = width * 0.9;
 const pillFontSize = pillWidth / 20;
 
-// Component
 export default function PhoneConfirmationScreen(props) {
   // Initial State
   const [codeInput, setCodeInput] = useState('');
@@ -48,11 +51,11 @@ export default function PhoneConfirmationScreen(props) {
             .then(data => {
               props.navigation.navigate('Create', {
                 dataKey: data.key,
-                user: user,
+                user,
               });
             })
-            .catch(error => {
-              console.log('error ', error);
+            .catch(err => {
+              console.log('error ', err);
             });
         } else {
           props.navigation.navigate('Home');
@@ -74,32 +77,24 @@ export default function PhoneConfirmationScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.titleText}>My code is</Text>
-      <Text style={styles.titleText1}>
-        Enter it below to verify {phoneNumber}
-      </Text>
-      <TextInput
-        placeholder="Enter verification code"
-        style={styles.textInput}
-        onChangeText={input => setCodeInput(input)}
-      />
-      <Text style={{ marginTop: 7, fontSize: 14, color: 'orangered' }}>
-        Didn't receive SMS?
-      </Text>
-      <Button
-        onPress={handleSubmitButtonPress}
-        containerStyle={styles.buttonContainer}
-        buttonStyle={styles.button}
-        ViewComponent={LinearGradient}
-        linearGradientProps={{
-          colors: ['#f12711', '#f5af19'],
-          start: { x: 0, y: 0.5 },
-          end: { x: 1, y: 0.5 },
-        }}
-        title="Verify Code"
-        fontSize={38}
-      />
-      <Text style={{ marginTop: 10, fontSize: 12 }}>{message}</Text>
+      <View style={styles.viewOne}>
+        <Text style={{ fontSize: 36, color: '#606060' }}>My code is</Text>
+        <Text style={{ marginTop: 10, fontSize: 16, color: '#606060' }}>
+          Enter it below to verify {phoneNumber}
+        </Text>
+        <TextInput
+          placeholder="Enter verification code"
+          style={styles.textInput}
+          onChangeText={input => setCodeInput(input)}
+        />
+        <Text style={{ marginTop: 7, fontSize: 14, color: 'orangered' }}>
+          Didn't receive SMS?
+        </Text>
+      </View>
+      <View style={styles.viewTwo}>
+        <GradientButton onPress={handleSubmitButtonPress} title="Verify Code" />
+        <Text style={{ marginTop: 10, fontSize: 12 }}>{message}</Text>
+      </View>
     </SafeAreaView>
   );
 }
@@ -109,40 +104,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    marginHorizontal: 20,
     flexDirection: 'column',
+    paddingTop: 40,
   },
-  titleText: {
-    marginTop: 50,
-    fontSize: 36,
-    color: '#606060',
+  viewOne: {
+    paddingLeft: 20,
+    height: '100%',
+    width: '100%',
+    paddingRight: 20,
+    flex: 1,
   },
-  titleText1: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#606060',
-  },
-  text1: {
-    marginTop: 10,
-    fontSize: 14,
-    color: '#606060',
+  viewTwo: {
+    height: '100%',
+    width: '100%',
+    paddingTop: 30,
+    flex: 2,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   textInput: {
-    marginTop: 30,
+    marginTop: 20,
     fontSize: pillFontSize,
-    flex: 0.1,
     borderBottomWidth: 2,
     borderBottomColor: 'red',
     width: '100%',
-    paddingBottom: 0,
-  },
-  buttonContainer: {
-    marginTop: 40,
-  },
-  button: {
-    borderRadius: 50,
-    height: pillHeight,
-    width: pillWidth,
-    backgroundColor: 'orangered',
   },
 });

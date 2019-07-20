@@ -137,3 +137,53 @@ export const removeUserFromLikesArray = (key, name) => {
       });
     });
 };
+
+export const uploadImageToFirebase = (image, user, dataKey) => {
+  return new Promise((resolve, reject) => {
+    const storeImageRef = firebase.storage().ref(`images/${user.uid}`);
+    storeImageRef
+      .put(image.path, { contentType: 'image/jpeg' })
+      .then(snapshot => {
+        console.log(JSON.stringify(snapshot.metadata));
+        storeImageRef
+          .getDownloadURL()
+          .then(url => {
+            updateUserImage(url, user, dataKey);
+            resolve(true);
+          })
+          .catch(err => {
+            console.log(err);
+            resolve(false);
+          });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
+};
+
+const updateUserImage = (url, user, dataKey) => {
+  const verifyRef = firebase
+    .database()
+    .ref('people/')
+    .child('users/' + dataKey);
+  user
+    .updateProfile({
+      photoURL: url,
+    })
+    .then(() => {
+      verifyRef
+        .update({
+          profilePhoto: url,
+        })
+        .then(data => {
+          console.log('data ', data);
+        })
+        .catch(error => {
+          console.log('error ', error);
+        });
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
