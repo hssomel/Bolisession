@@ -77,6 +77,10 @@ fs.writeFile('../MASTER/env.js', data, err => {
   if (err) console.log('Error while writing ../MASTER/env.js', err);
   else console.log('Generated ../MASTER/env.js');
 });
+fs.writeFile('../modified_client/env.js', data, err => {
+  if (err) console.log('Error while writing ../modified_client/env.js', err);
+  else console.log('Generated ../modified_client/env.js');
+});
 fs.writeFile('../gurkamal-experimental-version/env.js', data, err => {
   if (err)
     console.log(
@@ -110,6 +114,20 @@ fs.writeFile(
         err,
       );
     else console.log('Generated ../MASTER/ios/GoogleService-Info.plist');
+  },
+);
+// generate GoogleService-Info.plist for modified_client
+fs.writeFile(
+  '../modified_client/ios/GoogleService-Info.plist',
+  process.env.GOOGLE_SERVICE_INFO_PLIST,
+  err => {
+    if (err)
+      console.log(
+        'Error while writing ../modified_client/ios/GoogleService-Info.plist',
+        err,
+      );
+    else
+      console.log('Generated ../modified_client/ios/GoogleService-Info.plist');
   },
 );
 // generate GoogleService-Info.plist for gurkamal-experimental-version
@@ -153,6 +171,22 @@ fs.writeFile(
         err,
       );
     else console.log('Generated ../MASTER/android/app/google-services.json');
+  },
+);
+// generate google-services.json for android modified_client
+fs.writeFile(
+  '../modified_client/android/app/google-services.json',
+  process.env.GOOGLE_SERVICES_JSON,
+  err => {
+    if (err)
+      console.log(
+        'Error while writing ../modified_client/android/app/google-services.json',
+        err,
+      );
+    else
+      console.log(
+        'Generated ../modified_client/android/app/google-services.json',
+      );
   },
 );
 // generate google-services.json for android gurkamal-experimental-version

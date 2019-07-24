@@ -8,20 +8,16 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import { Button, Avatar } from 'react-native-elements';
-import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import YouTube from 'react-native-youtube';
+import GradientButton from '../components/GradientButton';
+import { uploadProfileVid } from '../actions/userProfileActions';
 
 const { width } = Dimensions.get('window');
 
 export default function SetupProfileVideo(props) {
   //Initial State
-  const [user] = useState(props.navigation.getParam('user', null));
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentUser] = useState(
-    props.navigation.getParam('currentUser', null),
-  );
   const [currentUserKey] = useState(
     props.navigation.getParam('currentUserKey', null),
   );
@@ -31,7 +27,6 @@ export default function SetupProfileVideo(props) {
   const [allowYoutube, setAllowYoutube] = useState(false);
   const [youtubeRef, setYoutubeRef] = useState(null);
 
-  // Event Handlers
   const sliceString = () => {
     return new Promise((resolve, reject) => {
       const slice = youtubeURL.slice(-11);
@@ -47,7 +42,6 @@ export default function SetupProfileVideo(props) {
     sliceString()
       .then(res => {
         if (res) {
-          console.log('res', res);
           setAllowYoutube(true);
         }
       })
@@ -56,74 +50,57 @@ export default function SetupProfileVideo(props) {
       });
   };
 
-  const onYouTubeLoad = () => {
+  const onVideoLoad = () => {
     youtubeRef.seekTo(startTime);
+    setInterval(() => {
+      youtubeRef.seekTo(startTime);
+    }, 16000);
+  };
+
+  const uploadVideo = () => {
+    uploadProfileVid(currentUserKey, finalURL, startTime);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.container1}>
-        <Avatar
-          rounded
-          size={150}
-          icon={{ name: 'ios-camera', type: 'ionicon' }}
-          activeOpacity={0.7}
+        {!allowYoutube && (
+          <View>
+            <Text>UPLOAD A PROFILE VIDEO!</Text>
+            <Text>LINK TO A YOUTUBE VIDEO OF YOUR PERFORMANCE!</Text>
+            <Text>THEN SELECT A START TIME FOR THE VIDEO</Text>
+            <Text>THAT SHOWS YOUR BEST 15 SECONDS</Text>
+          </View>
+        )}
+        {allowYoutube && (
+          <YouTube
+            ref={component => {
+              _youTubeRef = component;
+              setYoutubeRef(component);
+            }}
+            apiKey=""
+            videoId={finalURL}
+            play={true}
+            fullscreen={false}
+            controls={1}
+            style={{ height: '60%', width: '85%' }}
+            onError={e => console.log(e.error)}
+            onReady={onVideoLoad}
+          />
+        )}
+      </View>
+      <View style={styles.container2}>
+        {startTime && finalURL && (
+          <GradientButton
+            onPress={() => uploadVideo()}
+            title="SET AS PROFILE VIDEO"
+          />
+        )}
+        <GradientButton
+          onPress={() => setModalOpen(true)}
+          title="UPLOAD YOUTUBE LINK"
         />
       </View>
-
-      {/* <Text style={styles.text}>Add a Profile Video!</Text>
-      <Text style={styles.text1}>
-        Showcase your talent. Link to a Youtube Video of you Performing!
-      </Text>
-      <Text style={styles.text1}>
-        Then enter a start time to showcase your best 15 seconds! The video will
-        then loop on your profile!
-      </Text> */}
-      <Button
-        containerStyle={styles.buttonContainer}
-        buttonStyle={styles.buttonStyle}
-        ViewComponent={LinearGradient}
-        onPress={() => onYouTubeLoad}
-        linearGradientProps={{
-          colors: ['#f12711', '#f5af19'],
-          start: { x: 0, y: 0.5 },
-          end: { x: 1, y: 0.5 },
-        }}
-        title="RELOAD"
-      />
-      <Button
-        containerStyle={styles.buttonContainer}
-        buttonStyle={styles.buttonStyle}
-        ViewComponent={LinearGradient}
-        onPress={() => setModalOpen(true)}
-        linearGradientProps={{
-          colors: ['#f12711', '#f5af19'],
-          start: { x: 0, y: 0.5 },
-          end: { x: 1, y: 0.5 },
-        }}
-        title="UPLOAD YOUTUBE LINK"
-      />
-      {allowYoutube && (
-        <YouTube
-          ref={component => {
-            _youTubeRef = component;
-            setYoutubeRef(component);
-          }}
-          apiKey=""
-          videoId={finalURL}
-          play={true}
-          // loop={isLoop}
-          fullscreen={false}
-          controls={1}
-          style={{ height: '30%', width: '85%' }}
-          onError={e => console.log(e.error)}
-          onReady={onYouTubeLoad}
-          // onChangeState={e => this.setState({ status: e.state })}
-          // onChangeQuality={e => this.setState({ quality: e.quality })}
-          // onChangeFullscreen={e => customFunction(e)}
-        />
-      )}
-
       <Modal
         animationType="slide"
         transparent={false}
@@ -176,18 +153,26 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'white',
     height: '100%',
     width: '100%',
-    flex: 1,
   },
   container1: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    height: 150,
+    height: '100%',
     width: '100%',
     marginTop: '4%',
+    flex: 1.5,
+  },
+  container2: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+    marginTop: '4%',
+    flex: 1,
   },
   text: {
     fontSize: 32,
@@ -201,17 +186,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Gill Sans',
     color: 'black',
     marginTop: '4%',
-  },
-  buttonContainer: {
-    marginTop: '15%',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'center',
-  },
-  buttonStyle: {
-    height: 50,
-    width: '85%',
-    borderRadius: 25,
   },
   outerModalContainer: {
     flexDirection: 'column',

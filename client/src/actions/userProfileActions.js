@@ -187,3 +187,23 @@ const updateUserImage = (url, user, dataKey) => {
       console.log(err);
     });
 };
+
+export const uploadProfileVid = (key, url, startTime) => {
+  const ref = firebase
+    .database()
+    .ref('people')
+    .child('users')
+    .child(key);
+
+  ref
+    .update({
+      youtubeURL: url,
+      startTime,
+    })
+    .then(data => {
+      console.log('data ', data);
+    })
+    .catch(error => {
+      console.log('error ', error);
+    });
+};

@@ -78,6 +78,7 @@ function ProfileFeedHeader(props) {
   const handlePress = () => {
     setModalOpen(false);
   };
+
   useEffect(() => {}, [handlePress]);
 
   return (
