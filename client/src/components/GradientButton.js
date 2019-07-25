@@ -16,7 +16,7 @@ export default function GradientButton(props) {
         end: { x: 1, y: 0.5 },
       }}
       title={title}
-      titleStyle={styles.text2}
+      titleStyle={styles.text}
       onPress={onPress}
     />
   );
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     width: '85%',
     borderRadius: 25,
   },
-  text2: {
+  text: {
     color: 'white',
     alignItems: 'center',
     justifyContent: 'center',
