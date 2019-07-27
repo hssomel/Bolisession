@@ -110,7 +110,6 @@ export const addUserToLikesArray = (key, name) => {
     })
     .then(() => {
       increaseLikeCount(key);
-      resolve();
     })
     .catch(error => {
       console.log('error ', error);
@@ -129,7 +128,6 @@ export const removeUserFromLikesArray = (key, name) => {
           .remove()
           .then(() => {
             decreaseLikeCount(key);
-            resolve();
           })
           .catch(error => {
             console.log('error ', error);

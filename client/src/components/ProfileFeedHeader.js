@@ -7,9 +7,9 @@ import {
   Dimensions,
 } from 'react-native';
 import { Avatar } from 'react-native-elements';
-import Video from 'react-native-video';
 import { withNavigation } from 'react-navigation';
 import ToggleSwitch from './ToggleSwitch';
+import YouTubeVideo from '../components/YouTubeVideo';
 
 const { width } = Dimensions.get('window');
 
@@ -25,17 +25,16 @@ function ProfileFeedHeader(props) {
     currentUser,
     postCreator,
     currentUserKey,
+    postUserParentKey,
   } = props;
   // Initial State
+  const [isLoaded, setIsLoaded] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [username, setUsername] = useState(null);
   const [sameUser, setSameUser] = useState(false);
-  const [followers, setFollowers] = useState(null);
   const [following, setFollowing] = useState(null);
+  const [followers, setFollowers] = useState(null);
   const [bio, setBio] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [youtubeVid, setYoutubeVid] = useState(null);
-  const [url, setURL] = useState(null);
   // Event Handlers
   const editButtonPress = () => {
     props.navigation.navigate('Bio', {
@@ -44,111 +43,104 @@ function ProfileFeedHeader(props) {
   };
 
   const navigateToVideo = () => {
-    props.navigation.navigate('Video', {
-      user: user,
-      currentUser: currentUser,
-      currentUserKey: currentUserKey,
-    });
+    if (sameUser) {
+      props.navigation.navigate('Video', {
+        user: user,
+        currentUser: currentUser,
+        currentUserKey: currentUserKey,
+      });
+    }
   };
 
   useEffect(() => {
     if (postData) {
       setProfilePhoto(postData._value.userPhoto);
       setUsername(postData._value.username);
-      setFollowers(postCreator.followersCount);
       setFollowing(postCreator.followingCount);
+      setFollowers(postCreator.followersCount);
       if (postCreator.bio) {
         setBio(postCreator.bio);
       }
       if (postData._value.username === user.displayName) {
         setSameUser(true);
       }
+      setIsLoaded(true);
     } else {
       setProfilePhoto(user.photoURL);
       setUsername(user.displayName);
       setSameUser(true);
-      setFollowers(currentUser.followersCount);
       setFollowing(currentUser.followingCount);
+      setFollowers(currentUser.followersCount);
       if (currentUser.bio) {
         setBio(currentUser.bio);
       }
+      setIsLoaded(true);
     }
+
+    return () => {
+      setIsLoaded(false);
+    };
   }, []);
 
-  const handlePress = () => {
-    setModalOpen(false);
-  };
-
-  useEffect(() => {}, [handlePress]);
-
   return (
-    <View style={styles.container}>
-      <View style={styles.viewOne}>
-        {youtubeVid && (
-          <Video
-            source={require('../assets/videos/sample1.mp4')}
-            ref={ref => {
-              player = ref;
-            }}
-            repeat={true}
-            style={styles.backgroundVideo}
-            resizeMode={'cover'}
-          />
-        )}
-        {!youtubeVid && (
-          <Avatar
-            // rounded
-            size="large"
-            icon={{ name: 'md-add-circle', type: 'ionicon', size: 72 }}
-            activeOpacity={0.7}
-            containerStyle={{
-              height: '100%',
-              width: '100%',
-            }}
-            onPress={navigateToVideo}
-          />
-        )}
-      </View>
-      <View style={styles.viewTwo}>
-        <View style={styles.viewThree}>
-          <Text style={styles.username}>{'@' + username}</Text>
-          <Avatar
-            rounded
-            size={100}
-            source={{
-              uri: profilePhoto,
-            }}
-            containerStyle={{
-              position: 'absolute',
-              right: 0,
-              marginTop: 10,
-            }}
-          />
-        </View>
-        <View style={styles.viewFour}>
-          <Text style={{ fontSize: 16 }}> Followers: </Text>
-          <Text style={styles.followCount}>{followers}</Text>
-          <Text style={{ fontSize: 16, paddingLeft: 15 }}> Following: </Text>
-          <Text style={styles.followCount}>{following}</Text>
-        </View>
-        {!sameUser && (
-          <View style={{ width: '100%' }}>
-            <TouchableOpacity style={styles.messageButton}>
-              <Text style={styles.messageButtonText}>Message</Text>
-            </TouchableOpacity>
-            <ToggleSwitch
-              toggleSwitch={toggleSwitch}
-              switchValue={switchValue}
-            />
+    <View>
+      {isLoaded && (
+        <View style={styles.container}>
+          <View style={styles.viewOne}>
+            {sameUser ? (
+              <YouTubeVideo
+                currentUserKey={currentUserKey}
+                style={{ height: '100%', width: '100%' }}
+                navigateToVideo={navigateToVideo}
+              />
+            ) : (
+              <YouTubeVideo
+                postUserParentKey={postUserParentKey}
+                style={{ height: '100%', width: '100%' }}
+                navigateToVideo={navigateToVideo}
+              />
+            )}
           </View>
-        )}
-        {sameUser && (
-          <TouchableOpacity style={styles.editButton} onPress={editButtonPress}>
-            <Text style={styles.editText}>Edit Profile</Text>
-          </TouchableOpacity>
-        )}
-        <Text style={styles.bioText}>{bio}</Text>
-      </View>
+          <View style={styles.viewTwo}>
+            <View style={styles.viewThree}>
+              <Text style={styles.username}>{'@' + username}</Text>
+              <Avatar
+                rounded
+                size={100}
+                source={{
+                  uri: profilePhoto,
+                }}
+                containerStyle={styles.avatar}
+              />
+            </View>
+            <View style={styles.viewFour}>
+              <Text style={{ fontSize: 16 }}> Followers: </Text>
+              <Text style={styles.followCount}>{followers}</Text>
+              <Text style={{ fontSize: 16, paddingLeft: 15 }}>Following:</Text>
+              <Text style={styles.followCount}>{following}</Text>
+            </View>
+            {!sameUser ? (
+              <View style={{ width: '100%' }}>
+                <TouchableOpacity style={styles.messageButton}>
+                  <Text style={styles.messageButtonText}>Message</Text>
+                </TouchableOpacity>
+                <ToggleSwitch
+                  toggleSwitch={toggleSwitch}
+                  switchValue={switchValue}
+                />
+              </View>
+            ) : (
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={editButtonPress}
+              >
+                <Text style={styles.editText}>Edit Profile</Text>
+              </TouchableOpacity>
+            )}
+            <Text style={styles.bioText}>{bio}</Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -255,5 +247,10 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 16,
     paddingRight: 10,
+  },
+  avatar: {
+    position: 'absolute',
+    right: 0,
+    marginTop: 10,
   },
 });

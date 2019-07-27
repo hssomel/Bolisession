@@ -61,7 +61,6 @@ export default function UserProfileScreen(props) {
         .equalTo(user.uid)
         .once('value', snapshot => {
           snapshot.forEach(data => {
-            console.log('current user parent key data', data);
             setCurrentUserData(data._value);
             setCurrentUserParentKey(data.key);
             resolve(data.key);
@@ -133,6 +132,7 @@ export default function UserProfileScreen(props) {
                   postCreator={postCreatorData}
                   currentUser={currentUserData}
                   currentUserKey={currentUserKey}
+                  postUserParentKey={postUserParentKey}
                 />
               }
             />

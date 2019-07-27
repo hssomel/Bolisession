@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import YouTube from 'react-native-youtube';
-import { Button } from 'react-native-elements';
+import { Button, Avatar } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Ionicons';
 import GradientButton from '../components/GradientButton';
 import { uploadProfileVid } from '../actions/userProfileActions';
 import YouTubeModal from '../components/YouTubeModal';
+import YouTubeVideo from '../components/YouTubeVideo';
 
 export default function SetupProfileVideo(props) {
   //Initial State
@@ -16,7 +17,6 @@ export default function SetupProfileVideo(props) {
   const [startTime, setStartTime] = useState(null);
   const [finalURL, setFinalURL] = useState(null);
   const [allowYoutube, setAllowYoutube] = useState(false);
-  const [youtubeRef, setYoutubeRef] = useState(null);
 
   const sliceString = () => {
     return new Promise((resolve, reject) => {
@@ -41,15 +41,12 @@ export default function SetupProfileVideo(props) {
       });
   };
 
+  const reUpload = () => {
+    setModalOpen(true);
+    setAllowYoutube(false);
+  };
   const closeModal = () => {
     setModalOpen(false);
-  };
-
-  const onVideoLoad = () => {
-    youtubeRef.seekTo(startTime);
-    setInterval(() => {
-      youtubeRef.seekTo(startTime);
-    }, 16000);
   };
 
   const uploadVideo = () => {
@@ -58,54 +55,63 @@ export default function SetupProfileVideo(props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.container1}>
-        {!allowYoutube && (
-          <View style={styles.container3}>
-            <Text style={{ fontSize: 32, marginBottom: 15 }}>
-              UPLOAD A PROFILE VIDEO!
-            </Text>
+      <View style={styles.topContainer}>
+        {!allowYoutube ? (
+          <View style={styles.containerOne}>
+            <View style={{ alignItems: 'flex-start' }}>
+              <Icon name="ios-arrow-round-back" size={36} color="orangered" />
+            </View>
+            <Text style={styles.titleText}>Upload a profile video</Text>
             <Text style={{ fontSize: 18 }}>
-              LINK TO A YOUTUBE VIDEO OF YOUR PERFORMANCE! THEN SELECT A START
-              TIME FOR THE VIDEO THAT SHOWS YOUR BEST 15 SECONDS
+              Link to a youtube video of you performing! Then select a start
+              time that showcases your best 15 seconds!
             </Text>
           </View>
-        )}
-        {allowYoutube && (
-          <View style={styles.container4}>
+        ) : (
+          <View style={styles.containerTwo}>
             <Text style={{ fontSize: 32, marginBottom: 5, color: '#424949' }}>
               Preview Video
             </Text>
-            <YouTube
-              ref={component => {
-                _youTubeRef = component;
-                setYoutubeRef(component);
-              }}
-              apiKey="AIzaSyBe-XcmmWplQm2rIwqa17Cy27_bA6Z0Zvw"
-              videoId={finalURL}
-              play={true}
-              fullscreen={false}
-              controls={1}
+            <YouTubeVideo
               style={{ height: '75%', width: '100%' }}
-              onError={e => console.log(e.error)}
-              onReady={onVideoLoad}
+              newURL={finalURL}
+              newStartTime={startTime}
+              currentUserKey={currentUserKey}
+              fromSettings={fromSettings}
             />
           </View>
         )}
       </View>
-      <View style={styles.container2}>
-        {startTime && finalURL && (
+      <View style={styles.bottomContainer}>
+        {startTime && finalURL && allowYoutube && (
           <Button
             onPress={() => uploadVideo()}
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.buttonStyle}
-            title="CONFIRM PROFILE VIDEO"
-            titleStyle={styles.text2}
+            title="Confirm profile video"
+            titleStyle={styles.buttonText}
           />
         )}
-        <GradientButton
-          onPress={() => setModalOpen(true)}
-          title="UPLOAD YOUTUBE LINK"
-        />
+        {allowYoutube && (
+          <GradientButton onPress={reUpload} title="Reupload youtube link" />
+        )}
+        {!allowYoutube && (
+          <Avatar
+            size="large"
+            icon={{
+              name: 'md-camera',
+              type: 'ionicon',
+              size: 72,
+              color: 'orangered',
+            }}
+            containerStyle={{
+              height: '50%',
+              width: '50%',
+            }}
+            onPress={() => setModalOpen(true)}
+            overlayContainerStyle={styles.cameraIcon}
+          />
+        )}
       </View>
       <YouTubeModal
         modalOpen={modalOpen}
@@ -126,7 +132,16 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-  container1: {
+  topContainer: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+    flex: 1,
+    paddingTop: 10,
+  },
+  bottomContainer: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -134,35 +149,21 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
   },
-  container2: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
-    flex: 1,
-  },
-  container3: {
+  containerOne: {
+    paddingTop: 5,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingRight: 15,
+    paddingLeft: 15,
   },
-  container4: {
+  containerTwo: {
     height: '100%',
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
-  text: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    fontFamily: 'Helvetica',
-    color: 'black',
-    marginTop: '8%',
-  },
   buttonContainer: {
-    marginBottom: '5%',
+    marginTop: '5%',
     alignItems: 'center',
     width: '100%',
     justifyContent: 'flex-start',
@@ -175,12 +176,26 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'orangered',
   },
-  text2: {
+  buttonText: {
     color: 'orangered',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'Gill Sans',
+  },
+  titleText: {
+    fontSize: 32,
+    marginBottom: 15,
+    color: 'black',
+    fontWeight: 'bold',
+    marginTop: 15,
+  },
+  cameraIcon: {
+    borderColor: 'orangered',
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderRadius: 25,
+    backgroundColor: 'transparent',
   },
 });

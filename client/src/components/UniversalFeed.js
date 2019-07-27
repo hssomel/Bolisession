@@ -27,9 +27,21 @@ export default function UniversalFeed(props) {
       });
   };
 
+  const updatePosts = () => {
+    postsRef.on('child_added', snapshot => {
+      snapshot.forEach(() => {
+        getAllPosts();
+      });
+    });
+  };
+
   useEffect(() => {
     getAllPosts();
-  }, [feedData]);
+    updatePosts();
+    return () => {
+      postsRef.off();
+    };
+  }, []);
 
   return (
     <SafeAreaView>

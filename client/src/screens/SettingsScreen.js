@@ -83,9 +83,6 @@ export default function SettingsScreen(props) {
       <TouchableOpacity style={styles.deleteButton} onPress={removeFromUsersDB}>
         <Text style={styles.ButtonText}>Delete Account</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.deleteButton} onPress={customFunction2}>
-        <Text style={styles.ButtonText}>Console log</Text>
-      </TouchableOpacity>
     </View>
   );
 }
