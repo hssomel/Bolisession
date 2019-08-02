@@ -46,17 +46,18 @@ export default function UniversalFeed(props) {
   return (
     <SafeAreaView>
       <View style={{ justifyContent: 'flex-start' }}>
-        {!isLoaded && (
+        {!isLoaded ? (
           <View style={{ justifyContent: 'center' }}>
             <ActivityIndicator size="large" color="orangered" />
           </View>
+        ) : (
+          <FlatList
+            data={feedData}
+            keyExtractor={item => item.key}
+            renderItem={({ item }) => <Post item={item} user={user} />}
+            ListHeaderComponent={ListHeaderComponent}
+          />
         )}
-        <FlatList
-          data={feedData}
-          keyExtractor={item => item.key}
-          renderItem={({ item }) => <Post item={item} user={user} />}
-          ListHeaderComponent={ListHeaderComponent}
-        />
       </View>
     </SafeAreaView>
   );

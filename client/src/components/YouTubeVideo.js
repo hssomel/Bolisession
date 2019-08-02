@@ -92,7 +92,7 @@ export default function YouTubeVideo(props) {
             _youTubeRef = component;
             setYoutubeRef(component);
           }}
-          apiKey=""
+          apiKey="AIzaSyBe-XcmmWplQm2rIwqa17Cy27_bA6Z0Zvw"
           videoId={newURL || finalURL}
           play={true}
           fullscreen={false}
@@ -108,7 +108,7 @@ export default function YouTubeVideo(props) {
             _youTubeRef = component;
             setYoutubeRef(component);
           }}
-          apiKey=""
+          apiKey="AIzaSyBe-XcmmWplQm2rIwqa17Cy27_bA6Z0Zvw"
           videoId={newURL || finalURL}
           play={true}
           fullscreen={false}

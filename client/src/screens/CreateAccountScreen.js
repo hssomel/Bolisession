@@ -7,6 +7,7 @@ import {
   Text,
   ScrollView,
   View,
+  Alert,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import firebase from 'react-native-firebase';
@@ -34,7 +35,6 @@ export default function CreateAccountScreen(props) {
   const [username, setUserName] = useState('');
   const [user] = useState(props.navigation.getParam('user', null));
   const [dataKey] = useState(props.navigation.getParam('dataKey', null));
-
   // Firebase References
   const usersRef = firebase
     .database()
@@ -48,6 +48,12 @@ export default function CreateAccountScreen(props) {
   const handleOnScroll = () => setTextInputStyle('50%');
   const handleOnBlur = () => setTextInputStyle('50%');
 
+  const popupAlert = () => {
+    Alert.alert(
+      'Oops something went wrong! Please make sure you are connected to the internet and try again!',
+    );
+  };
+
   const handleUserNameInputPress = () => {
     user
       .updateProfile({
@@ -60,17 +66,19 @@ export default function CreateAccountScreen(props) {
           })
           .then(data => {
             console.log('data ', data);
+            props.navigation.navigate('ProfilePhoto', {
+              dataKey,
+              user,
+            });
           })
           .catch(error => {
             console.log('error ', error);
+            popupAlert();
           });
-        props.navigation.navigate('ProfilePhoto', {
-          dataKey,
-          user,
-        });
       })
       .catch(error => {
         console.log(error);
+        popupAlert();
       });
   };
 

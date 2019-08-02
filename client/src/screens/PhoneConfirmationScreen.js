@@ -58,7 +58,9 @@ export default function PhoneConfirmationScreen(props) {
               console.log('error ', err);
             });
         } else {
-          props.navigation.navigate('Home');
+          props.navigation.navigate('Home', {
+            user,
+          });
         }
       });
   };

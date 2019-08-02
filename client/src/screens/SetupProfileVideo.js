@@ -17,6 +17,7 @@ export default function SetupProfileVideo(props) {
   const [startTime, setStartTime] = useState(null);
   const [finalURL, setFinalURL] = useState(null);
   const [allowYoutube, setAllowYoutube] = useState(false);
+  const [fromSettings] = useState(true);
 
   const sliceString = () => {
     return new Promise((resolve, reject) => {
@@ -45,6 +46,7 @@ export default function SetupProfileVideo(props) {
     setModalOpen(true);
     setAllowYoutube(false);
   };
+
   const closeModal = () => {
     setModalOpen(false);
   };

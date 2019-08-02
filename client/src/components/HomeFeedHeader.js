@@ -19,6 +19,7 @@ export default function HomeFeedHeader(props) {
   const [profilePhoto] = useState(user.photoURL);
   const [modalOpen, setModalOpen] = useState(false);
   const [tweet, setTweet] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(null);
 
   // Event Handlers
   const openPostModal = () => {
@@ -28,67 +29,73 @@ export default function HomeFeedHeader(props) {
     writeUserData(tweet);
     setModalOpen(false);
   };
-  useEffect(() => {}, [handlePress]);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, [handlePress]);
 
   return (
     <View style={styles.container}>
-      <Avatar
-        rounded
-        size={55}
-        source={{
-          uri: profilePhoto,
-        }}
-        containerStyle={{
-          position: 'absolute',
-          left: 0,
-          marginTop: 10,
-          marginLeft: 10,
-          marginBottom: 10,
-        }}
-      />
-      <TouchableOpacity style={styles.openModal} onPress={openPostModal}>
-        <Text style={styles.buttonText}>What's going on?</Text>
-      </TouchableOpacity>
+      {isLoaded && (
+        <View>
+          <Avatar
+            rounded
+            size={55}
+            source={{
+              uri: profilePhoto,
+            }}
+            containerStyle={{
+              position: 'absolute',
+              left: 0,
+              marginTop: 10,
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+          />
+          <TouchableOpacity style={styles.openModal} onPress={openPostModal}>
+            <Text style={styles.buttonText}>What's going on?</Text>
+          </TouchableOpacity>
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={modalOpen}
+            onRequestClose={() => {
+              setModalOpen(false);
+            }}
+          >
+            <View style={styles.outerModalContainer}>
+              <View style={styles.topContainer}>
+                <Icon
+                  name="md-close"
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: 20,
+                  }}
+                  onPress={() => setModalOpen(false)}
+                  color="orangered"
+                  size={32}
+                />
+                <TouchableOpacity
+                  style={styles.postButton}
+                  onPress={() => handlePress(tweet)}
+                >
+                  <Text style={styles.postText}>Post</Text>
+                </TouchableOpacity>
+              </View>
 
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalOpen}
-        onRequestClose={() => {
-          setModalOpen(false);
-        }}
-      >
-        <View style={styles.outerModalContainer}>
-          <View style={styles.topContainer}>
-            <Icon
-              name="md-close"
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: 20,
-              }}
-              onPress={() => setModalOpen(false)}
-              color="orangered"
-              size={32}
-            />
-            <TouchableOpacity
-              style={styles.postButton}
-              onPress={() => handlePress(tweet)}
-            >
-              <Text style={styles.postText}>Post</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.bottomContainer}>
-            <Avatar rounded size={60} source={{ uri: profilePhoto }} />
-            <TextInput
-              placeholder="What's the latest in bhangra?"
-              onChangeText={input => setTweet(input)}
-              style={styles.textInput}
-            />
-          </View>
+              <View style={styles.bottomContainer}>
+                <Avatar rounded size={60} source={{ uri: profilePhoto }} />
+                <TextInput
+                  placeholder="What's the latest in bhangra?"
+                  onChangeText={input => setTweet(input)}
+                  style={styles.textInput}
+                />
+              </View>
+            </View>
+          </Modal>
         </View>
-      </Modal>
+      )}
     </View>
   );
 }

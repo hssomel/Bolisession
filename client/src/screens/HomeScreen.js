@@ -6,7 +6,7 @@ import HomeFeedHeader from '../components/HomeFeedHeader';
 
 export default function HomeScreen(props) {
   // Initial State
-  const [thisUser, setUser] = useState(null);
+  const [user] = useState(props.navigation.getParam('user', null));
   const [isLoaded, setIsLoaded] = useState(false);
   // Firebase Reference
   const postsRef = firebase.database().ref('posts/');
@@ -15,8 +15,8 @@ export default function HomeScreen(props) {
     postsRef
       .push({
         text: tweet,
-        username: thisUser.displayName,
-        userPhoto: thisUser.photoURL,
+        username: user.displayName,
+        userPhoto: user.photoURL,
         likes: 0,
         comments: 0,
         retweets: 0,
@@ -32,41 +32,25 @@ export default function HomeScreen(props) {
 
   useEffect(() => {
     console.log('mounted to home screen');
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        setUser(user);
-        setIsLoaded(true);
-      } else {
-        setUser(null);
-        signOut();
-      }
-    });
-    return () => {
-      if (unsubscribe) unsubscribe();
-      console.log('listener unmounted from HomeScreen');
-    };
-  }, []);
 
-  const signOut = () => {
-    firebase.auth().signOut();
-    console.log('Signed Out !');
-    props.navigation.navigate('phone');
-  };
+    if (user) {
+      setIsLoaded(true);
+    }
+  }, [user]);
 
   return (
     <View>
       <View>
-        {!isLoaded && (
+        {!isLoaded ? (
           <View style={{ justifyContent: 'center' }}>
             <ActivityIndicator size="large" color="orangered" />
           </View>
-        )}
-        {isLoaded && (
+        ) : (
           <View>
             <UniversalFeed
-              user={thisUser}
+              user={user}
               ListHeaderComponent={
-                <HomeFeedHeader user={thisUser} writeUserData={writeUserData} />
+                <HomeFeedHeader user={user} writeUserData={writeUserData} />
               }
             />
           </View>

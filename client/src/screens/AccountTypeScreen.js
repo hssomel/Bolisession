@@ -7,24 +7,31 @@ import firebase from 'react-native-firebase';
 export default function AccountTypeScreen(props) {
   // Initial State
   const [modalVisible, setModalVisible] = useState(false);
-  const [user, setUser] = useState(props.navigation.getParam('user', null));
+  const [user] = useState(props.navigation.getParam('user', null));
   const [username, setUserName] = useState('');
   const [profilePhoto, setProfilePhoto] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      setUser(user);
-      setUserName(user.displayName);
-      setProfilePhoto(user.photoURL);
-    });
-    return () => {
-      if (unsubscribe) unsubscribe();
-      console.log('unmounted from create account screen');
-    };
-  });
+    setUserName(user.displayName);
+    setProfilePhoto(user.photoURL);
+    console.log('hey the user is: ', user);
+    setIsLoaded(true);
+    // const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+    //   setUser(user);
+    //   setUserName(user.displayName);
+    //   setProfilePhoto(user.photoURL);
+    // });
+    // return () => {
+    //   if (unsubscribe) unsubscribe();
+    //   console.log('unmounted from create account screen');
+    // };
+  }, []);
 
   const handlePress = () => {
-    props.navigation.navigate('Home');
+    props.navigation.navigate('Home', {
+      user,
+    });
   };
 
   const openModal = () => {
@@ -33,53 +40,20 @@ export default function AccountTypeScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.text}>Welcome, {username}</Text>
-      <View style={styles.viewContainer}>
-        <Avatar
-          rounded
-          size={150}
-          source={{ uri: profilePhoto }}
-          // icon={{ name: 'ios-camera', type: 'ionicon' }}
-        />
-      </View>
-      <Text style={styles.text1}>Manager of a Team or Competition?</Text>
-      <Button
-        onPress={openModal}
-        containerStyle={styles.buttonContainer}
-        buttonStyle={styles.buttonStyle}
-        ViewComponent={LinearGradient}
-        linearGradientProps={{
-          colors: ['#f12711', '#f5af19'],
-          start: { x: 0, y: 0.5 },
-          end: { x: 1, y: 0.5 },
-        }}
-        title="Create a Special Account"
-        titleStyle={{ fontSize: 18 }}
-      />
-      <View style={styles.viewContainer1}>
-        <Text style={styles.bottomText} onPress={handlePress}>
-          Skip and continue
-        </Text>
-      </View>
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(false);
-        }}
-      >
-        <View
-          style={{
-            height: '100%',
-            width: '100%',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+      {isLoaded && (
+        <View>
+          <Text style={styles.text}>Welcome, {username}</Text>
+          <View style={styles.viewContainer}>
+            <Avatar
+              rounded
+              size={150}
+              source={{ uri: profilePhoto }}
+              // icon={{ name: 'ios-camera', type: 'ionicon' }}
+            />
+          </View>
+          <Text style={styles.text1}>Manager of a Team or Competition?</Text>
           <Button
-            onPress={handlePress}
+            onPress={openModal}
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.buttonStyle}
             ViewComponent={LinearGradient}
@@ -88,17 +62,54 @@ export default function AccountTypeScreen(props) {
               start: { x: 0, y: 0.5 },
               end: { x: 1, y: 0.5 },
             }}
-            title="CREATE TEAM ACCOUNT"
+            title="Create a Special Account"
+            titleStyle={{ fontSize: 18 }}
           />
-          <Button
-            onPress={handlePress}
-            containerStyle={styles.buttonContainer1}
-            buttonStyle={styles.buttonStyle1}
-            title="CREATE COMPETITION ACCOUNT"
-            titleStyle={{ color: 'orangered' }}
-          />
+          <View style={styles.viewContainer1}>
+            <Text style={styles.bottomText} onPress={handlePress}>
+              Skip and continue
+            </Text>
+          </View>
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(false);
+            }}
+          >
+            <View
+              style={{
+                height: '100%',
+                width: '100%',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Button
+                onPress={handlePress}
+                containerStyle={styles.buttonContainer}
+                buttonStyle={styles.buttonStyle}
+                ViewComponent={LinearGradient}
+                linearGradientProps={{
+                  colors: ['#f12711', '#f5af19'],
+                  start: { x: 0, y: 0.5 },
+                  end: { x: 1, y: 0.5 },
+                }}
+                title="CREATE TEAM ACCOUNT"
+              />
+              <Button
+                onPress={handlePress}
+                containerStyle={styles.buttonContainer1}
+                buttonStyle={styles.buttonStyle1}
+                title="CREATE COMPETITION ACCOUNT"
+                titleStyle={{ color: 'orangered' }}
+              />
+            </View>
+          </Modal>
         </View>
-      </Modal>
+      )}
     </SafeAreaView>
   );
 }

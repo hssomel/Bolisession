@@ -3,19 +3,48 @@ import { View, Text, StyleSheet } from 'react-native';
 import Video from 'react-native-video';
 import firebase from 'react-native-firebase';
 import GradientButton from '../components/GradientButton';
+import {
+  navigateToIncomplete,
+  confirmUserExists,
+} from '../actions/userProfileActions';
 
 const LandingPageScreen = props => {
-  //Event Handlers
+  // Event Handlers
   const handleSignUpPress = () => {
     props.navigation.navigate('phone');
   };
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      console.log('mounted to LandingPageScreen');
       if (user) {
-        props.navigation.navigate('Dashboard');
+        if (user.displayName && user.photoURL) {
+          confirmUserExists(user)
+            .then(res => {
+              if (res) {
+                props.navigation.navigate('Home', {
+                  user,
+                });
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+        if (!user.displayName || !user.photoURL) {
+          confirmUserExists(user)
+            .then(res => {
+              if (res) {
+                navigateToIncomplete(user, props);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
       }
     });
+
     return () => {
       if (unsubscribe) unsubscribe();
       console.log('unmounted from Landing Page');

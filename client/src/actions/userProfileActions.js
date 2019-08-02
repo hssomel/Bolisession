@@ -151,7 +151,7 @@ export const uploadImageToFirebase = (image, user, dataKey) => {
           })
           .catch(err => {
             console.log(err);
-            resolve(false);
+            reject(err);
           });
       })
       .catch(err => {
@@ -187,11 +187,7 @@ const updateUserImage = (url, user, dataKey) => {
 };
 
 export const uploadProfileVid = (key, url, startTime) => {
-  const ref = firebase
-    .database()
-    .ref('people')
-    .child('users')
-    .child(key);
+  const ref = usersRef.child(key);
 
   ref
     .update({
@@ -204,4 +200,40 @@ export const uploadProfileVid = (key, url, startTime) => {
     .catch(error => {
       console.log('error ', error);
     });
+};
+
+export const navigateToIncomplete = (user, props) => {
+  usersRef
+    .orderByChild('userID')
+    .equalTo(user.uid)
+    .once('value', snapshot => {
+      snapshot.forEach(data => {
+        if (!user.displayName) {
+          props.navigation.navigate('Create', {
+            user,
+            dataKey: data.key,
+          });
+        } else {
+          props.navigation.navigate('ProfilePhoto', {
+            user,
+            dataKey: data.key,
+          });
+        }
+      });
+    });
+};
+
+export const confirmUserExists = (user, props) => {
+  return new Promise(resolve => {
+    usersRef
+      .orderByChild('userID')
+      .equalTo(user.uid)
+      .once('value', snapshot => {
+        if (!snapshot.val()) {
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      });
+  });
 };

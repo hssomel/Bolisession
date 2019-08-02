@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Modal } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
-import LinearGradient from 'react-native-linear-gradient';
 import ImagePicker from 'react-native-image-crop-picker';
 import GradientButton from '../components/GradientButton';
 import { uploadImageToFirebase } from '../actions/userProfileActions';
@@ -53,15 +52,14 @@ export default function ProfilePhotoScreen(props) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container1}>
-        {!profilePhoto && (
+        {!profilePhoto ? (
           <Avatar
             rounded
             size={150}
             icon={{ name: 'ios-camera', type: 'ionicon' }}
             activeOpacity={0.7}
           />
-        )}
-        {profilePhoto && (
+        ) : (
           <Avatar
             rounded
             size={150}
@@ -75,18 +73,7 @@ export default function ProfilePhotoScreen(props) {
       <Text style={styles.text1}>
         Upload a selfie so your friends know it's you.
       </Text>
-      <Button
-        onPress={openModal}
-        containerStyle={styles.buttonContainer}
-        buttonStyle={styles.buttonStyle}
-        ViewComponent={LinearGradient}
-        linearGradientProps={{
-          colors: ['#f12711', '#f5af19'],
-          start: { x: 0, y: 0.5 },
-          end: { x: 1, y: 0.5 },
-        }}
-        title="UPLOAD PROFILE PHOTO"
-      />
+      <GradientButton onPress={openModal} title="UPLOAD PROFILE PHOTO" />
       {allowContinue && (
         <Text style={styles.text3} onPress={handlePress}>
           CONTINUE
@@ -100,34 +87,18 @@ export default function ProfilePhotoScreen(props) {
           setModalVisible(false);
         }}
       >
-        <View
-          style={{
-            height: '100%',
-            width: '100%',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Button
+        <View style={styles.viewModal}>
+          <GradientButton
             onPress={() => handlePhotoUpload(false)}
-            containerStyle={styles.buttonContainer}
-            buttonStyle={styles.buttonStyle}
-            ViewComponent={LinearGradient}
-            linearGradientProps={{
-              colors: ['#f12711', '#f5af19'],
-              start: { x: 0, y: 0.5 },
-              end: { x: 1, y: 0.5 },
-            }}
             title="USE CAMERA TO TAKE SELFIE"
           />
           <Text style={styles.text2}>OR</Text>
           <Button
             onPress={() => handlePhotoUpload(true)}
-            containerStyle={styles.buttonContainer1}
-            buttonStyle={styles.buttonStyle1}
+            containerStyle={styles.buttonContainer}
+            buttonStyle={styles.buttonStyle}
             title="UPLOAD FROM GALLERY"
-            titleStyle={{ color: 'orangered' }}
+            titleStyle={{ color: 'orangered', fontSize: 18 }}
           />
         </View>
       </Modal>
@@ -165,6 +136,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Gill Sans',
     color: 'black',
     marginTop: '4%',
+    marginBottom: '10%',
   },
   text2: {
     fontSize: 20,
@@ -178,15 +150,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Gill Sans',
     color: 'orangered',
-    marginTop: '1%',
+    marginTop: '2%',
   },
   buttonContainer: {
-    marginTop: '15%',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'center',
-  },
-  buttonContainer1: {
     marginTop: '10%',
     alignItems: 'center',
     width: '100%',
@@ -196,13 +162,15 @@ const styles = StyleSheet.create({
     height: 50,
     width: '85%',
     borderRadius: 25,
-  },
-  buttonStyle1: {
-    height: 50,
-    width: '85%',
-    borderRadius: 25,
     borderWidth: 2,
     borderColor: 'orangered',
     backgroundColor: 'transparent',
+  },
+  viewModal: {
+    height: '100%',
+    width: '100%',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
