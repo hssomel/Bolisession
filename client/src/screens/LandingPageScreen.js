@@ -9,10 +9,7 @@ import {
 import Video from 'react-native-video';
 import firebase from 'react-native-firebase';
 import GradientButton from '../components/GradientButton';
-import {
-  navigateToIncomplete,
-  confirmUserExists,
-} from '../actions/authActions';
+import { confirmUserExistsinDB } from '../actions/authActions';
 
 const LandingPageScreen = props => {
   // Initial State
@@ -26,30 +23,8 @@ const LandingPageScreen = props => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       console.log('mounted to LandingPageScreen');
       if (user) {
-        if (user.displayName && user.photoURL) {
-          confirmUserExists(user)
-            .then(res => {
-              if (res) {
-                props.navigation.navigate('Home', {
-                  user,
-                });
-              }
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        }
-        if (!user.displayName || !user.photoURL) {
-          confirmUserExists(user)
-            .then(res => {
-              if (res) {
-                navigateToIncomplete(user, props);
-              }
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        }
+        // checking to see if user exists in non-admin database
+        confirmUserExistsinDB(user, props, setIsLoaded);
       } else {
         setIsLoaded(true);
       }

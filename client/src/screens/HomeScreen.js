@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import UniversalFeed from '../components/UniversalFeed';
 import HomeFeedHeader from '../components/HomeFeedHeader';
 
-export default function HomeScreen(props) {
+const HomeScreen = props => {
   // Initial State
   const [user] = useState(props.navigation.getParam('user', null));
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(null);
 
   useEffect(() => {
     console.log('mounted to home screen');
@@ -20,7 +20,7 @@ export default function HomeScreen(props) {
     <View>
       <View>
         {!isLoaded ? (
-          <View style={{ justifyContent: 'center' }}>
+          <View style={styles.container}>
             <ActivityIndicator size="large" color="orangered" />
           </View>
         ) : (
@@ -34,4 +34,15 @@ export default function HomeScreen(props) {
       </View>
     </View>
   );
-}
+};
+
+export default HomeScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+  },
+});

@@ -136,18 +136,52 @@ export const removeUserFromLikesArray = (key, name) => {
     });
 };
 
-export const uploadImageToFirebase = (image, user, dataKey) => {
+// Function to update firebase db with url to profile pic
+const uploadUserImagetoDB = (url, user, dataKey) => {
+  return new Promise((resolve, reject) => {
+    const verifyRef = usersRef.child(dataKey);
+    user
+      .updateProfile({
+        photoURL: url,
+      })
+      .then(() => {
+        verifyRef
+          .update({
+            profilePhoto: url,
+          })
+          .then(() => {
+            console.log('successfully uploaded');
+            resolve();
+          })
+          .catch(error => {
+            console.log('error ', error);
+            reject(new Error('unsuccessful upload'));
+          });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  });
+};
+
+export const uploadImageToFirebaseStorage = (image, user, dataKey) => {
   return new Promise((resolve, reject) => {
     const storeImageRef = firebase.storage().ref(`images/${user.uid}`);
+
     storeImageRef
       .put(image.path, { contentType: 'image/jpeg' })
-      .then(snapshot => {
-        console.log(JSON.stringify(snapshot.metadata));
+      .then(() => {
         storeImageRef
           .getDownloadURL()
           .then(url => {
-            updateUserImage(url, user, dataKey);
-            resolve(true);
+            uploadUserImagetoDB(url, user, dataKey)
+              .then(() => {
+                resolve();
+              })
+              .catch(err => {
+                console.log(err);
+                reject();
+              });
           })
           .catch(err => {
             console.log(err);
@@ -158,32 +192,6 @@ export const uploadImageToFirebase = (image, user, dataKey) => {
         console.log(err);
       });
   });
-};
-
-const updateUserImage = (url, user, dataKey) => {
-  const verifyRef = firebase
-    .database()
-    .ref('people/')
-    .child('users/' + dataKey);
-  user
-    .updateProfile({
-      photoURL: url,
-    })
-    .then(() => {
-      verifyRef
-        .update({
-          profilePhoto: url,
-        })
-        .then(data => {
-          console.log('data ', data);
-        })
-        .catch(error => {
-          console.log('error ', error);
-        });
-    })
-    .catch(err => {
-      console.log(err);
-    });
 };
 
 export const uploadProfileVid = (key, url, startTime) => {

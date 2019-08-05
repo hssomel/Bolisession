@@ -10,7 +10,7 @@ import {
 import { Button, Avatar } from 'react-native-elements';
 import ImagePicker from 'react-native-image-crop-picker';
 import GradientButton from '../components/GradientButton';
-import { uploadImageToFirebase } from '../actions/userProfileActions';
+import { uploadImageToFirebaseStorage } from '../actions/userProfileActions';
 
 export default function ProfilePhotoScreen(props) {
   // Initial State
@@ -36,12 +36,10 @@ export default function ProfilePhotoScreen(props) {
       setProfilePhoto(image);
       setModalVisible(false);
       setIsLoading(true);
-      uploadImageToFirebase(image, user, dataKey)
-        .then(res => {
-          if (res) {
-            setIsLoading(false);
-            setAllowContinue(true);
-          }
+      uploadImageToFirebaseStorage(image, user, dataKey)
+        .then(() => {
+          setIsLoading(false);
+          setAllowContinue(true);
         })
         .catch(err => {
           console.log(err);

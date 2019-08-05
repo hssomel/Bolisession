@@ -75,13 +75,17 @@ export default function SettingsScreen(props) {
 
   const signOut = () => {
     firebase.auth().signOut();
+    console.log('Signed Out !');
     props.navigation.navigate('phone');
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.deleteButton} onPress={removeFromUsersDB}>
+      <TouchableOpacity style={styles.button} onPress={removeFromUsersDB}>
         <Text style={styles.ButtonText}>Delete Account</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={signOut}>
+        <Text style={styles.ButtonText}>Sign Out</Text>
       </TouchableOpacity>
     </View>
   );
@@ -94,19 +98,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: '100%',
     width: '100%',
-    flex: 1,
-    paddingBottom: 20,
-    paddingLeft: 10,
   },
-  deleteButton: {
-    height: 45,
+  button: {
+    height: 50,
     width: '80%',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 25,
-    marginTop: 20,
     borderColor: 'red',
     borderWidth: 2,
+    marginTop: 25,
+    marginBottom: 25,
   },
   ButtonText: {
     color: '#808B96',

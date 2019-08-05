@@ -7,14 +7,14 @@ import {
   View,
 } from 'react-native';
 import { Text } from 'react-native-elements';
-import firebase from 'react-native-firebase';
 import GradientButton from '../components/GradientButton';
+import { createUserinDB } from '../actions/authActions';
 
 const { width } = Dimensions.get('window');
 const pillWidth = width * 0.9;
 const pillFontSize = pillWidth / 20;
 
-export default function PhoneConfirmationScreen(props) {
+const PhoneConfirmationScreen = props => {
   // Initial State
   const [codeInput, setCodeInput] = useState('');
   const [message, setMessage] = useState(''); // TO DO integrate into error
@@ -24,57 +24,22 @@ export default function PhoneConfirmationScreen(props) {
   const [confirmResult] = useState(
     props.navigation.getParam('confirmResult', null),
   );
-  // Firebase References
-  const usersRef = firebase
-    .database()
-    .ref('people/')
-    .child('users');
 
   // Event Handlers
-  const handleSubmitButtonPress = () => {
-    confirmCode();
-  };
-
-  const updateFirebaseRef = user => {
-    usersRef
-      .orderByChild('userID')
-      .equalTo(user.uid)
-      .once('value', snapshot => {
-        if (!snapshot.val()) {
-          usersRef
-            .push({
-              userID: user.uid,
-              userPhoneNumber: user.phoneNumber,
-              followingCount: 0,
-              followersCount: 0,
-            })
-            .then(data => {
-              props.navigation.navigate('Create', {
-                dataKey: data.key,
-                user,
-              });
-            })
-            .catch(err => {
-              console.log('error ', err);
-            });
-        } else {
-          props.navigation.navigate('Home', {
-            user,
-          });
-        }
-      });
-  };
-
   const confirmCode = () => {
     if (confirmResult && codeInput.length) {
       confirmResult
         .confirm(codeInput)
         .then(user => {
           setMessage('Code Confirmed!');
-          updateFirebaseRef(user);
+          createUserinDB(user, props);
         })
         .catch(error => setMessage(error.message));
     }
+  };
+
+  const handleSubmitButtonPress = () => {
+    confirmCode();
   };
 
   return (
@@ -99,7 +64,9 @@ export default function PhoneConfirmationScreen(props) {
       </View>
     </SafeAreaView>
   );
-}
+};
+
+export default PhoneConfirmationScreen;
 
 const styles = StyleSheet.create({
   container: {

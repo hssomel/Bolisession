@@ -34,6 +34,7 @@ import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import io.invertase.firebase.perf.RNFirebasePerformancePackage;
 import io.invertase.firebase.storage.RNFirebaseStoragePackage;
+import com.airbnb.android.react.maps.MapsPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,7 +59,8 @@ public class MainApplication extends Application implements ReactApplication {
             new ReactVideoPackage(),
             new SvgPackage(),
             new RNGestureHandlerPackage(),
-        new RNFirebasePackage(),
+            new MapsPackage(),
+            new RNFirebasePackage(),
         // add/remove these packages as appropriate
         new RNFirebaseAdMobPackage(),
         new RNFirebaseAnalyticsPackage(),
@@ -94,4 +96,5 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
   }
+
 }

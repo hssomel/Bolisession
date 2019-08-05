@@ -14,15 +14,15 @@ export default function AccountTypeScreen(props) {
   // Initial State
   const [modalVisible, setModalVisible] = useState(false);
   const [user] = useState(props.navigation.getParam('user', null));
-  const [username, setUserName] = useState('');
+  const [username, setUsername] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [isLoaded, setIsLoaded] = useState(null);
 
   useEffect(() => {
-    setUserName(user.displayName);
+    setUsername(user.displayName);
     setProfilePhoto(user.photoURL);
     setIsLoaded(true);
-  }, []);
+  }, [profilePhoto]);
 
   const handlePress = () => {
     props.navigation.navigate('Home', {

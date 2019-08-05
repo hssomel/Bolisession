@@ -13,7 +13,7 @@ const { width } = Dimensions.get('window');
 const pillWidth = width * 0.88;
 const pillFontSize = pillWidth / 20;
 
-export default function PhoneNumberScreen(props) {
+const PhoneNumberScreen = props => {
   // Initial State
   const [phoneNumber, setPhoneNumber] = useState('');
   const [country, setCountry] = useState({
@@ -83,7 +83,9 @@ export default function PhoneNumberScreen(props) {
       </View>
     </SafeAreaView>
   );
-}
+};
+
+export default PhoneNumberScreen;
 
 const styles = StyleSheet.create({
   container: {

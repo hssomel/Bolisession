@@ -34,7 +34,7 @@ export default function HomeFeedHeader(props) {
 
   useEffect(() => {
     setIsLoaded(true);
-  }, [handlePress]);
+  }, [writeUserData]);
 
   return (
     <View>

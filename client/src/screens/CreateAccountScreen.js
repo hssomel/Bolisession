@@ -10,21 +10,29 @@ import {
   Alert,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import firebase from 'react-native-firebase';
 import GradientButton from '../components/GradientButton';
+import { uploadUsername } from '../actions/authActions';
 
-const sports = [
+const bhangraTeams = [
   {
-    label: 'Football',
-    value: 'football',
+    label: 'SPD',
+    value: 'SPD',
   },
   {
-    label: 'Baseball',
-    value: 'baseball',
+    label: 'Bhangra Empire',
+    value: 'Bhangra Empire',
   },
   {
-    label: 'Hockey',
-    value: 'hockey',
+    label: 'DRP',
+    value: 'DRP',
+  },
+  {
+    label: 'Got Bhangra',
+    value: 'Got Bhangra',
+  },
+  {
+    label: 'ASAP',
+    value: 'ASAP',
   },
 ];
 
@@ -35,12 +43,6 @@ export default function CreateAccountScreen(props) {
   const [username, setUserName] = useState('');
   const [user] = useState(props.navigation.getParam('user', null));
   const [dataKey] = useState(props.navigation.getParam('dataKey', null));
-  // Firebase References
-  const usersRef = firebase
-    .database()
-    .ref('people/')
-    .child('users/' + dataKey);
-
   // Event Handlers
   const handleOnFocus = () => {
     setTextInputStyle('20%');
@@ -48,44 +50,20 @@ export default function CreateAccountScreen(props) {
   const handleOnScroll = () => setTextInputStyle('50%');
   const handleOnBlur = () => setTextInputStyle('50%');
 
-  const popupAlert = () => {
+  const alert = () => {
     Alert.alert(
       'Oops something went wrong! Please make sure you are connected to the internet and try again!',
     );
   };
 
-  const handleUserNameInputPress = () => {
-    user
-      .updateProfile({
-        displayName: username,
-      })
-      .then(() => {
-        usersRef
-          .update({
-            username,
-          })
-          .then(data => {
-            console.log('data ', data);
-            props.navigation.navigate('ProfilePhoto', {
-              dataKey,
-              user,
-            });
-          })
-          .catch(error => {
-            console.log('error ', error);
-            popupAlert();
-          });
-      })
-      .catch(error => {
-        console.log(error);
-        popupAlert();
-      });
+  const handlePress = () => {
+    uploadUsername(user, username, dataKey, alert, props);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
-        style={styles.container1}
+        style={styles.scrollContainer}
         contentContainerStyle={{
           alignItems: 'center',
         }}
@@ -113,7 +91,7 @@ export default function CreateAccountScreen(props) {
               value: null,
               color: 'grey',
             }}
-            items={sports}
+            items={bhangraTeams}
             onValueChange={value => setCurrentTeam(value)}
             value={currentTeam}
             useNativeAndroidPickerStyle={false}
@@ -121,7 +99,7 @@ export default function CreateAccountScreen(props) {
           />
         </View>
         {username.length > 2 && (
-          <GradientButton onPress={handleUserNameInputPress} title="CONTINUE" />
+          <GradientButton onPress={handlePress} title="CONTINUE" />
         )}
       </ScrollView>
     </SafeAreaView>
@@ -133,14 +111,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'white',
     height: '100%',
     width: '100%',
-    flex: 1,
   },
-  container1: {
+  scrollContainer: {
     alignContent: 'center',
-    backgroundColor: 'white',
     height: '100%',
     width: '100%',
     flex: 1,
@@ -149,7 +124,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'flex-end',
-    backgroundColor: 'white',
     marginTop: '7%',
     height: '100%',
     width: '83%',
