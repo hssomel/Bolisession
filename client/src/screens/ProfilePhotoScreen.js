@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Modal } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Modal,
+  ActivityIndicator,
+} from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
 import ImagePicker from 'react-native-image-crop-picker';
 import GradientButton from '../components/GradientButton';
@@ -10,6 +17,7 @@ export default function ProfilePhotoScreen(props) {
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [allowContinue, setAllowContinue] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [user] = useState(props.navigation.getParam('user', null));
   const [dataKey] = useState(props.navigation.getParam('dataKey', null));
   const pickerProps = {
@@ -27,9 +35,11 @@ export default function ProfilePhotoScreen(props) {
     picker.then(image => {
       setProfilePhoto(image);
       setModalVisible(false);
+      setIsLoading(true);
       uploadImageToFirebase(image, user, dataKey)
         .then(res => {
           if (res) {
+            setIsLoading(false);
             setAllowContinue(true);
           }
         })
@@ -74,6 +84,7 @@ export default function ProfilePhotoScreen(props) {
         Upload a selfie so your friends know it's you.
       </Text>
       <GradientButton onPress={openModal} title="UPLOAD PROFILE PHOTO" />
+      {isLoading && <ActivityIndicator size="large" color="orangered" />}
       {allowContinue && (
         <Text style={styles.text3} onPress={handlePress}>
           CONTINUE

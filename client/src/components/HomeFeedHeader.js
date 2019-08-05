@@ -10,11 +10,12 @@ import {
 } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { writeUserData } from '../actions/userProfileActions';
 
 const { width } = Dimensions.get('window');
 
 export default function HomeFeedHeader(props) {
-  const { user, writeUserData } = props;
+  const { user } = props;
   // Intial State
   const [profilePhoto] = useState(user.photoURL);
   const [modalOpen, setModalOpen] = useState(false);
@@ -25,8 +26,9 @@ export default function HomeFeedHeader(props) {
   const openPostModal = () => {
     setModalOpen(true);
   };
+
   const handlePress = tweet => {
-    writeUserData(tweet);
+    writeUserData(tweet, user);
     setModalOpen(false);
   };
 
@@ -35,22 +37,16 @@ export default function HomeFeedHeader(props) {
   }, [handlePress]);
 
   return (
-    <View style={styles.container}>
+    <View>
       {isLoaded && (
-        <View>
+        <View style={styles.container}>
           <Avatar
             rounded
             size={55}
             source={{
               uri: profilePhoto,
             }}
-            containerStyle={{
-              position: 'absolute',
-              left: 0,
-              marginTop: 10,
-              marginLeft: 10,
-              marginBottom: 10,
-            }}
+            containerStyle={styles.avatarStyle}
           />
           <TouchableOpacity style={styles.openModal} onPress={openPostModal}>
             <Text style={styles.buttonText}>What's going on?</Text>
@@ -67,11 +63,7 @@ export default function HomeFeedHeader(props) {
               <View style={styles.topContainer}>
                 <Icon
                   name="md-close"
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginLeft: 20,
-                  }}
+                  style={styles.iconStyle}
                   onPress={() => setModalOpen(false)}
                   color="orangered"
                   size={32}
@@ -167,12 +159,24 @@ const styles = StyleSheet.create({
     marginTop: 15,
     borderColor: '#808B96',
     borderWidth: 1,
-    marginLeft: 65,
+    marginLeft: 75,
     paddingLeft: 20,
   },
   buttonText: {
     color: '#808B96',
     fontSize: 18,
     fontFamily: 'Roboto',
+  },
+  avatarStyle: {
+    position: 'absolute',
+    left: 0,
+    marginTop: 10,
+    marginLeft: 10,
+    marginBottom: 10,
+  },
+  iconStyle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 20,
   },
 });

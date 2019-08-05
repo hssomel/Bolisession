@@ -32,11 +32,7 @@ export default function YouTubeModal(props) {
         <View style={styles.topContainer}>
           <Icon
             name="md-close"
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginLeft: 20,
-            }}
+            style={styles.iconStyle}
             onPress={() => closeModal()}
             color="orangered"
             size={32}
@@ -127,26 +123,9 @@ const styles = StyleSheet.create({
     marginLeft: 65,
     paddingLeft: 20,
   },
-  buttonContainer: {
-    marginBottom: '5%',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'flex-start',
-  },
-  buttonStyle: {
-    height: 50,
-    width: '85%',
-    borderRadius: 25,
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: 'orangered',
-  },
-  text2: {
-    color: 'orangered',
+  iconStyle: {
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 18,
-    fontWeight: 'bold',
-    fontFamily: 'Gill Sans',
+    marginLeft: 20,
   },
 });

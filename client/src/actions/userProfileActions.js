@@ -202,38 +202,21 @@ export const uploadProfileVid = (key, url, startTime) => {
     });
 };
 
-export const navigateToIncomplete = (user, props) => {
-  usersRef
-    .orderByChild('userID')
-    .equalTo(user.uid)
-    .once('value', snapshot => {
-      snapshot.forEach(data => {
-        if (!user.displayName) {
-          props.navigation.navigate('Create', {
-            user,
-            dataKey: data.key,
-          });
-        } else {
-          props.navigation.navigate('ProfilePhoto', {
-            user,
-            dataKey: data.key,
-          });
-        }
-      });
+export const writeUserData = (tweet, user) => {
+  postsRef
+    .push({
+      text: tweet,
+      username: user.displayName,
+      userPhoto: user.photoURL,
+      likes: 0,
+      comments: 0,
+      retweets: 0,
+      usersLiked: {},
+    })
+    .then(data => {
+      console.log('data ', data);
+    })
+    .catch(error => {
+      console.log('error ', error);
     });
-};
-
-export const confirmUserExists = (user, props) => {
-  return new Promise(resolve => {
-    usersRef
-      .orderByChild('userID')
-      .equalTo(user.uid)
-      .once('value', snapshot => {
-        if (!snapshot.val()) {
-          resolve(false);
-        } else {
-          resolve(true);
-        }
-      });
-  });
 };

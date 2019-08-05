@@ -37,8 +37,9 @@ function ProfileFeedHeader(props) {
   const [bio, setBio] = useState(null);
   // Event Handlers
   const editButtonPress = () => {
-    props.navigation.navigate('Bio', {
-      currentUserKey: currentUserKey,
+    props.navigation.navigate('Edit', {
+      currentUserKey,
+      user,
     });
   };
 

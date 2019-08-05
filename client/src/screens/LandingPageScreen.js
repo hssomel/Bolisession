@@ -1,14 +1,22 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  SafeAreaView,
+} from 'react-native';
 import Video from 'react-native-video';
 import firebase from 'react-native-firebase';
 import GradientButton from '../components/GradientButton';
 import {
   navigateToIncomplete,
   confirmUserExists,
-} from '../actions/userProfileActions';
+} from '../actions/authActions';
 
 const LandingPageScreen = props => {
+  // Initial State
+  const [isLoaded, setIsLoaded] = useState(false);
   // Event Handlers
   const handleSignUpPress = () => {
     props.navigation.navigate('phone');
@@ -42,6 +50,8 @@ const LandingPageScreen = props => {
               console.log(err);
             });
         }
+      } else {
+        setIsLoaded(true);
       }
     });
 
@@ -52,27 +62,35 @@ const LandingPageScreen = props => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Video
-        source={require('../assets/videos/sample1.mp4')}
-        ref={ref => {
-          player = ref;
-        }}
-        repeat={true}
-        style={styles.backgroundVideo}
-        resizeMode={'cover'}
-      />
-      <View style={styles.viewOne}>
-        <Text style={styles.text}>Connect with the</Text>
-        <Text style={styles.text1}>Bhangra Community</Text>
-      </View>
-      <View style={styles.viewTwo}>
-        <GradientButton
-          title="Sign in with phone number"
-          onPress={handleSignUpPress}
-        />
-      </View>
-    </View>
+    <SafeAreaView style={styles.container}>
+      {isLoaded ? (
+        <View style={styles.container}>
+          <Video
+            source={require('../assets/videos/sample1.mp4')}
+            ref={ref => {
+              player = ref;
+            }}
+            repeat={true}
+            style={styles.backgroundVideo}
+            resizeMode={'cover'}
+          />
+          <View style={styles.viewOne}>
+            <Text style={styles.text}>Connect with the</Text>
+            <Text style={styles.text1}>Bhangra Community</Text>
+          </View>
+          <View style={styles.viewTwo}>
+            <GradientButton
+              title="Sign in with phone number"
+              onPress={handleSignUpPress}
+            />
+          </View>
+        </View>
+      ) : (
+        <View style={styles.indicator}>
+          <ActivityIndicator size="large" color="orangered" />
+        </View>
+      )}
+    </SafeAreaView>
   );
 };
 
@@ -83,10 +101,15 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'white',
     height: '100%',
     width: '100%',
-    flex: 1,
+  },
+  indicator: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
   },
   viewOne: {
     justifyContent: 'flex-start',

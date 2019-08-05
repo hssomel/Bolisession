@@ -94,10 +94,9 @@ export default function SetupProfileVideo(props) {
             titleStyle={styles.buttonText}
           />
         )}
-        {allowYoutube && (
+        {allowYoutube ? (
           <GradientButton onPress={reUpload} title="Reupload youtube link" />
-        )}
-        {!allowYoutube && (
+        ) : (
           <Avatar
             size="large"
             icon={{

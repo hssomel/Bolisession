@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Modal } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Modal,
+  Alert,
+} from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
-import LinearGradient from 'react-native-linear-gradient';
-import firebase from 'react-native-firebase';
+import GradientButton from '../components/GradientButton';
 
 export default function AccountTypeScreen(props) {
   // Initial State
@@ -15,20 +21,19 @@ export default function AccountTypeScreen(props) {
   useEffect(() => {
     setUserName(user.displayName);
     setProfilePhoto(user.photoURL);
-    console.log('hey the user is: ', user);
     setIsLoaded(true);
-    // const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-    //   setUser(user);
-    //   setUserName(user.displayName);
-    //   setProfilePhoto(user.photoURL);
-    // });
-    // return () => {
-    //   if (unsubscribe) unsubscribe();
-    //   console.log('unmounted from create account screen');
-    // };
   }, []);
 
   const handlePress = () => {
+    props.navigation.navigate('Home', {
+      user,
+    });
+  };
+
+  const handleModalButton = () => {
+    Alert.alert(
+      'Team & Competition account types feature will be available next update!',
+    );
     props.navigation.navigate('Home', {
       user,
     });
@@ -39,37 +44,20 @@ export default function AccountTypeScreen(props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView>
       {isLoaded && (
-        <View>
+        <View style={styles.container}>
           <Text style={styles.text}>Welcome, {username}</Text>
-          <View style={styles.viewContainer}>
-            <Avatar
-              rounded
-              size={150}
-              source={{ uri: profilePhoto }}
-              // icon={{ name: 'ios-camera', type: 'ionicon' }}
-            />
-          </View>
+          <Avatar rounded size={150} source={{ uri: profilePhoto }} />
           <Text style={styles.text1}>Manager of a Team or Competition?</Text>
-          <Button
+          <GradientButton
             onPress={openModal}
-            containerStyle={styles.buttonContainer}
-            buttonStyle={styles.buttonStyle}
-            ViewComponent={LinearGradient}
-            linearGradientProps={{
-              colors: ['#f12711', '#f5af19'],
-              start: { x: 0, y: 0.5 },
-              end: { x: 1, y: 0.5 },
-            }}
             title="Create a Special Account"
-            titleStyle={{ fontSize: 18 }}
           />
-          <View style={styles.viewContainer1}>
-            <Text style={styles.bottomText} onPress={handlePress}>
-              Skip and continue
-            </Text>
-          </View>
+          <Text style={styles.bottomText} onPress={handlePress}>
+            Skip and continue
+          </Text>
+
           <Modal
             animationType="slide"
             transparent={false}
@@ -78,31 +66,15 @@ export default function AccountTypeScreen(props) {
               setModalVisible(false);
             }}
           >
-            <View
-              style={{
-                height: '100%',
-                width: '100%',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Button
-                onPress={handlePress}
-                containerStyle={styles.buttonContainer}
-                buttonStyle={styles.buttonStyle}
-                ViewComponent={LinearGradient}
-                linearGradientProps={{
-                  colors: ['#f12711', '#f5af19'],
-                  start: { x: 0, y: 0.5 },
-                  end: { x: 1, y: 0.5 },
-                }}
+            <View style={styles.modalView}>
+              <GradientButton
+                onPress={handleModalButton}
                 title="CREATE TEAM ACCOUNT"
               />
               <Button
-                onPress={handlePress}
-                containerStyle={styles.buttonContainer1}
-                buttonStyle={styles.buttonStyle1}
+                onPress={handleModalButton}
+                containerStyle={styles.buttonContainer}
+                buttonStyle={styles.buttonStyle}
                 title="CREATE COMPETITION ACCOUNT"
                 titleStyle={{ color: 'orangered' }}
               />
@@ -119,68 +91,34 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'white',
     height: '100%',
     width: '100%',
-    flex: 1,
-  },
-  viewContainer: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
-    flex: 0.3,
-  },
-  viewContainer1: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 0.1,
-    position: 'absolute',
-    bottom: 0,
-    marginBottom: '4%',
   },
   text: {
     fontSize: 34,
     fontWeight: 'bold',
     fontFamily: 'Helvetica',
     color: 'black',
-    marginTop: '8%',
+    marginTop: '5%',
+    marginBottom: '3%',
   },
   text1: {
     fontSize: 18,
     fontFamily: 'Gill Sans',
     color: 'black',
-    marginTop: '8%',
+    marginTop: '6%',
+    marginBottom: '2%',
   },
-  text2: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    fontFamily: 'Gill Sans',
-    color: 'orangered',
-    marginTop: '1%',
-  },
-  text3: {
+  bottomText: {
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'Gill Sans',
     color: 'orangered',
-    marginTop: '1%',
-  },
-  bottomText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: 'Gill Sans',
-    color: 'orangered',
+    position: 'absolute',
+    bottom: 0,
+    paddingBottom: 25,
   },
   buttonContainer: {
-    marginTop: '8%',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'center',
-  },
-  buttonContainer1: {
     marginTop: '15%',
     alignItems: 'center',
     width: '100%',
@@ -190,13 +128,15 @@ const styles = StyleSheet.create({
     height: 50,
     width: '85%',
     borderRadius: 25,
-  },
-  buttonStyle1: {
-    height: 50,
-    width: '85%',
-    borderRadius: 25,
     borderWidth: 2,
     borderColor: 'orangered',
     backgroundColor: 'transparent',
+  },
+  modalView: {
+    height: '100%',
+    width: '100%',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
