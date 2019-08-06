@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import { Text } from 'react-native-elements';
+import firebase from 'react-native-firebase';
 import GradientButton from '../components/GradientButton';
 import { createUserinDB } from '../actions/authActions';
 
@@ -41,6 +42,22 @@ const PhoneConfirmationScreen = props => {
   const handleSubmitButtonPress = () => {
     confirmCode();
   };
+
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      console.log('mounted to PhoneConfirmationScreen');
+      if (user) {
+        // Handling Auto-verification for android
+        // User will only exist in this screen if it is same user
+        createUserinDB(user, props);
+      }
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+      console.log('unmounted from PhoneConfirmationScreen Page');
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

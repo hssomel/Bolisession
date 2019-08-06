@@ -23,6 +23,7 @@ const LandingPageScreen = props => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       console.log('mounted to LandingPageScreen');
       if (user) {
+        console.log('init user is: ', user);
         // checking to see if user exists in non-admin database
         confirmUserExistsinDB(user, props, setIsLoaded);
       } else {
