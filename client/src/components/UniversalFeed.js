@@ -13,7 +13,7 @@ export default function UniversalFeed(props) {
   const { ListHeaderComponent, user } = props;
   // Initial State
   const [feedData, setFeedData] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(null);
   // Firebase References
   const postsRef = firebase.database().ref('posts/');
   // Event Handlers
@@ -34,10 +34,8 @@ export default function UniversalFeed(props) {
   };
 
   const updatePosts = () => {
-    postsRef.on('child_added', snapshot => {
-      snapshot.forEach(() => {
-        getAllPosts();
-      });
+    postsRef.on('child_added', () => {
+      getAllPosts();
     });
   };
 

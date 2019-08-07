@@ -45,7 +45,6 @@ const PhoneConfirmationScreen = props => {
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      console.log('mounted to PhoneConfirmationScreen');
       if (user) {
         // Handling Auto-verification for android
         // User will only exist in this screen if it is same user
@@ -55,7 +54,6 @@ const PhoneConfirmationScreen = props => {
 
     return () => {
       if (unsubscribe) unsubscribe();
-      console.log('unmounted from PhoneConfirmationScreen Page');
     };
   }, []);
 
@@ -92,6 +90,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     flexDirection: 'column',
     paddingTop: 40,
+    height: '100%',
+    width: '100%',
   },
   viewOne: {
     paddingLeft: 20,

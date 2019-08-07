@@ -17,7 +17,7 @@ const { width } = Dimensions.get('window');
 export default function HomeFeedHeader(props) {
   const { user } = props;
   // Intial State
-  const [profilePhoto] = useState(user.photoURL);
+  const [profilePhoto, setProfilePhoto] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [tweet, setTweet] = useState(null);
   const [isLoaded, setIsLoaded] = useState(null);
@@ -33,6 +33,7 @@ export default function HomeFeedHeader(props) {
   };
 
   useEffect(() => {
+    setProfilePhoto(user.photoURL);
     setIsLoaded(true);
   }, [writeUserData]);
 

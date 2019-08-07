@@ -9,7 +9,7 @@ import {
   removeUserFromLikesArray,
 } from '../actions/userProfileActions';
 
-function Post(props) {
+const Post = props => {
   // Initial State
   const { item, user } = props;
   const [liked, setHasLiked] = useState(null);
@@ -130,7 +130,7 @@ function Post(props) {
       </View>
     </View>
   );
-}
+};
 export default withNavigation(Post);
 
 const styles = StyleSheet.create({

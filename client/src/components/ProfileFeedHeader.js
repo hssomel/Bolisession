@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: videoHeight,
-    width: componentWidth,
+    width: '100%',
     flex: 1,
   },
   viewTwo: {
