@@ -3,12 +3,13 @@ import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { View, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
+import { getCurrentUserKey } from '../actions/authActions';
 import {
-  getCurrentUserKey,
   requestLocationPermission,
   getLocation,
   getUsersLocations,
-} from '../actions/authActions';
+  updateFirebaseLocation,
+} from '../actions/locationActions';
 
 const MapScreen = props => {
   // Initial State
@@ -27,11 +28,19 @@ const MapScreen = props => {
   });
 
   // Event Handlers
-  const checkLocation = async key => {
+  const checkForLocation = async key => {
     const requestOk = await requestLocationPermission();
     if (requestOk) {
-      getLocation(setCoordinates, key);
-      setLocationOn(true);
+      getLocation()
+        .then(res => {
+          setCoordinates(res);
+          setLocationOn(true);
+          const { latitude, longitude } = res;
+          updateFirebaseLocation(key, latitude, longitude);
+        })
+        .catch(err => {
+          console.log('error: ', err);
+        });
     } else {
       setLocationOn(false);
     }
@@ -44,10 +53,10 @@ const MapScreen = props => {
         setProfilePhoto(user.photoURL);
         getCurrentUserKey(user, setUserData, setUserKey)
           .then(key => {
-            checkLocation(key);
+            checkForLocation(key);
           })
           .catch(err => {
-            console.log('error', err);
+            console.log('error: ', err);
           });
       }
     });
@@ -59,7 +68,13 @@ const MapScreen = props => {
   }, []);
 
   useEffect(() => {
-    getUsersLocations(setUsersLocationData, setIsLoaded);
+    getUsersLocations()
+      .then(res => {
+        setUsersLocationData(res);
+      })
+      .catch(err => {
+        console.log('error: ', err);
+      });
   }, []);
 
   return (
@@ -72,13 +87,20 @@ const MapScreen = props => {
         loadingEnabled={true}
         showsMyLocationButton={false}
       >
-        {isLoaded &&
+        {usersData &&
           usersData.map(marker => (
             <Marker
               coordinate={marker._value.coordinates}
               title={marker._value.username}
               key={marker.key}
-            />
+            >
+              <Image
+                source={{
+                  uri: marker._value.profilePhoto,
+                }}
+                style={styles.image}
+              />
+            </Marker>
           ))}
       </MapView>
       <View style={styles.locationButton}>
@@ -86,7 +108,7 @@ const MapScreen = props => {
           name="md-locate"
           size={32}
           color="orangered"
-          onPress={() => getLocation(setCoordinates)}
+          onPress={() => getLocation()}
         />
       </View>
     </View>
@@ -116,7 +138,6 @@ const styles = StyleSheet.create({
   image: {
     height: 60,
     width: 60,
-    backgroundColor: 'pink',
     borderRadius: 30,
   },
 });

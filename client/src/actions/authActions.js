@@ -1,5 +1,4 @@
 import firebase from 'react-native-firebase';
-import { PermissionsAndroid } from 'react-native';
 // Firebase references
 const usersRef = firebase
   .database()
@@ -120,8 +119,6 @@ export const createUserinDB = (user, props) => {
     });
 };
 
-export const updateUserLocation = key => {};
-
 // Key refers to non-admin database key for locating Current User
 // This redudancy is unavoidable in Firebase
 export const getCurrentUserKey = (user, setUserData, setUserKey) => {
@@ -143,93 +140,4 @@ export const getCurrentUserKey = (user, setUserData, setUserKey) => {
         reject(new Error('unable to obtain user key'));
       });
   });
-};
-
-// Function used inside of MapsScreen
-export const getLocation = (setCoordinates, key) => {
-  navigator.geolocation.getCurrentPosition(
-    position => {
-      const { latitude, longitude } = position.coords;
-      console.log(position.coords);
-      setCoordinates({
-        latitude: latitude,
-        longitude: longitude,
-        latitudeDelta: 0.015,
-        longitudeDelta: 0.0121,
-      });
-      if (key) {
-        updateFirebaseLocation(key, latitude, longitude);
-      }
-    },
-    error => {
-      console.log(error.message);
-    },
-    { enableHighAccuracy: true },
-  );
-};
-
-// Used to setUser Location permission and modify
-// firebase database location data on User
-export const requestLocationPermission = async () => {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: 'BoliSession Location Permission',
-        message:
-          'BoliSession needs access to your location ' +
-          'so other dancers and teams may collab with you.',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      },
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('location access allowed');
-      return true;
-    } else {
-      console.log('Location permission denied');
-    }
-  } catch (err) {
-    console.warn(err);
-  }
-};
-
-export const updateFirebaseLocation = (key, latitude, longitude) => {
-  usersRef
-    .child(key)
-    .update({
-      locationOn: true,
-      coordinates: {
-        latitude: latitude,
-        longitude: longitude,
-      },
-    })
-    .then(() => {
-      console.log('successfully uploaded coordinates');
-    })
-    .catch(error => {
-      console.log('error ', error);
-    });
-};
-
-export const getUsersLocations = (setUsersLocationData, setIsLoaded) => {
-  const userLocations = [];
-
-  usersRef
-    .orderByChild('locationOn')
-    .equalTo(true)
-    .once('value', snapshot => {
-      snapshot.forEach(data => {
-        userLocations.push(data);
-      });
-    })
-    .then(() => {
-      console.log('successfully retrieved users locations');
-      setUsersLocationData(userLocations);
-      setIsLoaded(true);
-    })
-    .catch(() => {
-      console.log('unable to get data of users locations');
-    });
 };
