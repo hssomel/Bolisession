@@ -1,3 +1,3 @@
 # react-native-social-app
 
-Codebase for a react-native social media application. Includes both server and client packages.
+Trying to integrate react-native-maps so individual users, teams, and competitions can gauge proximity to one another
