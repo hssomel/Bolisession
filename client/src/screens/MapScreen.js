@@ -28,6 +28,12 @@ const MapScreen = props => {
   });
 
   // Event Handlers
+  const navigateToProfile = item => {
+    props.navigation.navigate('Profile', {
+      item,
+      name: item._value.username,
+    });
+  };
   const checkForLocation = async key => {
     const requestOk = await requestLocationPermission();
     if (requestOk) {
@@ -93,6 +99,7 @@ const MapScreen = props => {
               coordinate={marker._value.coordinates}
               title={marker._value.username}
               key={marker.key}
+              onPress={() => navigateToProfile(marker)}
             >
               <Image
                 source={{

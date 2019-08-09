@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
 import firebase from 'react-native-firebase';
+import LoadingIndicator from '../components/LoadingIndicator';
 import ProfileFeedHeader from '../components/ProfileFeedHeader';
 import UserProfileFeed from '../components/UserProfileFeed';
 import {
@@ -13,7 +14,7 @@ import { getCurrentUserKey } from '../actions/authActions';
 
 export default function UserProfileScreen(props) {
   // Initial State
-  const [thisUser, setUser] = useState(null);
+  const [user, setUser] = useState(null);
   const [postData] = useState(props.navigation.getParam('item', null));
   const [UserOfPostName] = useState(props.navigation.getParam('name', null));
   const [isLoaded, setIsLoaded] = useState(false);
@@ -48,10 +49,10 @@ export default function UserProfileScreen(props) {
     setSwitchValue(value);
     if (!value) {
       decreaseFollowingList(currentUserKey, UserOfPostName);
-      decreaseFollowersList(postUserParentKey, thisUser.displayName);
+      decreaseFollowersList(postUserParentKey, user.displayName);
     } else {
       increaseFollowingList(currentUserKey, UserOfPostName);
-      increaseFollowerList(postUserParentKey, thisUser.displayName);
+      increaseFollowerList(postUserParentKey, user.displayName);
     }
   };
 
@@ -101,11 +102,7 @@ export default function UserProfileScreen(props) {
   return (
     <View>
       <View>
-        {!isLoaded && (
-          <View style={{ justifyContent: 'center' }}>
-            <ActivityIndicator size="large" color="orangered" />
-          </View>
-        )}
+        {!isLoaded && <LoadingIndicator />}
         {isLoaded && (
           <View>
             <UserProfileFeed
@@ -113,7 +110,7 @@ export default function UserProfileScreen(props) {
               ListHeaderComponent={
                 <ProfileFeedHeader
                   postData={postData}
-                  user={thisUser}
+                  user={user}
                   toggleSwitch={toggleSwitch}
                   switchValue={switchValue}
                   postCreator={postCreatorData}

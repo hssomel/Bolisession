@@ -55,7 +55,7 @@ function ProfileFeedHeader(props) {
 
   useEffect(() => {
     if (postData) {
-      setProfilePhoto(postData._value.userPhoto);
+      setProfilePhoto(postData._value.profilePhoto);
       setUsername(postData._value.username);
       setFollowing(postCreator.followingCount);
       setFollowers(postCreator.followersCount);

@@ -215,7 +215,7 @@ export const writeUserData = (tweet, user) => {
     .push({
       text: tweet,
       username: user.displayName,
-      userPhoto: user.photoURL,
+      profilePhoto: user.photoURL,
       likes: 0,
       comments: 0,
       retweets: 0,

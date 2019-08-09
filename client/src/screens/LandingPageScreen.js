@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  SafeAreaView,
-  Dimensions,
-} from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
 import Video from 'react-native-video';
 import firebase from 'react-native-firebase';
 import GradientButton from '../components/GradientButton';
+import LoadingIndicator from '../components/LoadingIndicator';
 import { confirmUserExistsinDB } from '../actions/authActions';
 
 const { width } = Dimensions.get('window');
@@ -65,9 +59,7 @@ const LandingPageScreen = props => {
           </View>
         </View>
       ) : (
-        <View style={styles.indicator}>
-          <ActivityIndicator size="large" color="orangered" />
-        </View>
+        <LoadingIndicator />
       )}
     </SafeAreaView>
   );
@@ -79,13 +71,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
-  },
-  indicator: {
-    flexDirection: 'column',
-    justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
     width: '100%',

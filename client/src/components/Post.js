@@ -77,7 +77,7 @@ const Post = props => {
           <View>
             <Avatar
               source={{
-                uri: item._value.userPhoto,
+                uri: item._value.profilePhoto,
               }}
               rounded
               size={60}

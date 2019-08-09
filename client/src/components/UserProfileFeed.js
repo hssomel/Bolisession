@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
+import {
+  View,
+  FlatList,
+  SafeAreaView,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
 import firebase from 'react-native-firebase';
 import Post from './Post';
 
@@ -73,3 +79,13 @@ export default function UserProfileFeed(props) {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  indicator: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+  },
+});
