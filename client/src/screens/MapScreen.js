@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import { View, StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import firebase from 'react-native-firebase';
+import {
+  getCurrentUserKey,
+  requestLocationPermission,
+  getLocation,
+  getUsersLocations,
+} from '../actions/authActions';
 
 const MapScreen = props => {
   // Initial State
+  const [isLoaded, setIsLoaded] = useState(null);
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [userKey, setUserKey] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [locationOn, setLocationOn] = useState(null);
+  const [usersData, setUsersLocationData] = useState(null);
+  // Default Coordinates if unable to obtain user location
   const [coordinates, setCoordinates] = useState({
     latitude: 34.03961,
     longitude: -118.2523,
@@ -13,30 +27,39 @@ const MapScreen = props => {
   });
 
   // Event Handlers
-  const getLocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const { latitude, longitude } = position.coords;
-        console.log(position.coords);
-        setCoordinates({
-          latitude: latitude,
-          longitude: longitude,
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.0121,
-        });
-      },
-      error => {
-        Alert.alert(error.message);
-      },
-      { enableHighAccuracy: true },
-    );
+  const checkLocation = async key => {
+    const requestOk = await requestLocationPermission();
+    if (requestOk) {
+      getLocation(setCoordinates, key);
+      setLocationOn(true);
+    } else {
+      setLocationOn(false);
+    }
   };
 
   useEffect(() => {
-    getLocation();
-    setTimeout(() => {
-      console.log('fired');
-    }, 500);
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      console.log('mounted to MapsScreen');
+      if (user) {
+        setProfilePhoto(user.photoURL);
+        getCurrentUserKey(user, setUserData, setUserKey)
+          .then(key => {
+            checkLocation(key);
+          })
+          .catch(err => {
+            console.log('error', err);
+          });
+      }
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+      console.log('unmounted from MapsScreen');
+    };
+  }, []);
+
+  useEffect(() => {
+    getUsersLocations(setUsersLocationData, setIsLoaded);
   }, []);
 
   return (
@@ -45,16 +68,25 @@ const MapScreen = props => {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={coordinates}
-        showsUserLocation={true}
+        showsUserLocation={false}
         loadingEnabled={true}
         showsMyLocationButton={false}
-      />
+      >
+        {isLoaded &&
+          usersData.map(marker => (
+            <Marker
+              coordinate={marker._value.coordinates}
+              title={marker._value.username}
+              key={marker.key}
+            />
+          ))}
+      </MapView>
       <View style={styles.locationButton}>
         <Icon
           name="md-locate"
           size={32}
           color="orangered"
-          onPress={getLocation}
+          onPress={() => getLocation(setCoordinates)}
         />
       </View>
     </View>
@@ -80,5 +112,11 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     flex: 1,
+  },
+  image: {
+    height: 60,
+    width: 60,
+    backgroundColor: 'pink',
+    borderRadius: 30,
   },
 });

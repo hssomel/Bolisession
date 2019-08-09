@@ -24,7 +24,6 @@ export default function GradientButton(props) {
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    marginTop: '5%',
     alignItems: 'center',
     width: '100%',
     justifyContent: 'center',

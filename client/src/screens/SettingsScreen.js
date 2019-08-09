@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
 import firebase from 'react-native-firebase';
 
 export default function SettingsScreen(props) {
@@ -81,6 +81,12 @@ export default function SettingsScreen(props) {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={{
+          uri: 'https://reactjs.org/logo-og.png',
+        }}
+        style={styles.image}
+      />
       <TouchableOpacity style={styles.button} onPress={removeFromUsersDB}>
         <Text style={styles.ButtonText}>Delete Account</Text>
       </TouchableOpacity>
@@ -114,5 +120,10 @@ const styles = StyleSheet.create({
     color: '#808B96',
     fontSize: 18,
     fontFamily: 'Roboto',
+  },
+  image: {
+    height: 20,
+    width: 20,
+    backgroundColor: 'pink',
   },
 });

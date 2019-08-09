@@ -9,6 +9,7 @@ import {
   increaseFollowerList,
   decreaseFollowersList,
 } from '../actions/userProfileActions';
+import { getCurrentUserKey } from '../actions/authActions';
 
 export default function UserProfileScreen(props) {
   // Initial State
@@ -54,21 +55,6 @@ export default function UserProfileScreen(props) {
     }
   };
 
-  const getCurrentUserParentKey = user => {
-    return new Promise((resolve, reject) => {
-      usersRef
-        .orderByChild('userID')
-        .equalTo(user.uid)
-        .once('value', snapshot => {
-          snapshot.forEach(data => {
-            setCurrentUserData(data._value);
-            setCurrentUserParentKey(data.key);
-            resolve(data.key);
-          });
-        });
-    });
-  };
-
   const getPostUserParentKey = () => {
     return new Promise((resolve, reject) => {
       usersRef
@@ -87,7 +73,7 @@ export default function UserProfileScreen(props) {
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
-      getCurrentUserParentKey(user)
+      getCurrentUserKey(user, setCurrentUserData, setCurrentUserParentKey)
         .then(res => {
           if (postData) {
             initialToggleSwitchValue(res);
@@ -106,6 +92,7 @@ export default function UserProfileScreen(props) {
           console.log(err);
         });
     });
+
     return () => {
       if (unsubscribe) unsubscribe();
     };

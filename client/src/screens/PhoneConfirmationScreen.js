@@ -1,24 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  Dimensions,
-  TextInput,
-  View,
-} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, SafeAreaView, TextInput, View, Alert } from 'react-native';
 import { Text } from 'react-native-elements';
-import firebase from 'react-native-firebase';
 import GradientButton from '../components/GradientButton';
 import { createUserinDB } from '../actions/authActions';
 
-const { width } = Dimensions.get('window');
-const pillWidth = width * 0.9;
-const pillFontSize = pillWidth / 20;
-
 const PhoneConfirmationScreen = props => {
   // Initial State
-  const [codeInput, setCodeInput] = useState('');
   const [message, setMessage] = useState(''); // TO DO integrate into error
+  const [codeInput, setCodeInput] = useState('');
   const [phoneNumber] = useState(
     props.navigation.getParam('phoneNumber', null),
   );
@@ -27,6 +16,11 @@ const PhoneConfirmationScreen = props => {
   );
 
   // Event Handlers
+  const handlePress = () => {
+    Alert.alert('Please re-enter number and try again!');
+    props.navigation.navigate('phone');
+  };
+
   const confirmCode = () => {
     if (confirmResult && codeInput.length) {
       confirmResult
@@ -43,20 +37,6 @@ const PhoneConfirmationScreen = props => {
     confirmCode();
   };
 
-  useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        // Handling Auto-verification for android
-        // User will only exist in this screen if it is same user
-        createUserinDB(user, props);
-      }
-    });
-
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
-  }, []);
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.viewOne}>
@@ -69,13 +49,23 @@ const PhoneConfirmationScreen = props => {
           style={styles.textInput}
           onChangeText={input => setCodeInput(input)}
         />
-        <Text style={{ marginTop: 7, fontSize: 14, color: 'orangered' }}>
+        <Text
+          style={{
+            marginTop: 7,
+            fontSize: 14,
+            color: 'orangered',
+            marginBottom: 10,
+          }}
+          onPress={handlePress}
+        >
           Didn't receive SMS?
         </Text>
       </View>
       <View style={styles.viewTwo}>
         <GradientButton onPress={handleSubmitButtonPress} title="Verify Code" />
-        <Text style={{ marginTop: 10, fontSize: 12 }}>{message}</Text>
+        <Text style={{ marginTop: 10, fontSize: 12, paddingLeft: 20 }}>
+          {message}
+        </Text>
       </View>
     </SafeAreaView>
   );
@@ -103,16 +93,17 @@ const styles = StyleSheet.create({
   viewTwo: {
     height: '100%',
     width: '100%',
-    paddingTop: 30,
+    paddingTop: 20,
     flex: 2,
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
   textInput: {
     marginTop: 20,
-    fontSize: pillFontSize,
+    fontSize: 18,
     borderBottomWidth: 2,
     borderBottomColor: 'red',
     width: '100%',
+    paddingBottom: '-1%',
   },
 });

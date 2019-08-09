@@ -7,7 +7,7 @@ import { uploadProfileVid } from '../actions/userProfileActions';
 import YouTubeModal from '../components/YouTubeModal';
 import YouTubeVideo from '../components/YouTubeVideo';
 
-export default function SetupProfileVideo(props) {
+SetupProfileVideo = props => {
   //Initial State
   const [modalOpen, setModalOpen] = useState(false);
   const [currentUserKey] = useState(
@@ -55,13 +55,22 @@ export default function SetupProfileVideo(props) {
     uploadProfileVid(currentUserKey, finalURL, startTime);
   };
 
+  const goBack = () => {
+    props.navigation.goBack();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
         {!allowYoutube ? (
           <View style={styles.containerOne}>
             <View style={{ alignItems: 'flex-start' }}>
-              <Icon name="ios-arrow-round-back" size={36} color="orangered" />
+              <Icon
+                name="ios-arrow-round-back"
+                size={36}
+                color="orangered"
+                onPress={goBack}
+              />
             </View>
             <Text style={styles.titleText}>Upload a profile video</Text>
             <Text style={{ fontSize: 18 }}>
@@ -123,7 +132,9 @@ export default function SetupProfileVideo(props) {
       />
     </View>
   );
-}
+};
+
+export default SetupProfileVideo;
 
 const styles = StyleSheet.create({
   container: {

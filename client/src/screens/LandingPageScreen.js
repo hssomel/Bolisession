@@ -5,11 +5,14 @@ import {
   StyleSheet,
   ActivityIndicator,
   SafeAreaView,
+  Dimensions,
 } from 'react-native';
 import Video from 'react-native-video';
 import firebase from 'react-native-firebase';
 import GradientButton from '../components/GradientButton';
 import { confirmUserExistsinDB } from '../actions/authActions';
+
+const { width } = Dimensions.get('window');
 
 const LandingPageScreen = props => {
   // Initial State
@@ -23,6 +26,7 @@ const LandingPageScreen = props => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       console.log('mounted to LandingPageScreen');
       if (user) {
+        console.log('init user', user);
         // checking to see if user exists in non-admin database
         confirmUserExistsinDB(user, props, setIsLoaded);
       } else {
@@ -100,7 +104,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
     height: '100%',
-    width: '100%',
+    width: width,
     flex: 1,
   },
   text: {
