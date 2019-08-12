@@ -37,7 +37,7 @@ const OtherUserProfileFeedHeader = props => {
         <View style={styles.container}>
           <View style={styles.viewOne}>
             <YouTubeVideo
-              postUserParentKey={otherUserKey}
+              otherUserKey={otherUserKey}
               style={{ height: '100%', width: '100%' }}
             />
           </View>

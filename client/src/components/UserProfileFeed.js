@@ -42,7 +42,6 @@ export default function UserProfileFeed(props) {
   };
 
   useEffect(() => {
-    console.log('.... :', otherUserData);
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
       if (!otherUserData) {

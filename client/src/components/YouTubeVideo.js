@@ -8,7 +8,7 @@ export default function YouTubeVideo(props) {
   const {
     style,
     userKey,
-    postUserParentKey,
+    otherUserKey,
     newURL,
     newStartTime,
     navigateToVideo,
@@ -34,38 +34,21 @@ export default function YouTubeVideo(props) {
   };
 
   useEffect(() => {
-    if (postUserParentKey) {
-      const ref = userRef.child(postUserParentKey);
-      ref.child('youtubeURL').once('value', snapshot => {
-        if (!snapshot.val()) {
-          setVideoExists(false);
-          setIsLoaded(true);
-        } else {
-          setFinalURL(snapshot.val());
-          setVideoExists(true);
-        }
-      });
-
-      ref.child('startTime').once('value', snapshot => {
-        setStartTime(snapshot.val());
+    const key = otherUserKey || userKey;
+    const ref = userRef.child(key);
+    ref.child('youtubeURL').once('value', snapshot => {
+      if (!snapshot.val()) {
+        setVideoExists(false);
         setIsLoaded(true);
-      });
-    } else {
-      const ref = userRef.child(userKey);
-      ref.child('youtubeURL').once('value', snapshot => {
-        if (!snapshot.val()) {
-          setVideoExists(false);
-          setIsLoaded(true);
-        } else {
-          setFinalURL(snapshot.val());
-          setVideoExists(true);
-        }
-      });
-      ref.child('startTime').once('value', snapshot => {
-        setStartTime(snapshot.val());
-        setIsLoaded(true);
-      });
-    }
+      } else {
+        setFinalURL(snapshot.val());
+        setVideoExists(true);
+      }
+    });
+    ref.child('startTime').once('value', snapshot => {
+      setStartTime(snapshot.val());
+      setIsLoaded(true);
+    });
 
     return () => {
       setIsLoaded(false);
@@ -86,7 +69,7 @@ export default function YouTubeVideo(props) {
 
   return (
     <View style={{ height: '100%', width: '100%' }}>
-      {isLoaded && videoExists && (
+      {isLoaded && (finalURL || newURL) && (
         <YouTube
           ref={component => {
             _youTubeRef = component;
@@ -102,22 +85,7 @@ export default function YouTubeVideo(props) {
           onReady={onVideoLoaded}
         />
       )}
-      {isLoaded && fromSettings && (
-        <YouTube
-          ref={component => {
-            _youTubeRef = component;
-            setYoutubeRef(component);
-          }}
-          apiKey="AIzaSyBe-XcmmWplQm2rIwqa17Cy27_bA6Z0Zvw"
-          videoId={newURL || finalURL}
-          play={true}
-          fullscreen={false}
-          controls={1}
-          style={style}
-          onError={e => console.log(e.error)}
-          onReady={onVideoLoaded}
-        />
-      )}
+
       {isLoaded && !videoExists && !fromSettings && (
         <Avatar
           size="large"

@@ -21,7 +21,9 @@ const OtherUserScreen = props => {
   );
   const [tweetData] = useState(props.navigation.getParam('tweet', null));
   const [isLoaded, setIsLoaded] = useState(false);
-  const [otherUserKey, setOtherUserKey] = useState(null);
+  const [otherUserKey, setOtherUserKey] = useState(
+    props.navigation.getParam('key', null),
+  );
   // Firebase references
   const usersRef = firebase
     .database()
@@ -53,7 +55,12 @@ const OtherUserScreen = props => {
       setUser(user);
       getCurrentUserKey(user, setUserData, setUserKey)
         .then(() => {
-          getOtherUserKey();
+          if (!otherUserData) {
+            getOtherUserKey();
+          } else {
+            console.log(otherUserData);
+            setIsLoaded(true);
+          }
         })
         .catch(err => {
           console.log(err);

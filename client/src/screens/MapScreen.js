@@ -13,6 +13,7 @@ import {
 
 const MapScreen = props => {
   // Initial State
+  const [user, setUser] = useState(null);
   const [isLoaded, setIsLoaded] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [userKey, setUserKey] = useState(null);
@@ -29,12 +30,14 @@ const MapScreen = props => {
 
   // Event Handlers
   const navigateToProfile = item => {
-    console.log('item object is: ', item);
-    console.log('item._value object is: ', item._value);
-    props.navigation.navigate('OtherUser', {
-      item: item._value,
-      name: item._value.username,
-    });
+    if (user.displayName == item._value.username) {
+      props.navigation.navigate('Profile');
+    } else {
+      props.navigation.navigate('OtherUser', {
+        item: item._value,
+        key: item.key,
+      });
+    }
   };
   const checkForLocation = async key => {
     const requestOk = await requestLocationPermission();
@@ -58,6 +61,8 @@ const MapScreen = props => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       console.log('mounted to MapsScreen');
       if (user) {
+        setUser(user);
+        setUserData(user);
         setProfilePhoto(user.photoURL);
         getCurrentUserKey(user, setUserData, setUserKey)
           .then(key => {
