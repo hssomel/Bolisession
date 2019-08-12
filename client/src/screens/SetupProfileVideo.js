@@ -10,9 +10,7 @@ import YouTubeVideo from '../components/YouTubeVideo';
 SetupProfileVideo = props => {
   //Initial State
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentUserKey] = useState(
-    props.navigation.getParam('currentUserKey', null),
-  );
+  const [userKey] = useState(props.navigation.getParam('userKey', null));
   const [youtubeURL, setYoutubeURL] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [finalURL, setFinalURL] = useState(null);
@@ -52,7 +50,7 @@ SetupProfileVideo = props => {
   };
 
   const uploadVideo = () => {
-    uploadProfileVid(currentUserKey, finalURL, startTime);
+    uploadProfileVid(userKey, finalURL, startTime);
   };
 
   const goBack = () => {
@@ -87,7 +85,7 @@ SetupProfileVideo = props => {
               style={{ height: '75%', width: '100%' }}
               newURL={finalURL}
               newStartTime={startTime}
-              currentUserKey={currentUserKey}
+              userKey={userKey}
               fromSettings={fromSettings}
             />
           </View>

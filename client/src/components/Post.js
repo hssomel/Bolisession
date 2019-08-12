@@ -60,10 +60,13 @@ const Post = props => {
   };
 
   const handleAvatarPress = () => {
-    props.navigation.navigate('Profile', {
-      item: item,
-      name: item._value.username,
-    });
+    if (user.displayName == item._value.username) {
+      props.navigation.navigate('Profile');
+    } else {
+      props.navigation.navigate('OtherUser', {
+        tweet: item._value,
+      });
+    }
   };
 
   useEffect(() => {

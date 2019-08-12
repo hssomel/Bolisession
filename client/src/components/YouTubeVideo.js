@@ -7,7 +7,7 @@ import { Avatar } from 'react-native-elements';
 export default function YouTubeVideo(props) {
   const {
     style,
-    currentUserKey,
+    userKey,
     postUserParentKey,
     newURL,
     newStartTime,
@@ -51,7 +51,7 @@ export default function YouTubeVideo(props) {
         setIsLoaded(true);
       });
     } else {
-      const ref = userRef.child(currentUserKey);
+      const ref = userRef.child(userKey);
       ref.child('youtubeURL').once('value', snapshot => {
         if (!snapshot.val()) {
           setVideoExists(false);

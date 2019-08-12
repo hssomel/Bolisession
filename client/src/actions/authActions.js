@@ -33,6 +33,7 @@ export const navigateToIncomplete = (user, props) => {
 };
 
 // Determining if user exists in secondary non-admin database
+// Function used in: LandingPageScreen
 export const confirmUserExistsinDB = (user, props, setIsLoaded) => {
   usersRef
     .orderByChild('userID')
@@ -121,6 +122,7 @@ export const createUserinDB = (user, props) => {
 
 // Key refers to non-admin database key for locating Current User
 // This redudancy is unavoidable in Firebase
+// Function used in: MapScreen, UserProfileScreen, OtherUserProfileScreen
 export const getCurrentUserKey = (user, setUserData, setUserKey) => {
   return new Promise((resolve, reject) => {
     usersRef

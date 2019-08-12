@@ -29,8 +29,10 @@ const MapScreen = props => {
 
   // Event Handlers
   const navigateToProfile = item => {
-    props.navigation.navigate('Profile', {
-      item,
+    console.log('item object is: ', item);
+    console.log('item._value object is: ', item._value);
+    props.navigation.navigate('OtherUser', {
+      item: item._value,
       name: item._value.username,
     });
   };
