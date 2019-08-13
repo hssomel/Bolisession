@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import { ListItem, SearchBar } from 'react-native-elements';
 import firebase from 'react-native-firebase';
+import {
+  generateThreadKey,
+  verifyIfThreadExists,
+} from '../actions/messagingActions';
 
 export default function MessagingListScreen(props) {
   // Initial State
   const [user, setUser] = useState(null);
   const [usersData, setUsersData] = useState(null);
+  const [usersDataCopy, setUsersDataCopy] = useState(null);
+  const [search, setSearch] = useState(null);
   // Firebase References
-  const messageRef = firebase.database().ref('messages/');
   const usersRef = firebase
     .database()
     .ref('people/')
@@ -28,6 +33,31 @@ export default function MessagingListScreen(props) {
       })
       .then(() => {
         setUsersData(usersArray.reverse());
+        setUsersDataCopy(usersArray.reverse());
+      });
+  };
+
+  const SearchFilterFunction = text => {
+    const newData = usersDataCopy.filter(item => {
+      //applying filter for the inserted text in search bar
+      const itemData = item._value.username
+        ? item._value.username.toUpperCase()
+        : ''.toUpperCase();
+      const textData = text.toUpperCase();
+      return itemData.indexOf(textData) > -1;
+    });
+
+    setUsersData(newData);
+    setSearch(search);
+  };
+
+  const onAvatarPress = item => {
+    generateThreadKey(user, item._value)
+      .then(res => {
+        verifyIfThreadExists(user, res, item, props);
+      })
+      .catch(err => {
+        console.log(err);
       });
   };
 
@@ -39,99 +69,77 @@ export default function MessagingListScreen(props) {
 
     return () => {
       if (unsubscribe) unsubscribe();
+      console.log('unmounted from MessagingList Screen');
     };
   }, []);
-
-  const generateThreadKey = item => {
-    return new Promise((resolve, reject) => {
-      const string1 = user.uid.toString();
-      const string2 = item._value.userID.toString();
-
-      if (string1 < string2) {
-        const idVal = string1.concat(string2);
-        resolve(idVal);
-      } else {
-        const idVal = string2.concat(string1);
-        resolve(idVal);
-      }
-    });
-  };
-
-  const verifyIfThreadExists = (threadID, item) => {
-    messageRef
-      .orderByChild('_threadID')
-      .equalTo(threadID)
-      .once('value', snapshot => {
-        if (!snapshot.val()) {
-          messageRef
-            .push({ _threadID: threadID, messages: {} })
-            .then(data => {
-              props.navigation.navigate('PrivateMessage', {
-                item: item,
-                user: user,
-                threadID: threadID,
-                threadKey: data.key,
-              });
-            })
-            .catch(err => {
-              console.log('error', err);
-            });
-        } else {
-          props.navigation.navigate('PrivateMessage', {
-            item: item,
-            user: user,
-            threadID: threadID,
-          });
-        }
-      });
-  };
-
-  const onIconPress = item => {
-    generateThreadKey(item)
-      .then(res => {
-        verifyIfThreadExists(res, item);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
 
   const renderSeparator = () => {
     return (
       <View
         style={{
           height: 1,
-          width: '86%',
-          backgroundColor: '#CED0CE',
-          marginLeft: '14%',
+          width: '100%',
+          backgroundColor: 'white',
         }}
       />
     );
   };
 
   return (
-    <FlatList
-      style={styles.listcontainer}
-      data={usersData}
-      renderItem={({ item }) => (
-        <ListItem
-          title={`${item._value.username}`}
-          leftAvatar={{
-            rounded: true,
-            source: { uri: item._value.profilePhoto },
-          }}
-          onPress={() => onIconPress(item)}
-          containerStyle={{ borderBottomWidth: 0 }}
-        />
-      )}
-      keyExtractor={item => item.key}
-      ItemSeparatorComponent={renderSeparator}
-    />
+    <View style={styles.viewStyle}>
+      <SearchBar
+        round
+        searchIcon={{ size: 28, color: 'black', paddingLeft: 5 }}
+        onChangeText={text => SearchFilterFunction(text)}
+        placeholder="Search Users..."
+        value={search}
+        containerStyle={styles.searchBarContainer}
+        inputContainerStyle={styles.searchInputContainer}
+      />
+      <FlatList
+        style={styles.listcontainer}
+        data={usersData}
+        renderItem={({ item }) => (
+          <ListItem
+            title={`${item._value.username}`}
+            titleStyle={{ fontSize: 17, color: '#546060' }}
+            leftAvatar={{
+              rounded: true,
+              source: { uri: item._value.profilePhoto },
+              size: 60,
+              marginLeft: 5,
+            }}
+            onPress={() => onAvatarPress(item)}
+            containerStyle={{ borderBottomWidth: 0, paddingVertical: 7.5 }}
+          />
+        )}
+        keyExtractor={item => item.key}
+        ItemSeparatorComponent={renderSeparator}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   listContainer: {
     width: '100%',
+  },
+  viewStyle: {
+    justifyContent: 'center',
+    flex: 1,
+    backgroundColor: 'white',
+    marginTop: 5,
+  },
+  searchBarContainer: {
+    width: '100%',
+    backgroundColor: 'white',
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    borderTopColor: 'white',
+    borderBottomColor: 'white',
+    marginBottom: 5,
+  },
+  searchInputContainer: {
+    backgroundColor: 'white',
   },
 });
