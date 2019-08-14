@@ -21,8 +21,10 @@ const UserProfileScreen = props => {
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
-      getCurrentUserKey(user, setUserData, setUserKey)
-        .then(() => {
+      getCurrentUserKey(user, setUserData)
+        .then(data => {
+          setUserData(data._value);
+          setUserKey(data.key);
           setIsLoaded(true);
         })
         .catch(err => {

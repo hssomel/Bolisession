@@ -1,6 +1,10 @@
 import firebase from 'react-native-firebase';
 // Firebase References
 const messageRef = firebase.database().ref('messages/');
+const usersRef = firebase
+  .database()
+  .ref('people/')
+  .child('users');
 
 // function used in MessagingListScreen to generate unique thread key
 // between two users
@@ -45,4 +49,27 @@ export const verifyIfThreadExists = (user, threadID, otherUserData, props) => {
         });
       }
     });
+};
+
+// Function used in MessagingListScreen to get users information
+export const getUsers = user => {
+  return new Promise((resolve, reject) => {
+    const usersArray = [];
+    const query = usersRef.limitToLast(100);
+
+    query
+      .once('value', snapshot => {
+        snapshot.forEach(data => {
+          if (data._value.username != user.displayName) {
+            usersArray.push(data);
+          }
+        });
+      })
+      .then(() => {
+        resolve(usersArray);
+      })
+      .catch(err => {
+        reject(new Error('unable to obtain users'));
+      });
+  });
 };

@@ -122,17 +122,15 @@ export const createUserinDB = (user, props) => {
 
 // Key refers to non-admin database key for locating Current User
 // This redudancy is unavoidable in Firebase
-// Function used in: MapScreen, UserProfileScreen, OtherUserProfileScreen
-export const getCurrentUserKey = (user, setUserData, setUserKey) => {
+// Function used in: MapScreen, UserProfileScreen, OtherUserScreen
+export const getCurrentUserKey = user => {
   return new Promise((resolve, reject) => {
     usersRef
       .orderByChild('userID')
       .equalTo(user.uid)
       .once('value', snapshot => {
         snapshot.forEach(data => {
-          setUserData(data._value);
-          setUserKey(data.key);
-          resolve(data.key);
+          resolve(data);
         });
       })
       .then(() => {

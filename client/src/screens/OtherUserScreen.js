@@ -53,8 +53,10 @@ const OtherUserScreen = props => {
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
-      getCurrentUserKey(user, setUserData, setUserKey)
-        .then(() => {
+      getCurrentUserKey(user)
+        .then(data => {
+          setUserData(data._value);
+          setUserKey(data.key);
           if (!otherUserData) {
             getOtherUserKey();
           } else {

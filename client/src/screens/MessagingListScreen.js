@@ -5,6 +5,7 @@ import firebase from 'react-native-firebase';
 import {
   generateThreadKey,
   verifyIfThreadExists,
+  getUsers,
 } from '../actions/messagingActions';
 
 export default function MessagingListScreen(props) {
@@ -13,30 +14,7 @@ export default function MessagingListScreen(props) {
   const [usersData, setUsersData] = useState(null);
   const [usersDataCopy, setUsersDataCopy] = useState(null);
   const [search, setSearch] = useState(null);
-  // Firebase References
-  const usersRef = firebase
-    .database()
-    .ref('people/')
-    .child('users');
-
   // Event Handlers
-  const getUsers = user => {
-    const usersArray = [];
-    const query = usersRef.limitToLast(100);
-    query
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          if (data._value.username != user.displayName) {
-            usersArray.push(data);
-          }
-        });
-      })
-      .then(() => {
-        setUsersData(usersArray.reverse());
-        setUsersDataCopy(usersArray.reverse());
-      });
-  };
-
   const SearchFilterFunction = text => {
     const newData = usersDataCopy.filter(item => {
       //applying filter for the inserted text in search bar
@@ -48,7 +26,7 @@ export default function MessagingListScreen(props) {
     });
 
     setUsersData(newData);
-    setSearch(search);
+    setSearch(text);
   };
 
   const onAvatarPress = item => {
@@ -64,7 +42,14 @@ export default function MessagingListScreen(props) {
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
-      getUsers(user);
+      getUsers(user)
+        .then(data => {
+          setUsersData(data);
+          setUsersDataCopy(data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     });
 
     return () => {
@@ -89,7 +74,11 @@ export default function MessagingListScreen(props) {
     <View style={styles.viewStyle}>
       <SearchBar
         round
-        searchIcon={{ size: 28, color: 'black', paddingLeft: 5 }}
+        searchIcon={{
+          size: 28,
+          color: 'black',
+          paddingLeft: 5,
+        }}
         onChangeText={text => SearchFilterFunction(text)}
         placeholder="Search Users..."
         value={search}
@@ -121,14 +110,13 @@ export default function MessagingListScreen(props) {
 }
 
 const styles = StyleSheet.create({
-  listContainer: {
-    width: '100%',
-  },
   viewStyle: {
     justifyContent: 'center',
     flex: 1,
-    backgroundColor: 'white',
     marginTop: 5,
+  },
+  listContainer: {
+    width: '100%',
   },
   searchBarContainer: {
     width: '100%',
