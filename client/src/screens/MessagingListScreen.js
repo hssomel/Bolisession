@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
   viewStyle: {
     justifyContent: 'center',
     flex: 1,
-    marginTop: 5,
   },
   listContainer: {
     width: '100%',
@@ -125,7 +124,9 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     borderTopColor: 'white',
     borderBottomColor: 'white',
+    paddingTop: 5,
     marginBottom: 5,
+    elevation: 2,
   },
   searchInputContainer: {
     backgroundColor: 'white',

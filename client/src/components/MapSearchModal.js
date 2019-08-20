@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, View, FlatList, StyleSheet } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/Ionicons';
 import BackIcon from './BackIcon';
 
 const MapSearchModal = props => {
@@ -11,16 +10,12 @@ const MapSearchModal = props => {
   const [searchRef, setSearchRef] = useState(null);
   const [usersData, setUsersData] = useState();
   const [isLoaded, setIsLoaded] = useState(null);
-  const [placeholder, setPlaceHolder] = useState(
-    'Search Users, Teams, Competitions...',
-  );
   // Event Handlers
   const logOnClear = () => {
     console.log('cleared!!');
   };
 
   const SearchFilterFunction = text => {
-    setPlaceHolder(null);
     setSearch(text);
     const newData = usersLocationData.filter(item => {
       //applying filter for the inserted text in search bar
@@ -62,15 +57,14 @@ const MapSearchModal = props => {
           <SearchBar
             round
             ref={search => setSearchRef(search)}
-            searchIcon={
-              <BackIcon closeModal={closeModal} placeholder={placeholder} />
-            }
+            searchIcon={<BackIcon closeModal={closeModal} />}
             onChangeText={text => SearchFilterFunction(text)}
-            // placeholder="Search Users, Teams, Competitions..."
+            placeholder="Search Users, Teams, Competitions..."
             value={search}
             containerStyle={styles.searchBarContainer}
             inputContainerStyle={styles.searchInputContainer}
             onClear={logOnClear}
+            rightIconContainerStyle={{ backgroundColor: 'red' }}
           />
           <FlatList
             style={styles.listcontainer}
@@ -107,26 +101,27 @@ const styles = StyleSheet.create({
   outerModalContainer: {
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'flex-start',
     flex: 1,
   },
   listContainer: {
     width: '100%',
   },
   searchBarContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     width: '100%',
-    backgroundColor: '#F8F8F8',
-    paddingHorizontal: 10,
     paddingTop: 5,
     paddingBottom: 0,
     borderTopColor: 'white',
     borderBottomColor: 'white',
     marginBottom: 5,
+    paddingHorizontal: 0,
+    backgroundColor: 'white',
+    elevation: 2,
   },
   searchInputContainer: {
-    backgroundColor: 'transparent',
-    // justifyContent: 'center',
-    // flexDirection: 'column',
-    // alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 0,
   },
 });
