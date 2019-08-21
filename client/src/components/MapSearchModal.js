@@ -4,7 +4,7 @@ import { ListItem, SearchBar } from 'react-native-elements';
 import BackIcon from './BackIcon';
 
 const MapSearchModal = props => {
-  const { modalOpen, closeModal, usersLocationData } = props;
+  const { modalOpen, setModalOpen, usersLocationData, setCoordinates } = props;
   // Inital State
   const [search, setSearch] = useState(null);
   const [searchRef, setSearchRef] = useState(null);
@@ -26,6 +26,18 @@ const MapSearchModal = props => {
       return itemData.indexOf(textData) > -1;
     });
     setUsersData(newData);
+  };
+
+  const onAvatarPress = item => {
+    const { latitude, longitude } = item.coordinates;
+    const coordinates = {
+      latitude,
+      longitude,
+      latitudeDelta: 0.015,
+      longitudeDelta: 0.0121,
+    };
+    setCoordinates(coordinates);
+    setModalOpen(false);
   };
 
   const renderSeparator = () => {
@@ -50,14 +62,14 @@ const MapSearchModal = props => {
       animationType="slide"
       transparent={false}
       visible={modalOpen}
-      onRequestClose={() => closeModal()}
+      onRequestClose={() => setModalOpen(false)}
     >
       {isLoaded && (
         <View style={styles.outerModalContainer}>
           <SearchBar
             round
             ref={search => setSearchRef(search)}
-            searchIcon={<BackIcon closeModal={closeModal} />}
+            searchIcon={<BackIcon setModalOpen={setModalOpen} />}
             onChangeText={text => SearchFilterFunction(text)}
             placeholder="Search Users, Teams, Competitions..."
             value={search}
@@ -79,7 +91,7 @@ const MapSearchModal = props => {
                   size: 60,
                   marginLeft: 5,
                 }}
-                //   onPress={() => onAvatarPress(item)}
+                onPress={() => onAvatarPress(item._value)}
                 containerStyle={{
                   borderBottomWidth: 0,
                   paddingVertical: 7.5,

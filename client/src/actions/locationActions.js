@@ -57,10 +57,11 @@ export const requestLocationPermission = async () => {
 
 // Update users location status on Firebase database
 export const updateFirebaseLocation = (key, latitude, longitude) => {
+  const location = latitude != 0 ? true : false;
   usersRef
     .child(key)
     .update({
-      locationOn: true,
+      locationOn: location,
       coordinates: {
         latitude,
         longitude,

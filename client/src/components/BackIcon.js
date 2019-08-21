@@ -5,11 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const { width } = Dimensions.get('window');
 
 const BackIcon = props => {
-  const { closeModal } = props;
-  // Event Handlers
-  const goBack = () => {
-    closeModal();
-  };
+  const { setModalOpen } = props;
 
   return (
     <View style={styles.container}>
@@ -20,7 +16,7 @@ const BackIcon = props => {
         style={{
           flex: 1,
         }}
-        onPress={goBack}
+        onPress={() => setModalOpen(false)}
       />
       <Icon
         name="md-search"

@@ -81,12 +81,6 @@ export default function SettingsScreen(props) {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={{
-          uri: 'https://reactjs.org/logo-og.png',
-        }}
-        style={styles.image}
-      />
       <TouchableOpacity style={styles.button} onPress={removeFromUsersDB}>
         <Text style={styles.ButtonText}>Delete Account</Text>
       </TouchableOpacity>

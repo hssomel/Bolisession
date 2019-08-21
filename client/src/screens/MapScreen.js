@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
+import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Text,
+  Dimensions,
+  Alert,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 import MapSearchModal from '../components/MapSearchModal';
@@ -12,11 +20,12 @@ import {
   updateFirebaseLocation,
 } from '../actions/locationActions';
 
+const { width } = Dimensions.get('window');
+
 const MapScreen = props => {
   // Initial State
   const [user, setUser] = useState(null);
   const [userKey, setUserKey] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(null);
   const [locationOn, setLocationOn] = useState(null);
   const [usersLocationData, setUsersLocationData] = useState(null);
   const [searchVisible, setSearchVisible] = useState(true);
@@ -42,7 +51,7 @@ const MapScreen = props => {
     }
   };
 
-  const handleMapPress = value => {
+  const handleMapPress = () => {
     if (searchVisible) {
       setSearchVisible(false);
     } else {
@@ -50,14 +59,32 @@ const MapScreen = props => {
     }
   };
 
-  const handleIconPress = () => {
-    getLocation()
-      .then(res => {
-        setCoordinates(res);
-      })
-      .catch(err => {
-        console.log('error: ', err);
-      });
+  const handleNavIconPress = () => {
+    if (locationOn) {
+      getLocation()
+        .then(res => {
+          setCoordinates(res);
+        })
+        .catch(err => {
+          console.log('error: ', err);
+        });
+    } else {
+      Alert.alert(
+        'Location is currently off',
+        'Please enable location permission on your device and in settings for access to all features on the app!',
+        [
+          {
+            text: 'Ask me later',
+            onPress: () => console.log('Ask me later pressed'),
+          },
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+          },
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],
+      );
+    }
   };
 
   const checkForLocation = async key => {
@@ -74,12 +101,13 @@ const MapScreen = props => {
           console.log('error: ', err);
         });
     } else {
+      updateFirebaseLocation(key, 0, 0);
       setLocationOn(false);
     }
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
+  const navigateToSettings = () => {
+    props.navigation.navigate('Settings');
   };
 
   useEffect(() => {
@@ -103,8 +131,8 @@ const MapScreen = props => {
 
   useEffect(() => {
     getUsersLocations()
-      .then(res => {
-        setUsersLocationData(res);
+      .then(data => {
+        setUsersLocationData(data);
       })
       .catch(err => {
         console.log('error: ', err);
@@ -129,7 +157,7 @@ const MapScreen = props => {
               coordinate={marker._value.coordinates}
               title={marker._value.username}
               key={marker.key}
-              onPress={() => navigateToProfile(marker)}
+              onCalloutPress={() => navigateToProfile(marker)}
             >
               <Image
                 source={{
@@ -137,6 +165,14 @@ const MapScreen = props => {
                 }}
                 style={styles.image}
               />
+              <Callout>
+                <View style={styles.calloutView}>
+                  <Text style={styles.usernameText}>
+                    {'@' + marker._value.username}
+                  </Text>
+                  <Text style={styles.profileText}>Go to Profile</Text>
+                </View>
+              </Callout>
             </Marker>
           ))}
       </MapView>
@@ -146,16 +182,17 @@ const MapScreen = props => {
             style={styles.openModalButton}
             onPress={() => setModalOpen(true)}
           >
-            <Icon name="md-search" size={28} color="#808080" />
+            <Icon name="md-search" size={28} color="black" />
             <Text style={styles.buttonText}>Search...</Text>
-            <Icon
-              name="md-menu"
-              size={28}
-              color="#808080"
-              style={{ position: 'absolute', right: 0, paddingRight: 15 }}
-            />
           </TouchableOpacity>
         )}
+        <Icon
+          name="md-settings"
+          size={28}
+          color="black"
+          onPress={navigateToSettings}
+          style={styles.settingsIcon}
+        />
       </View>
       <View style={styles.bottomContainer}>
         <View style={styles.locationButton}>
@@ -163,15 +200,16 @@ const MapScreen = props => {
             name="md-locate"
             size={26}
             color="orangered"
-            onPress={() => handleIconPress()}
+            onPress={() => handleNavIconPress()}
           />
         </View>
       </View>
       {modalOpen && (
         <MapSearchModal
           modalOpen={modalOpen}
-          closeModal={closeModal}
+          setModalOpen={setModalOpen}
           usersLocationData={usersLocationData}
+          setCoordinates={setCoordinates}
         />
       )}
     </View>
@@ -189,25 +227,27 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
   },
+  topContainer: {
+    marginTop: 10,
+    paddingLeft: 20,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    height: '100%',
+    width: '100%',
+    flex: 1,
+  },
   openModalButton: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
     height: 50,
-    width: '90%',
+    width: width * 0.75,
     borderRadius: 10,
     paddingLeft: 20,
     backgroundColor: '#F8F8F8',
-    elevation: 2, // Android
-  },
-  topContainer: {
-    marginTop: 10,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    height: '100%',
-    width: '100%',
-    flex: 1,
+    opacity: 0.75,
+    elevation: 2,
   },
   bottomContainer: {
     flexDirection: 'column',
@@ -220,7 +260,6 @@ const styles = StyleSheet.create({
   },
   locationButton: {
     backgroundColor: 'white',
-    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     height: 50,
@@ -236,10 +275,34 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   buttonText: {
-    color: '#808B96',
-    // color: 'red',
+    color: 'black',
     fontSize: 19,
     fontFamily: 'Roboto',
     paddingLeft: 25,
+  },
+  calloutView: {
+    width: width * 0.5,
+    flexDirection: 'column',
+    alignItems: 'center',
+    elevation: 2,
+  },
+  usernameText: {
+    color: 'black',
+    fontFamily: 'OpenSans-Bold',
+    fontSize: 18,
+  },
+  profileText: {
+    marginTop: 5,
+    color: 'black',
+    fontSize: 20,
+    fontFamily: 'Roboto',
+  },
+  settingsIcon: {
+    position: 'absolute',
+    right: 0,
+    paddingRight: 15,
+    marginTop: 12.5,
+    opacity: 0.65,
+    elevation: 2,
   },
 });
