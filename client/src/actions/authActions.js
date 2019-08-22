@@ -5,6 +5,7 @@ const usersRef = firebase
   .ref('people/')
   .child('users');
 
+// Navigate to route that completes missing information in User Profile
 export const navigateToIncomplete = (user, props) => {
   usersRef
     .orderByChild('userID')
@@ -16,10 +17,15 @@ export const navigateToIncomplete = (user, props) => {
             user,
             dataKey: data.key,
           });
-        } else {
+        }
+        if (user.displayName && !user.photoURL) {
           props.navigation.navigate('ProfilePhoto', {
             user,
             dataKey: data.key,
+          });
+        } else {
+          props.navigation.navigate('Home', {
+            user,
           });
         }
       });
@@ -27,6 +33,7 @@ export const navigateToIncomplete = (user, props) => {
 };
 
 // Determining if user exists in secondary non-admin database
+// Function used in: LandingPageScreen
 export const confirmUserExistsinDB = (user, props, setIsLoaded) => {
   usersRef
     .orderByChild('userID')
@@ -84,6 +91,7 @@ export const uploadUsername = (user, username, dataKey, alert, props) => {
 };
 
 // Creating User in non-admin database
+// locationOn attribute will be turned to false if user rejects location Permissions
 export const createUserinDB = (user, props) => {
   usersRef
     .orderByChild('userID')
@@ -96,6 +104,7 @@ export const createUserinDB = (user, props) => {
             userPhoneNumber: user.phoneNumber,
             followingCount: 0,
             followersCount: 0,
+            locationOn: true,
           })
           .then(data => {
             props.navigation.navigate('Create', {
@@ -108,9 +117,29 @@ export const createUserinDB = (user, props) => {
           });
       } else {
         // User already exists
-        props.navigation.navigate('Home', {
-          user,
-        });
+        navigateToIncomplete(user, props);
       }
     });
+};
+
+// Key refers to non-admin database key for locating Current User
+// This redudancy is unavoidable in Firebase
+// Function used in: MapScreen, UserProfileScreen, OtherUserScreen
+export const getCurrentUserKey = user => {
+  return new Promise((resolve, reject) => {
+    usersRef
+      .orderByChild('userID')
+      .equalTo(user.uid)
+      .once('value', snapshot => {
+        snapshot.forEach(data => {
+          resolve(data);
+        });
+      })
+      .then(() => {
+        console.log('user key successfully obtained');
+      })
+      .catch(() => {
+        reject(new Error('unable to obtain user key'));
+      });
+  });
 };

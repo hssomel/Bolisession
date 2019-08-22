@@ -14,7 +14,17 @@ const HomeScreen = props => {
     if (user) {
       setIsLoaded(true);
     }
+
+    return () => {
+      console.log('unmounted from the home screen');
+    };
   }, [user]);
+
+  useEffect(() => {
+    return () => {
+      console.log('unmounted from the home screen');
+    };
+  }, []);
 
   return (
     <View>

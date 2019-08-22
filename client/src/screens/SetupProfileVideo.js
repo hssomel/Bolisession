@@ -7,12 +7,10 @@ import { uploadProfileVid } from '../actions/userProfileActions';
 import YouTubeModal from '../components/YouTubeModal';
 import YouTubeVideo from '../components/YouTubeVideo';
 
-export default function SetupProfileVideo(props) {
+SetupProfileVideo = props => {
   //Initial State
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentUserKey] = useState(
-    props.navigation.getParam('currentUserKey', null),
-  );
+  const [userKey] = useState(props.navigation.getParam('userKey', null));
   const [youtubeURL, setYoutubeURL] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [finalURL, setFinalURL] = useState(null);
@@ -52,7 +50,11 @@ export default function SetupProfileVideo(props) {
   };
 
   const uploadVideo = () => {
-    uploadProfileVid(currentUserKey, finalURL, startTime);
+    uploadProfileVid(userKey, finalURL, startTime);
+  };
+
+  const goBack = () => {
+    props.navigation.goBack();
   };
 
   return (
@@ -61,7 +63,12 @@ export default function SetupProfileVideo(props) {
         {!allowYoutube ? (
           <View style={styles.containerOne}>
             <View style={{ alignItems: 'flex-start' }}>
-              <Icon name="ios-arrow-round-back" size={36} color="orangered" />
+              <Icon
+                name="ios-arrow-round-back"
+                size={36}
+                color="orangered"
+                onPress={goBack}
+              />
             </View>
             <Text style={styles.titleText}>Upload a profile video</Text>
             <Text style={{ fontSize: 18 }}>
@@ -78,7 +85,7 @@ export default function SetupProfileVideo(props) {
               style={{ height: '75%', width: '100%' }}
               newURL={finalURL}
               newStartTime={startTime}
-              currentUserKey={currentUserKey}
+              userKey={userKey}
               fromSettings={fromSettings}
             />
           </View>
@@ -123,7 +130,9 @@ export default function SetupProfileVideo(props) {
       />
     </View>
   );
-}
+};
+
+export default SetupProfileVideo;
 
 const styles = StyleSheet.create({
   container: {

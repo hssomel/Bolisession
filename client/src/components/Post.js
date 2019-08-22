@@ -9,7 +9,7 @@ import {
   removeUserFromLikesArray,
 } from '../actions/userProfileActions';
 
-function Post(props) {
+const Post = props => {
   // Initial State
   const { item, user } = props;
   const [liked, setHasLiked] = useState(null);
@@ -60,10 +60,13 @@ function Post(props) {
   };
 
   const handleAvatarPress = () => {
-    props.navigation.navigate('Profile', {
-      item: item,
-      name: item._value.username,
-    });
+    if (user.displayName == item._value.username) {
+      props.navigation.navigate('Profile');
+    } else {
+      props.navigation.navigate('OtherUser', {
+        tweet: item._value,
+      });
+    }
   };
 
   useEffect(() => {
@@ -77,7 +80,7 @@ function Post(props) {
           <View>
             <Avatar
               source={{
-                uri: item._value.userPhoto,
+                uri: item._value.profilePhoto,
               }}
               rounded
               size={60}
@@ -130,7 +133,7 @@ function Post(props) {
       </View>
     </View>
   );
-}
+};
 export default withNavigation(Post);
 
 const styles = StyleSheet.create({

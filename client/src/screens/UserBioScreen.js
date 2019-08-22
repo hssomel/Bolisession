@@ -7,7 +7,7 @@ import firebase from 'react-native-firebase';
 export default function UserBioScreen(props) {
   // Initial State
   const [bio, setBio] = useState('');
-  const [userKey] = useState(props.navigation.getParam('currentUserKey', null));
+  const [userKey] = useState(props.navigation.getParam('userKey', null));
   const x = 120 - bio.length;
   // Firebase references
   const usersRef = firebase

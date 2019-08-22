@@ -17,7 +17,7 @@ const { width } = Dimensions.get('window');
 export default function HomeFeedHeader(props) {
   const { user } = props;
   // Intial State
-  const [profilePhoto] = useState(user.photoURL);
+  const [profilePhoto, setProfilePhoto] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [tweet, setTweet] = useState(null);
   const [isLoaded, setIsLoaded] = useState(null);
@@ -33,6 +33,7 @@ export default function HomeFeedHeader(props) {
   };
 
   useEffect(() => {
+    setProfilePhoto(user.photoURL);
     setIsLoaded(true);
   }, [writeUserData]);
 
@@ -48,7 +49,10 @@ export default function HomeFeedHeader(props) {
             }}
             containerStyle={styles.avatarStyle}
           />
-          <TouchableOpacity style={styles.openModal} onPress={openPostModal}>
+          <TouchableOpacity
+            style={styles.openModalButton}
+            onPress={openPostModal}
+          >
             <Text style={styles.buttonText}>What's going on?</Text>
           </TouchableOpacity>
           <Modal
@@ -150,7 +154,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: 8,
   },
-  openModal: {
+  openModalButton: {
     height: 45,
     width: width * 0.7,
     alignItems: 'flex-start',

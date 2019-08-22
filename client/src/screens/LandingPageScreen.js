@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  SafeAreaView,
-} from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
 import Video from 'react-native-video';
 import firebase from 'react-native-firebase';
 import GradientButton from '../components/GradientButton';
+import LoadingIndicator from '../components/LoadingIndicator';
 import { confirmUserExistsinDB } from '../actions/authActions';
+
+const { width } = Dimensions.get('window');
 
 const LandingPageScreen = props => {
   // Initial State
@@ -23,7 +20,7 @@ const LandingPageScreen = props => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       console.log('mounted to LandingPageScreen');
       if (user) {
-        console.log('init user is: ', user);
+        console.log('init user', user);
         // checking to see if user exists in non-admin database
         confirmUserExistsinDB(user, props, setIsLoaded);
       } else {
@@ -62,9 +59,7 @@ const LandingPageScreen = props => {
           </View>
         </View>
       ) : (
-        <View style={styles.indicator}>
-          <ActivityIndicator size="large" color="orangered" />
-        </View>
+        <LoadingIndicator />
       )}
     </SafeAreaView>
   );
@@ -76,13 +71,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
-  },
-  indicator: {
-    flexDirection: 'column',
-    justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
     width: '100%',
@@ -101,7 +89,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
     height: '100%',
-    width: '100%',
+    width: width,
     flex: 1,
   },
   text: {

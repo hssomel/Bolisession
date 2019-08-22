@@ -1,111 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
 import firebase from 'react-native-firebase';
-import ProfileFeedHeader from '../components/ProfileFeedHeader';
+import LoadingIndicator from '../components/LoadingIndicator';
+import UserProfileFeedHeader from '../components/UserProfileFeedHeader';
 import UserProfileFeed from '../components/UserProfileFeed';
-import {
-  increaseFollowingList,
-  decreaseFollowingList,
-  increaseFollowerList,
-  decreaseFollowersList,
-} from '../actions/userProfileActions';
+import { getCurrentUserKey } from '../actions/authActions';
 
-export default function UserProfileScreen(props) {
+const UserProfileScreen = props => {
   // Initial State
-  const [thisUser, setUser] = useState(null);
-  const [postData] = useState(props.navigation.getParam('item', null));
-  const [UserOfPostName] = useState(props.navigation.getParam('name', null));
+  const [user, setUser] = useState(null);
+  // userKey refers to non-admin firebase database key for locating Current User
+  const [userKey, setUserKey] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [switchValue, setSwitchValue] = useState(null);
-  const [currentUserKey, setCurrentUserParentKey] = useState(null);
-  const [postUserParentKey, setPostUserParentKey] = useState(null);
-  const [currentUserData, setCurrentUserData] = useState(null);
-  const [postCreatorData, setPostCreatorData] = useState(null);
-  // Firebase references
-  const usersRef = firebase
-    .database()
-    .ref('people/')
-    .child('users');
-
-  // Event Handlers
-  const initialToggleSwitchValue = key => {
-    usersRef
-      .child(key)
-      .child('following')
-      .orderByChild('user_name')
-      .equalTo(UserOfPostName)
-      .once('value', snapshot => {
-        if (!snapshot.val()) {
-          setSwitchValue(false);
-        } else {
-          setSwitchValue(true);
-        }
-      });
-  };
-
-  const toggleSwitch = value => {
-    setSwitchValue(value);
-    if (!value) {
-      decreaseFollowingList(currentUserKey, UserOfPostName);
-      decreaseFollowersList(postUserParentKey, thisUser.displayName);
-    } else {
-      increaseFollowingList(currentUserKey, UserOfPostName);
-      increaseFollowerList(postUserParentKey, thisUser.displayName);
-    }
-  };
-
-  const getCurrentUserParentKey = user => {
-    return new Promise((resolve, reject) => {
-      usersRef
-        .orderByChild('userID')
-        .equalTo(user.uid)
-        .once('value', snapshot => {
-          snapshot.forEach(data => {
-            setCurrentUserData(data._value);
-            setCurrentUserParentKey(data.key);
-            resolve(data.key);
-          });
-        });
-    });
-  };
-
-  const getPostUserParentKey = () => {
-    return new Promise((resolve, reject) => {
-      usersRef
-        .orderByChild('username')
-        .equalTo(UserOfPostName)
-        .once('value', snapshot => {
-          snapshot.forEach(data => {
-            setPostCreatorData(data._value);
-            setPostUserParentKey(data.key);
-            resolve();
-          });
-        });
-    });
-  };
+  // 'userData' object is user data stored in non-admin firebase database
+  // The non-admin database contains redudant admin database data along with
+  // data that cannot be stored in the admin database
+  // for example user Biography is stored only in non-admin database
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
-      getCurrentUserParentKey(user)
-        .then(res => {
-          if (postData) {
-            initialToggleSwitchValue(res);
-            getPostUserParentKey()
-              .then(() => {
-                setIsLoaded(true);
-              })
-              .catch(err => {
-                console.log(err);
-              });
-          } else {
-            setIsLoaded(true);
-          }
+      getCurrentUserKey(user, setUserData)
+        .then(data => {
+          setUserData(data._value);
+          setUserKey(data.key);
+          setIsLoaded(true);
         })
         .catch(err => {
           console.log(err);
         });
     });
+
     return () => {
       if (unsubscribe) unsubscribe();
     };
@@ -114,25 +40,15 @@ export default function UserProfileScreen(props) {
   return (
     <View>
       <View>
-        {!isLoaded && (
-          <View style={{ justifyContent: 'center' }}>
-            <ActivityIndicator size="large" color="orangered" />
-          </View>
-        )}
+        {!isLoaded && <LoadingIndicator />}
         {isLoaded && (
           <View>
             <UserProfileFeed
-              postData={postData}
               ListHeaderComponent={
-                <ProfileFeedHeader
-                  postData={postData}
-                  user={thisUser}
-                  toggleSwitch={toggleSwitch}
-                  switchValue={switchValue}
-                  postCreator={postCreatorData}
-                  currentUser={currentUserData}
-                  currentUserKey={currentUserKey}
-                  postUserParentKey={postUserParentKey}
+                <UserProfileFeedHeader
+                  user={user}
+                  userData={userData}
+                  userKey={userKey}
                 />
               }
             />
@@ -141,4 +57,6 @@ export default function UserProfileScreen(props) {
       </View>
     </View>
   );
-}
+};
+
+export default UserProfileScreen;

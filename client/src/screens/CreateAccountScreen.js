@@ -36,7 +36,7 @@ const bhangraTeams = [
   },
 ];
 
-export default function CreateAccountScreen(props) {
+const CreateAccountScreen = props => {
   // Initial State
   const [textInputStyle, setTextInputStyle] = useState('50%');
   const [currentTeam, setCurrentTeam] = useState('');
@@ -104,7 +104,9 @@ export default function CreateAccountScreen(props) {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
+
+export default CreateAccountScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -130,6 +132,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderBottomColor: 'red',
     borderBottomWidth: 2,
+    marginBottom: '5%',
   },
   image: {
     height: 60,

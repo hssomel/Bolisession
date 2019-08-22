@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, FlatList, SafeAreaView } from 'react-native';
 import firebase from 'react-native-firebase';
+import LoadingIndicator from './LoadingIndicator';
 import Post from './Post';
 
 export default function UserProfileFeed(props) {
-  const { ListHeaderComponent, postData } = props;
+  const { ListHeaderComponent, otherUserData } = props;
   // Initial State
   const [feedData, setFeedData] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -43,11 +44,11 @@ export default function UserProfileFeed(props) {
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
-      if (!postData) {
+      if (!otherUserData) {
         // client used navigation icon
         getItemsbyUser(user.displayName);
       } else {
-        getItemsbyUser(postData._value.username);
+        getItemsbyUser(otherUserData.username);
       }
     });
     return () => {
@@ -58,11 +59,7 @@ export default function UserProfileFeed(props) {
   return (
     <SafeAreaView>
       <View style={{ justifyContent: 'flex-start' }}>
-        {!isLoaded && (
-          <View style={{ justifyContent: 'center' }}>
-            <ActivityIndicator size="large" color="orangered" />
-          </View>
-        )}
+        {!isLoaded && <LoadingIndicator />}
         <FlatList
           data={feedData}
           keyExtractor={item => item.key}

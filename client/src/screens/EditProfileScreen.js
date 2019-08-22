@@ -4,15 +4,13 @@ import { Button } from 'react-native-elements';
 
 export default function EditProfileScreen(props) {
   // Initial State
-  const [currentUserKey] = useState(
-    props.navigation.getParam('currentUserKey', null),
-  );
+  const [userKey] = useState(props.navigation.getParam('userKey', null));
   const [user] = useState(props.navigation.getParam('user', null));
   // Event Handlers
 
   const handleModalButton1 = () => {
     props.navigation.navigate('Bio', {
-      currentUserKey,
+      userKey,
       user,
     });
   };
@@ -25,7 +23,7 @@ export default function EditProfileScreen(props) {
 
   const handleModalButton3 = () => {
     props.navigation.navigate('Video', {
-      currentUserKey,
+      userKey,
     });
   };
 
