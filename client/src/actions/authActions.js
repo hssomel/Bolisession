@@ -91,6 +91,7 @@ export const uploadUsername = (user, username, dataKey, alert, props) => {
 };
 
 // Creating User in non-admin database
+// locationOn attribute will be turned to false if user rejects location Permissions
 export const createUserinDB = (user, props) => {
   usersRef
     .orderByChild('userID')
@@ -103,6 +104,7 @@ export const createUserinDB = (user, props) => {
             userPhoneNumber: user.phoneNumber,
             followingCount: 0,
             followersCount: 0,
+            locationOn: true,
           })
           .then(data => {
             props.navigation.navigate('Create', {

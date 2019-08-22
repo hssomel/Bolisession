@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Switch } from 'react-native';
+import firebase from 'react-native-firebase';
 import {
   increaseFollowingList,
   decreaseFollowingList,
   increaseFollowerList,
   decreaseFollowersList,
 } from '../actions/userProfileActions';
-import firebase from 'react-native-firebase';
 
 const ToggleSwitch = props => {
   const { userKey, otherUserKey, otherUserData, user } = props;

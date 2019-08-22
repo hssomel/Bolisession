@@ -7,7 +7,6 @@ const MapSearchModal = props => {
   const { modalOpen, setModalOpen, usersLocationData, setCoordinates } = props;
   // Inital State
   const [search, setSearch] = useState(null);
-  const [searchRef, setSearchRef] = useState(null);
   const [usersData, setUsersData] = useState();
   const [isLoaded, setIsLoaded] = useState(null);
   // Event Handlers
@@ -68,7 +67,7 @@ const MapSearchModal = props => {
         <View style={styles.outerModalContainer}>
           <SearchBar
             round
-            ref={search => setSearchRef(search)}
+            // ref={search => setSearchRef(search)}
             searchIcon={<BackIcon setModalOpen={setModalOpen} />}
             onChangeText={text => SearchFilterFunction(text)}
             placeholder="Search Users, Teams, Competitions..."
@@ -76,7 +75,6 @@ const MapSearchModal = props => {
             containerStyle={styles.searchBarContainer}
             inputContainerStyle={styles.searchInputContainer}
             onClear={logOnClear}
-            rightIconContainerStyle={{ backgroundColor: 'red' }}
           />
           <FlatList
             style={styles.listcontainer}

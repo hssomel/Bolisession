@@ -12,12 +12,14 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 import MapSearchModal from '../components/MapSearchModal';
+import MapSettingsModal from '../components/MapSettingsModal';
 import { getCurrentUserKey } from '../actions/authActions';
 import {
   requestLocationPermission,
   getLocation,
   getUsersLocations,
   updateFirebaseLocation,
+  isUserLocationOn,
 } from '../actions/locationActions';
 
 const { width } = Dimensions.get('window');
@@ -30,6 +32,7 @@ const MapScreen = props => {
   const [usersLocationData, setUsersLocationData] = useState(null);
   const [searchVisible, setSearchVisible] = useState(true);
   const [modalOpen, setModalOpen] = useState(null);
+  const [settingsModalOpen, setSettingsModalOpen] = useState(null);
 
   // Default Coordinates if unable to obtain user location
   const [coordinates, setCoordinates] = useState({
@@ -71,7 +74,7 @@ const MapScreen = props => {
     } else {
       Alert.alert(
         'Location is currently off',
-        'Please enable location permission on your device and in settings for access to all features on the app!',
+        'Please enable location permission on your device and in app settings for access to all features on the app!',
         [
           {
             text: 'Ask me later',
@@ -87,27 +90,34 @@ const MapScreen = props => {
     }
   };
 
-  const checkForLocation = async key => {
-    const requestOk = await requestLocationPermission();
-    if (requestOk) {
+  const checkForInternalPermission = async key => {
+    const location = await isUserLocationOn(key);
+    if (location) {
       getLocation()
         .then(res => {
           setCoordinates(res);
           setLocationOn(true);
           const { latitude, longitude } = res;
-          updateFirebaseLocation(key, latitude, longitude);
+          updateFirebaseLocation(key, latitude, longitude, true);
         })
         .catch(err => {
           console.log('error: ', err);
         });
     } else {
-      updateFirebaseLocation(key, 0, 0);
+      updateFirebaseLocation(key, 0, 0, false);
       setLocationOn(false);
     }
   };
 
-  const navigateToSettings = () => {
-    props.navigation.navigate('Settings');
+  const checkForLocationPermission = async key => {
+    const requestOk = await requestLocationPermission();
+    if (requestOk) {
+      // This is to check if user internally turned off location within the app
+      checkForInternalPermission(key);
+    } else {
+      updateFirebaseLocation(key, 0, 0, false);
+      setLocationOn(false);
+    }
   };
 
   useEffect(() => {
@@ -117,7 +127,7 @@ const MapScreen = props => {
         getCurrentUserKey(user)
           .then(data => {
             setUserKey(data.key);
-            checkForLocation(data.key);
+            checkForLocationPermission(data.key);
           })
           .catch(err => {
             console.log('error: ', err);
@@ -190,7 +200,7 @@ const MapScreen = props => {
           name="md-settings"
           size={28}
           color="black"
-          onPress={navigateToSettings}
+          onPress={() => setSettingsModalOpen(true)}
           style={styles.settingsIcon}
         />
       </View>
@@ -210,6 +220,16 @@ const MapScreen = props => {
           setModalOpen={setModalOpen}
           usersLocationData={usersLocationData}
           setCoordinates={setCoordinates}
+        />
+      )}
+      {settingsModalOpen && (
+        <MapSettingsModal
+          settingsmodalOpen={settingsModalOpen}
+          setSettingsModalOpen={setSettingsModalOpen}
+          locationOn={locationOn}
+          setLocationOn={setLocationOn}
+          setCoordinates={setCoordinates}
+          userKey={userKey}
         />
       )}
     </View>

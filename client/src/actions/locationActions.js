@@ -55,13 +55,18 @@ export const requestLocationPermission = async () => {
   }
 };
 
-// Update users location status on Firebase database
-export const updateFirebaseLocation = (key, latitude, longitude) => {
-  const location = latitude != 0 ? true : false;
+// Update users location status on Firebase database\
+// permission is boolean true or false
+export const updateFirebaseLocation = (
+  key,
+  latitude,
+  longitude,
+  permission,
+) => {
   usersRef
     .child(key)
     .update({
-      locationOn: location,
+      locationOn: permission,
       coordinates: {
         latitude,
         longitude,
@@ -93,6 +98,24 @@ export const getUsersLocations = () => {
       })
       .catch(err => {
         reject(new Error(err));
+      });
+  });
+};
+
+// Determining if the user location is turned on internally in the app
+export const isUserLocationOn = key => {
+  return new Promise((resolve, reject) => {
+    usersRef
+      .child(key)
+      .child('locationOn')
+      .once('value', snapshot => {
+        resolve(snapshot.val());
+      })
+      .then(() => {
+        console.log('successful operation');
+      })
+      .catch(() => {
+        reject(new Error('unable to determine if user location is on'));
       });
   });
 };
