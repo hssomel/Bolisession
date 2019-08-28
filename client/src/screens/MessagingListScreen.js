@@ -32,7 +32,7 @@ export default function MessagingListScreen(props) {
   const onAvatarPress = item => {
     generateThreadKey(user, item._value)
       .then(res => {
-        verifyIfThreadExists(user, res, item, props);
+        verifyIfThreadExists(user, res, item._value, props);
       })
       .catch(err => {
         console.log(err);

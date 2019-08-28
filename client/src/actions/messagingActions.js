@@ -6,8 +6,9 @@ const usersRef = firebase
   .ref('people/')
   .child('users');
 
-// function used in MessagingListScreen to generate unique thread key
-// between two users
+// function used in MessagingListScreen to generate unique thread key between two users
+// This function is triggered when the client clicks on another user's avatar
+// 'otherUserData' is the Profile Data of the user that the client wishes to message
 export const generateThreadKey = (user, otherUserData) => {
   return new Promise((resolve, reject) => {
     const string1 = user.uid.toString();
@@ -68,8 +69,47 @@ export const getUsers = user => {
       .then(() => {
         resolve(usersArray);
       })
-      .catch(err => {
+      .catch(() => {
         reject(new Error('unable to obtain users'));
+      });
+  });
+};
+
+export const getExistingMessages = key => {
+  return new Promise((resolve, reject) => {
+    const priorMessages = [];
+    messageRef
+      .child(key)
+      .child('messages')
+      .once('value', snapshot => {
+        snapshot.forEach(data => {
+          priorMessages.push(data._value.message[0]);
+        });
+      })
+      .then(() => {
+        resolve(priorMessages);
+      })
+      .catch(() => {
+        reject(new Error('unable to obtain existing messages'));
+      });
+  });
+};
+
+export const getThreadKey = threadID => {
+  return new Promise((resolve, reject) => {
+    messageRef
+      .orderByChild('_threadID')
+      .equalTo(threadID)
+      .once('value', snapshot => {
+        snapshot.forEach(data => {
+          resolve(data.key);
+        });
+      })
+      .then(() => {
+        console.log('Thread key successfully obtained');
+      })
+      .catch(() => {
+        reject(new Error('unable to obtain thread key'));
       });
   });
 };

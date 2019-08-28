@@ -9,7 +9,14 @@ import {
 } from '../actions/userProfileActions';
 
 const ToggleSwitch = props => {
-  const { userKey, otherUserKey, otherUserData, user } = props;
+  const {
+    userKey,
+    otherUserKey,
+    otherUserData,
+    user,
+    followers,
+    setFollowersCount,
+  } = props;
   // Initial State
   const [switchValue, setSwitchValue] = useState(null);
   const [isLoaded, setIsLoaded] = useState(null);
@@ -42,9 +49,13 @@ const ToggleSwitch = props => {
     if (!value) {
       decreaseFollowingList(userKey, otherUserData.username);
       decreaseFollowersList(otherUserKey, user.displayName);
+      const counter = followers - 1;
+      setFollowersCount(counter);
     } else {
       increaseFollowingList(userKey, otherUserData.username);
       increaseFollowerList(otherUserKey, user.displayName);
+      const counter = followers + 1;
+      setFollowersCount(counter);
     }
   };
 
@@ -59,7 +70,7 @@ const ToggleSwitch = props => {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            marginBottom: 10,
+            marginLeft: 10,
           }}
         >
           <Switch
@@ -68,9 +79,15 @@ const ToggleSwitch = props => {
             thumbColor={'orangered'}
           />
           <Text
-            style={{ fontSize: 18, color: 'orangered', fontWeight: 'bold' }}
+            style={{
+              fontSize: 18,
+              color: 'orangered',
+              fontWeight: 'bold',
+              paddingLeft: 5,
+              fontFamily: 'Roboto',
+            }}
           >
-            Follow
+            {switchValue ? 'Following' : 'Follow'}
           </Text>
         </View>
       )}

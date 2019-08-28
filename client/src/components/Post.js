@@ -80,10 +80,6 @@ const Post = props => {
       'Retweets and Commenting feature will be released next update!',
       'Sit tight as our developers work on releasing a whole new set of features next update!',
       [
-        // {
-        //   text: 'Ask me later',
-        //   onPress: () => console.log('Ask me later pressed'),
-        // },
         {
           text: 'Cancel',
           onPress: () => console.log('Cancel Pressed'),

@@ -10,6 +10,10 @@ import { Avatar } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
 import ToggleSwitch from './ToggleSwitch';
 import YouTubeVideo from './YouTubeVideo';
+import {
+  generateThreadKey,
+  verifyIfThreadExists,
+} from '../actions/messagingActions';
 
 const { width } = Dimensions.get('window');
 const videoHeight = width * 0.6;
@@ -19,7 +23,18 @@ const OtherUserProfileFeedHeader = props => {
   // Initial State
   const [isLoaded, setIsLoaded] = useState(null);
   const [bio, setBio] = useState(null);
+  const [following] = useState(otherUserData.followingCount);
+  const [followers, setFollowersCount] = useState(otherUserData.followersCount);
   // Event Handlers
+  const navigateToMessage = () => {
+    generateThreadKey(user, otherUserData)
+      .then(res => {
+        verifyIfThreadExists(user, res, otherUserData, props);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   useEffect(() => {
     if (otherUserData.bio) {
       setBio(otherUserData.bio);
@@ -56,17 +71,22 @@ const OtherUserProfileFeedHeader = props => {
               />
             </View>
             <View style={styles.viewFour}>
-              <Text style={{ fontSize: 16 }}> Followers: </Text>
-              <Text style={styles.followCount}>
-                {otherUserData.followersCount}
-              </Text>
+              <Text style={{ fontSize: 16 }}>Followers:</Text>
+              <Text style={styles.followCount}>{followers}</Text>
               <Text style={{ fontSize: 16, paddingLeft: 15 }}>Following:</Text>
-              <Text style={styles.followCount}>
-                {otherUserData.followingCount}
-              </Text>
+              <Text style={styles.followCount}>{following}</Text>
             </View>
-            <View style={{ width: '100%' }}>
-              <TouchableOpacity style={styles.messageButton}>
+            <View
+              style={{
+                width: '100%',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <TouchableOpacity
+                style={styles.messageButton}
+                onPress={navigateToMessage}
+              >
                 <Text style={styles.messageButtonText}>Message</Text>
               </TouchableOpacity>
               <ToggleSwitch
@@ -74,6 +94,8 @@ const OtherUserProfileFeedHeader = props => {
                 otherUserKey={otherUserKey}
                 userKey={userKey}
                 user={user}
+                followers={followers}
+                setFollowersCount={setFollowersCount}
               />
             </View>
             <Text style={styles.bioText}>{bio}</Text>
@@ -93,7 +115,6 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     flex: 1,
-    paddingBottom: 5,
     borderBottomColor: '#D3D3D3',
     borderBottomWidth: 14,
   },

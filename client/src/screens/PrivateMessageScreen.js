@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
-
 import firebase from 'react-native-firebase';
+import { getThreadKey, getExistingMessages } from '../actions/messagingActions';
 
 export default function PrivateMessageScreen(props) {
   // Initial State
   const [messages, setMessages] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [item, setItem] = useState(props.navigation.getParam('item', null));
+  const [otherUserData] = useState(
+    props.navigation.getParam('otherUserData', null),
+  );
   const [thisUser] = useState(props.navigation.getParam('user', null));
   const [threadID] = useState(props.navigation.getParam('threadID', null));
   const [threadKey, setThreadKey] = useState(
@@ -18,18 +20,12 @@ export default function PrivateMessageScreen(props) {
   const messageRef = firebase.database().ref('messages/');
 
   // Event Handlers
-  const getExistingMessages = theKey => {
-    const priorMessages = [];
-    messageRef
-      .child(theKey)
-      .child('messages')
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          priorMessages.push(data._value.message[0]);
-        });
-      })
-      .then(() => {
-        setMessages(priorMessages);
+  const renderMessages = async () => {
+    const key = await getThreadKey(threadID);
+    setThreadKey(key);
+    getExistingMessages(key)
+      .then(res => {
+        setMessages(res);
         setIsLoaded(true);
       })
       .catch(err => {
@@ -37,29 +33,9 @@ export default function PrivateMessageScreen(props) {
       });
   };
 
-  const ImportExistingThread = () => {
-    return new Promise((resolve, reject) => {
-      messageRef
-        .orderByChild('_threadID')
-        .equalTo(threadID)
-        .once('value', snapshot => {
-          snapshot.forEach(data => {
-            setThreadKey(data.key);
-            resolve(data.key);
-          });
-        });
-    });
-  };
-
   useEffect(() => {
     if (!threadKey) {
-      ImportExistingThread()
-        .then(res => {
-          getExistingMessages(res);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      renderMessages();
     }
   }, []);
 
