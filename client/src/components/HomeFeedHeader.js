@@ -53,7 +53,7 @@ export default function HomeFeedHeader(props) {
             style={styles.openModalButton}
             onPress={openPostModal}
           >
-            <Text style={styles.buttonText}>What's going on?</Text>
+            <Text style={styles.buttonText}>What's happening in bhangra?</Text>
           </TouchableOpacity>
           <Modal
             animationType="slide"
@@ -103,6 +103,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingBottom: 20,
     paddingLeft: 10,
+    borderBottomColor: '#D3D3D3',
+    borderBottomWidth: 14,
   },
   outerModalContainer: {
     flexDirection: 'column',
@@ -155,19 +157,19 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   openModalButton: {
-    height: 45,
+    height: 40,
     width: width * 0.7,
     alignItems: 'flex-start',
     justifyContent: 'center',
-    borderRadius: 25,
-    marginTop: 15,
+    borderRadius: 20,
+    marginTop: 17.5,
     borderColor: '#808B96',
     borderWidth: 1,
     marginLeft: 75,
     paddingLeft: 20,
   },
   buttonText: {
-    color: '#808B96',
+    color: '#808080',
     fontSize: 18,
     fontFamily: 'Roboto',
   },

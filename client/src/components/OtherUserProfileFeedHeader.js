@@ -93,7 +93,9 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     flex: 1,
-    paddingBottom: 40,
+    paddingBottom: 5,
+    borderBottomColor: '#D3D3D3',
+    borderBottomWidth: 14,
   },
   viewOne: {
     flexDirection: 'column',
@@ -133,13 +135,15 @@ const styles = StyleSheet.create({
     marginTop: 45,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
     flex: 1,
   },
   followCount: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 'bold',
     color: 'black',
     fontFamily: 'Roboto',
+    paddingLeft: 5,
   },
   messageButton: {
     color: 'red',

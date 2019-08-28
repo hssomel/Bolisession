@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableHighlight,
+  Alert,
+} from 'react-native';
 import firebase from 'react-native-firebase';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -69,6 +75,24 @@ const Post = props => {
     }
   };
 
+  const handleRetweetPress = () => {
+    Alert.alert(
+      'Retweets and Commenting feature will be released next update!',
+      'Sit tight as our developers work on releasing a whole new set of features next update!',
+      [
+        // {
+        //   text: 'Ask me later',
+        //   onPress: () => console.log('Ask me later pressed'),
+        // },
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+        },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+    );
+  };
+
   useEffect(() => {
     hasUserLiked();
   }, []);
@@ -97,38 +121,40 @@ const Post = props => {
           <Text style={styles.tweetText}>{item._value.text}</Text>
         </View>
         <View style={styles.footerContainer}>
-          <TouchableHighlight>
-            <View style={styles.iconContainer}>
-              <Icon name="md-chatboxes" size={20} />
-              <Text style={styles.badgeCount}>{item._value.comments}</Text>
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight>
-            <View style={styles.iconContainer}>
-              <Icon name="md-repeat" size={20} />
-              <Text style={styles.badgeCount}>{item._value.retweets}</Text>
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight>
-            <View style={styles.iconContainer}>
-              {liked && (
-                <Icon
-                  name="ios-heart"
-                  size={25}
-                  color="red"
-                  onPress={() => handlePress(item)}
-                />
-              )}
-              {!liked && (
-                <Icon
-                  name="ios-heart-empty"
-                  size={25}
-                  onPress={() => handlePress(item)}
-                />
-              )}
-              <Text style={styles.badgeCount}>{likeCounter}</Text>
-            </View>
-          </TouchableHighlight>
+          <View style={styles.iconContainer}>
+            <Icon
+              name="md-chatboxes"
+              size={20}
+              onPress={() => handleRetweetPress()}
+            />
+            <Text style={styles.badgeCount}>{item._value.comments}</Text>
+          </View>
+          <View style={styles.iconContainer}>
+            <Icon
+              name="md-repeat"
+              size={20}
+              onPress={() => handleRetweetPress()}
+            />
+            <Text style={styles.badgeCount}>{item._value.retweets}</Text>
+          </View>
+          <View style={styles.iconContainer}>
+            {liked && (
+              <Icon
+                name="ios-heart"
+                size={20}
+                color="red"
+                onPress={() => handlePress(item)}
+              />
+            )}
+            {!liked && (
+              <Icon
+                name="ios-heart-empty"
+                size={20}
+                onPress={() => handlePress(item)}
+              />
+            )}
+            <Text style={styles.badgeCount}>{likeCounter}</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -151,15 +177,15 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   usernameText: {
-    fontWeight: 'bold',
     fontSize: 17,
+    fontFamily: 'arial',
   },
   tweet: {
     paddingTop: 10,
     paddingBottom: 5,
     paddingLeft: 5,
     paddingRight: 15,
-    borderBottomColor: 'red',
+    borderBottomColor: '#E4E4E4',
     borderBottomWidth: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -169,12 +195,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: 'black',
     paddingLeft: 2,
-  },
-  tweetFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    flex: 1,
-    backgroundColor: '#ff3333',
   },
   usernameContainer: {
     height: '100%',
@@ -192,8 +212,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 15,
     paddingBottom: 5,
+    paddingLeft: 10,
     flex: 1,
     justifyContent: 'space-evenly',
+    marginTop: 10,
   },
   iconContainer: {
     flexDirection: 'row',
@@ -201,9 +223,10 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     flex: 1,
+    elevation: 1,
   },
   badgeCount: {
     fontSize: 16,
-    paddingLeft: 7,
+    paddingLeft: 8,
   },
 });

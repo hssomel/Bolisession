@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     flex: 1,
-    paddingBottom: 40,
+    borderBottomColor: '#D3D3D3',
+    borderBottomWidth: 14,
   },
   viewOne: {
     flexDirection: 'column',
@@ -138,6 +139,7 @@ const styles = StyleSheet.create({
     marginTop: 45,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
     flex: 1,
   },
   followCount: {
@@ -155,7 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 12.5,
     borderRadius: 15,
-    marginBottom: 15,
+    marginBottom: 5,
   },
   editText: {
     color: 'white',
