@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, View, FlatList, StyleSheet } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
-import BackIcon from './BackIcon';
+import BackIcon from '../BackIcon';
 
 const MapSearchModal = props => {
   const { modalOpen, setModalOpen, usersLocationData, setCoordinates } = props;

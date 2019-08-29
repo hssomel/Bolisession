@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
-import MapSearchModal from '../components/MapSearchModal';
-import MapSettingsModal from '../components/MapSettingsModal';
+import MapSearchModal from '../components/MapScreenComponents/MapSearchModal';
+import MapSettingsModal from '../components/MapScreenComponents/MapSettingsModal';
 import { getCurrentUserKey } from '../actions/authActions';
 import {
   requestLocationPermission,

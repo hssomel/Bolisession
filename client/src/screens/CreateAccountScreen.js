@@ -5,13 +5,15 @@ import {
   TextInput,
   Image,
   Text,
-  ScrollView,
   View,
   Alert,
+  Dimensions,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import GradientButton from '../components/GradientButton';
 import { uploadUsername } from '../actions/authActions';
+
+const { height, width } = Dimensions.get('window');
 
 const bhangraTeams = [
   {
@@ -38,18 +40,11 @@ const bhangraTeams = [
 
 const CreateAccountScreen = props => {
   // Initial State
-  const [textInputStyle, setTextInputStyle] = useState('50%');
   const [currentTeam, setCurrentTeam] = useState('');
   const [username, setUserName] = useState('');
   const [user] = useState(props.navigation.getParam('user', null));
   const [dataKey] = useState(props.navigation.getParam('dataKey', null));
   // Event Handlers
-  const handleOnFocus = () => {
-    setTextInputStyle('20%');
-  };
-  const handleOnScroll = () => setTextInputStyle('50%');
-  const handleOnBlur = () => setTextInputStyle('50%');
-
   const alert = () => {
     Alert.alert(
       'Oops something went wrong! Please make sure you are connected to the internet and try again!',
@@ -57,51 +52,46 @@ const CreateAccountScreen = props => {
   };
 
   const handlePress = () => {
-    uploadUsername(user, username, dataKey, alert, props);
+    if (username.length > 2) {
+      uploadUsername(user, username, dataKey, alert, props);
+    } else {
+      Alert.alert('Username must be minimum 3 characters!');
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={styles.scrollContainer}
-        contentContainerStyle={{
-          alignItems: 'center',
-        }}
-      >
+      <View style={styles.viewOne}>
         <Image
-          source={require('../assets/images/dhol.png')}
+          source={require('../assets/images/logoName.png')}
           style={styles.image}
         />
         <Text style={styles.text}>Create your account</Text>
+      </View>
+      <View style={styles.viewTwo}>
         <TextInput
           placeholder="Username"
-          onFocus={handleOnFocus}
-          onScroll={handleOnScroll}
-          onBlur={handleOnBlur}
-          style={{
-            ...styles.textInput,
-            marginTop: textInputStyle,
-          }}
+          style={styles.textInput}
           onChangeText={input => setUserName(input)}
         />
-        <View style={styles.container2}>
-          <RNPickerSelect
-            placeholder={{
-              label: 'Select a team...',
-              value: null,
-              color: 'grey',
-            }}
-            items={bhangraTeams}
-            onValueChange={value => setCurrentTeam(value)}
-            value={currentTeam}
-            useNativeAndroidPickerStyle={false}
-            style={pickerSelectStyles}
-          />
-        </View>
-        {username.length > 2 && (
-          <GradientButton onPress={handlePress} title="CONTINUE" />
-        )}
-      </ScrollView>
+      </View>
+      <View style={styles.viewThree}>
+        <RNPickerSelect
+          placeholder={{
+            label: 'Select a team...',
+            value: null,
+            color: 'grey',
+          }}
+          items={bhangraTeams}
+          onValueChange={value => setCurrentTeam(value)}
+          value={currentTeam}
+          useNativeAndroidPickerStyle={false}
+          style={pickerSelectStyles}
+        />
+      </View>
+      <View style={styles.viewFour}>
+        <GradientButton onPress={handlePress} title="CONTINUE" />
+      </View>
     </SafeAreaView>
   );
 };
@@ -113,31 +103,40 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    height: '100%',
-    width: '100%',
+    height,
+    width,
   },
-  scrollContainer: {
-    alignContent: 'center',
-    height: '100%',
-    width: '100%',
-    flex: 1,
-  },
-  container2: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
+  viewOne: {
     justifyContent: 'flex-end',
-    marginTop: '7%',
-    height: '100%',
-    width: '83%',
+    alignItems: 'center',
+    width,
+    flex: 2.25,
+  },
+  viewTwo: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width,
+    flex: 1.25,
+  },
+  viewThree: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width,
     flex: 1,
-    borderBottomColor: 'red',
-    borderBottomWidth: 2,
-    marginBottom: '5%',
+  },
+  viewFour: {
+    marginTop: height * 0.075,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width,
+    flex: 5,
   },
   image: {
-    height: 60,
-    width: 60,
-    marginTop: '2.5%',
+    position: 'absolute',
+    top: 0,
+    height: 40,
+    width: 180,
+    marginTop: height * 0.02,
   },
   text: {
     fontSize: 34,
@@ -150,19 +149,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: 'red',
     fontSize: 20,
-    width: '83%',
-    paddingBottom: '-1%',
-  },
-  buttonContainer: {
-    marginTop: '15%',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'center',
-  },
-  buttonStyle: {
-    height: 50,
     width: '85%',
-    borderRadius: 25,
+    paddingBottom: '-1%',
   },
 });
 
@@ -179,13 +167,13 @@ const pickerSelectStyles = StyleSheet.create({
   // },
 
   inputAndroid: {
-    marginTop: '3%',
-    height: '100%',
-    paddingVertical: 3,
     justifyContent: 'flex-end',
-    paddingRight: '35%',
     fontSize: 20,
-    color: 'black',
-    height: '100%',
+    borderWidth: 2,
+    borderColor: 'transparent',
+    borderBottomColor: 'red',
+    width: width * 0.85,
+    alignItems: 'center',
+    paddingBottom: -5,
   },
 });

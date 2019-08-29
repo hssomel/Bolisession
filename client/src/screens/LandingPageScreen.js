@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
     height: '100%',
-    width: '100%',
+    width,
     flex: 4,
     marginTop: '10%',
   },
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
     height: '100%',
-    width: width,
+    width,
     flex: 1,
   },
   text: {

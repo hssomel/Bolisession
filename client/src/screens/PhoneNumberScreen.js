@@ -16,9 +16,7 @@ import flagCollection from '../assets/flags/index';
 import countryData from '../assets/countryData';
 import { createUserinDB } from '../actions/authActions';
 // Style
-const { width } = Dimensions.get('window');
-const pillWidth = width * 0.88;
-const pillFontSize = pillWidth / 20;
+const { height, width } = Dimensions.get('window');
 
 const PhoneNumberScreen = props => {
   // Initial State
@@ -81,6 +79,10 @@ const PhoneNumberScreen = props => {
       ) : (
         <View style={styles.container}>
           <View style={styles.viewOne}>
+            {/* <Image
+              source={require('../assets/images/dhol_logo.png')}
+              style={styles.image}
+            /> */}
             <Text style={{ fontSize: 36, color: '#606060' }}>My number is</Text>
           </View>
           <View style={styles.viewTwo}>
@@ -100,7 +102,7 @@ const PhoneNumberScreen = props => {
               setPopupVisibility={setPopupVisibility}
               flagCollection={flagCollection}
             />
-            <Text style={styles.text}>
+            <Text style={styles.disclaimerText}>
               When you tap Verify SMS, BholiSession will send a text with a
               verification code. Message and data rates may apply. The verified
               phone number can be used to login.
@@ -111,9 +113,7 @@ const PhoneNumberScreen = props => {
               onPress={handleSubmitButtonPress}
               title="Get SMS Code"
             />
-            <Text style={{ marginTop: 10, fontSize: 12, paddingLeft: 20 }}>
-              {message}
-            </Text>
+            <Text style={styles.messageText}>{message}</Text>
           </View>
         </View>
       )}
@@ -132,38 +132,31 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   viewOne: {
-    paddingTop: 20,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'flex-start',
-    height: '100%',
-    width: '100%',
-    flex: 0.25,
+    height: height * 0.12,
+    width,
     paddingLeft: 20,
-    marginBottom: 10,
   },
   viewTwo: {
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    height: '100%',
-    width: '100%',
-    flex: 0.8,
+    height: height * 0.18,
+    width,
     paddingLeft: 20,
     paddingRight: 15,
-    paddingTop: 10,
   },
   viewThree: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-    height: '100%',
-    width: '100%',
-    flex: 3,
+    width,
     paddingTop: 50,
   },
   phoneNumberInput: {
     marginTop: 50,
-    fontSize: pillFontSize,
+    fontSize: 18,
   },
-  text: {
+  disclaimerText: {
     marginTop: 20,
     fontSize: 12,
     color: 'grey',
@@ -172,7 +165,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100%',
-    width: '100%',
+    height,
+    width,
+  },
+  image: {
+    height: 60,
+    width: 60,
+    marginTop: '2%',
+  },
+  messageText: {
+    marginTop: 10,
+    fontSize: 12,
+    paddingLeft: 20,
+    paddingRight: 15,
   },
 });

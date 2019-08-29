@@ -20,12 +20,6 @@ const HomeScreen = props => {
     };
   }, [user]);
 
-  useEffect(() => {
-    return () => {
-      console.log('unmounted from the home screen');
-    };
-  }, []);
-
   return (
     <View>
       <View>

@@ -152,14 +152,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Gill Sans',
     color: 'orangered',
-    marginTop: '1%',
+    marginTop: 20,
   },
   text3: {
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'Gill Sans',
     color: 'orangered',
-    marginTop: '2%',
+    marginTop: 25,
   },
   buttonContainer: {
     marginTop: '10%',

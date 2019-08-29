@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: '85%',
     borderRadius: 25,
+    elevation: 3,
   },
   text: {
     color: 'white',

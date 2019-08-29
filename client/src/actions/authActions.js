@@ -23,10 +23,6 @@ export const navigateToIncomplete = (user, props) => {
             user,
             dataKey: data.key,
           });
-        } else {
-          props.navigation.navigate('Home', {
-            user,
-          });
         }
       });
     });
