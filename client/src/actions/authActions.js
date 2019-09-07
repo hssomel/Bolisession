@@ -5,7 +5,7 @@ const usersRef = firebase
   .ref('people/')
   .child('users');
 
-// Navigate to route that completes missing information in User Profile
+// Navigate to the screen that completes missing information in User Profile
 export const navigateToIncomplete = (user, props) => {
   usersRef
     .orderByChild('userID')
@@ -36,6 +36,7 @@ export const confirmUserExistsinDB = (user, props, setIsLoaded) => {
     .equalTo(user.uid)
     .once('value', snapshot => {
       if (!snapshot.val()) {
+        // user does not exist in secondary database
         setIsLoaded(true);
       } else {
         // User Exists
