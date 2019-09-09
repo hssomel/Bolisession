@@ -58,6 +58,11 @@ const uploadUsernametoDB = (user, username, dataKey, alert, props) => {
     .child(dataKey)
     .update({
       username,
+      locationOn: false,
+      coordinates: {
+        latitude: 0,
+        longitude: 0,
+      },
     })
     .then(() => {
       props.navigation.navigate('ProfilePhoto', {

@@ -1,6 +1,6 @@
 ######## Firebase Credentials
-google-services.json
-GoogleService-Info.plist
+# google-services.json
+# GoogleService-Info.plist
 
 ### Random icloud drive files
 *.icloud

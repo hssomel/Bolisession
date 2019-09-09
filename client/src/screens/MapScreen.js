@@ -143,6 +143,7 @@ const MapScreen = props => {
     getUsersLocations()
       .then(data => {
         setUsersLocationData(data);
+        data.map(marker => console.log('valuee: ', marker._value.coordinates));
       })
       .catch(err => {
         console.log('error: ', err);
