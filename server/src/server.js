@@ -65,29 +65,9 @@ const data = `
 export const API_BASE_URL = "http://${ip.address()}:${port}"; 
 export const MAPBOX_TOKEN = "${process.env.MAPBOX_TOKEN}"
 `;
-fs.writeFile('../mobile/env.js', data, err => {
-  if (err) console.log('Error while writing ../mobile/env.js', err);
-  else console.log('Generated ../mobile/env.js');
-});
 fs.writeFile('../client/env.js', data, err => {
   if (err) console.log('Error while writing ../client/env.js', err);
   else console.log('Generated ../client/env.js');
-});
-fs.writeFile('../MASTER/env.js', data, err => {
-  if (err) console.log('Error while writing ../MASTER/env.js', err);
-  else console.log('Generated ../MASTER/env.js');
-});
-fs.writeFile('../modified_client/env.js', data, err => {
-  if (err) console.log('Error while writing ../modified_client/env.js', err);
-  else console.log('Generated ../modified_client/env.js');
-});
-fs.writeFile('../gurkamal-experimental-version/env.js', data, err => {
-  if (err)
-    console.log(
-      'Error while writing ../gurkamal-experimental-version/env.js',
-      err,
-    );
-  else console.log('Generated ../gurkamal-experimental-version/env.js');
 });
 
 // generate GoogleService-Info.plist for client
@@ -103,49 +83,6 @@ fs.writeFile(
     else console.log('Generated ../client/ios/GoogleService-Info.plist');
   },
 );
-// generate GoogleService-Info.plist for MASTER
-fs.writeFile(
-  '../MASTER/ios/GoogleService-Info.plist',
-  process.env.GOOGLE_SERVICE_INFO_PLIST,
-  err => {
-    if (err)
-      console.log(
-        'Error while writing ../MASTER/ios/GoogleService-Info.plist',
-        err,
-      );
-    else console.log('Generated ../MASTER/ios/GoogleService-Info.plist');
-  },
-);
-// generate GoogleService-Info.plist for modified_client
-fs.writeFile(
-  '../modified_client/ios/GoogleService-Info.plist',
-  process.env.GOOGLE_SERVICE_INFO_PLIST,
-  err => {
-    if (err)
-      console.log(
-        'Error while writing ../modified_client/ios/GoogleService-Info.plist',
-        err,
-      );
-    else
-      console.log('Generated ../modified_client/ios/GoogleService-Info.plist');
-  },
-);
-// generate GoogleService-Info.plist for gurkamal-experimental-version
-fs.writeFile(
-  '../gurkamal-experimental-version/ios/GoogleService-Info.plist',
-  process.env.GOOGLE_SERVICE_INFO_PLIST,
-  err => {
-    if (err)
-      console.log(
-        'Error while writing ../gurkamal-experimental-version/ios/GoogleService-Info.plist',
-        err,
-      );
-    else
-      console.log(
-        'Generated ../gurkamal-experimental-version/ios/GoogleService-Info.plist',
-      );
-  },
-);
 
 // generate google-services.json for client
 fs.writeFile(
@@ -158,51 +95,6 @@ fs.writeFile(
         err,
       );
     else console.log('Generated ../client/android/app/google-services.json');
-  },
-);
-// generate google-services.json for android MASTER
-fs.writeFile(
-  '../MASTER/android/app/google-services.json',
-  process.env.GOOGLE_SERVICES_JSON,
-  err => {
-    if (err)
-      console.log(
-        'Error while writing ../MASTER/android/app/google-services.json',
-        err,
-      );
-    else console.log('Generated ../MASTER/android/app/google-services.json');
-  },
-);
-// generate google-services.json for android modified_client
-fs.writeFile(
-  '../modified_client/android/app/google-services.json',
-  process.env.GOOGLE_SERVICES_JSON,
-  err => {
-    if (err)
-      console.log(
-        'Error while writing ../modified_client/android/app/google-services.json',
-        err,
-      );
-    else
-      console.log(
-        'Generated ../modified_client/android/app/google-services.json',
-      );
-  },
-);
-// generate google-services.json for android gurkamal-experimental-version
-fs.writeFile(
-  '../gurkamal-experimental-version/android/app/google-services.json',
-  process.env.GOOGLE_SERVICES_JSON,
-  err => {
-    if (err)
-      console.log(
-        'Error while writing ../gurkamal-experimental-version/android/app/google-services.json',
-        err,
-      );
-    else
-      console.log(
-        'Generated ../gurkamal-experimental-version/android/app/google-services.json',
-      );
   },
 );
 
