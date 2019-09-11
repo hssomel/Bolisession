@@ -9,7 +9,11 @@ import {
 } from 'react-native';
 import { Text } from 'react-native-elements';
 import GradientButton from '../components/GradientButton';
-import { createUserinDB } from '../actions/authActions';
+import {
+  confirmUserinFireBase,
+  checkForProfileFields,
+  createInitialProfileFields,
+} from '../actions/authActions';
 
 const { height, width } = Dimensions.get('window');
 
@@ -30,13 +34,26 @@ const PhoneConfirmationScreen = props => {
     props.navigation.navigate('phone');
   };
 
+  const checkForExistingUser = async user => {
+    try {
+      const doesExist = await confirmUserinFireBase(user);
+      if (doesExist) {
+        checkForProfileFields(user, props);
+      } else {
+        createInitialProfileFields(user, props);
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
   const confirmCode = () => {
     if (confirmResult && codeInput.length) {
       confirmResult
         .confirm(codeInput)
         .then(user => {
           setMessage('Code Confirmed!');
-          createUserinDB(user, props);
+          checkForExistingUser(user);
         })
         .catch(error => setMessage(error.message));
     }

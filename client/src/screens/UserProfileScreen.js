@@ -4,7 +4,7 @@ import firebase from 'react-native-firebase';
 import LoadingIndicator from '../components/LoadingIndicator';
 import UserProfileFeedHeader from '../components/UserProfileFeedHeader';
 import UserProfileFeed from '../components/UserProfileFeed';
-import { getCurrentUserKey } from '../actions/authActions';
+import { getClientUserKey, getProfileData } from '../actions/authActions';
 
 const UserProfileScreen = props => {
   // Initial State
@@ -18,18 +18,22 @@ const UserProfileScreen = props => {
   // for example user Biography is stored only in non-admin database
   const [userData, setUserData] = useState(null);
 
+  const setFields = async user => {
+    try {
+      const key = await getClientUserKey(user);
+      setUserKey(key);
+      const profileData = await getProfileData(key);
+      setUserData(profileData);
+      setIsLoaded(true);
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
-      getCurrentUserKey(user, setUserData)
-        .then(data => {
-          setUserData(data._value);
-          setUserKey(data.key);
-          setIsLoaded(true);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      setFields(user);
     });
 
     return () => {

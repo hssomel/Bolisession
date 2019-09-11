@@ -4,7 +4,10 @@ import Video from 'react-native-video';
 import firebase from 'react-native-firebase';
 import GradientButton from '../components/GradientButton';
 import LoadingIndicator from '../components/LoadingIndicator';
-import { confirmUserExistsinDB } from '../actions/authActions';
+import {
+  confirmUserinFireBase,
+  checkForProfileFields,
+} from '../actions/authActions';
 
 const { width } = Dimensions.get('window');
 
@@ -16,18 +19,31 @@ const LandingPageScreen = props => {
     props.navigation.navigate('phone');
   };
 
+  const recheckForUser = async user => {
+    try {
+      const doesExist = await confirmUserinFireBase(user);
+      if (doesExist) {
+        checkForProfileFields(user, props);
+      } else {
+        // user does not exist in secondary database
+        setIsLoaded(true);
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       console.log('mounted to LandingPageScreen');
       if (user) {
-        console.log('init user', user);
-        // checking to see if user exists in non-admin database
-        confirmUserExistsinDB(user, props, setIsLoaded);
+        console.log('initial user', user);
+        // checking to see if user exists in secondary (non-admin) database
+        recheckForUser(user);
       } else {
         setIsLoaded(true);
       }
     });
-
     return () => {
       if (unsubscribe) unsubscribe();
       console.log('unmounted from Landing Page');

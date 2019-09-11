@@ -14,7 +14,7 @@ import GradientButton from '../components/GradientButton';
 // Assets & Data
 import flagCollection from '../assets/flags/index';
 import countryData from '../assets/countryData';
-import { createUserinDB } from '../actions/authActions';
+import { checkForProfileFields } from '../actions/authActions';
 // Style
 const { height, width } = Dimensions.get('window');
 
@@ -59,8 +59,9 @@ const PhoneNumberScreen = props => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user && !listenerOff) {
         // Handling Auto-verification for android
-        // User will only exist in this screen if it is same user
-        createUserinDB(user, props);
+        // User will only exist in this screen if client is using personal device
+        // Which will trigger auto-verification
+        checkForProfileFields(user, props);
       }
     });
 

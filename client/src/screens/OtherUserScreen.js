@@ -4,7 +4,11 @@ import firebase from 'react-native-firebase';
 import LoadingIndicator from '../components/LoadingIndicator';
 import OtherUserProfileFeedHeader from '../components/OtherUserProfileFeedHeader';
 import UserProfileFeed from '../components/UserProfileFeed';
-import { getCurrentUserKey } from '../actions/authActions';
+import {
+  getClientUserKey,
+  getOtherPersonsKey,
+  getProfileData,
+} from '../actions/authActions';
 
 const OtherUserScreen = props => {
   // Initial State
@@ -24,49 +28,33 @@ const OtherUserScreen = props => {
   const [otherUserKey, setOtherUserKey] = useState(
     props.navigation.getParam('key', null),
   );
-  // Firebase references
-  const usersRef = firebase
-    .database()
-    .ref('people/')
-    .child('users');
 
   // Event Handlers
-  const getOtherUserKey = () => {
-    usersRef
-      .orderByChild('username')
-      .equalTo(tweetData.username)
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          setOtherUserData(data._value);
-          setOtherUserKey(data.key);
-          setIsLoaded(true);
-        });
-      })
-      .then(() => {
-        console.log('successfully obtained otherUserKey');
-      })
-      .catch(() => {
-        console.log('unable to obtain otherUser key');
-      });
+  const setFields = async user => {
+    try {
+      const key = await getClientUserKey(user);
+      setUserKey(key);
+      const profileData = await getProfileData(key);
+      setUserData(profileData);
+      if (!otherUserData) {
+        // client accessed route through home feed
+        const otherPersonsKey = await getOtherPersonsKey(tweetData);
+        setOtherUserKey(otherPersonsKey);
+        const otherPersonsData = await getProfileData(otherPersonsKey);
+        setOtherUserData(otherPersonsData);
+        setIsLoaded(true);
+      } else {
+        setIsLoaded(true);
+      }
+    } catch (err) {
+      console.warn(err);
+    }
   };
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
-      getCurrentUserKey(user)
-        .then(data => {
-          setUserData(data._value);
-          setUserKey(data.key);
-          if (!otherUserData) {
-            getOtherUserKey();
-          } else {
-            console.log(otherUserData);
-            setIsLoaded(true);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      setFields(user);
     });
 
     return () => {

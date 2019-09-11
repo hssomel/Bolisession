@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 import MapSearchModal from '../components/MapScreenComponents/MapSearchModal';
 import MapSettingsModal from '../components/MapScreenComponents/MapSettingsModal';
-import { getCurrentUserKey } from '../actions/authActions';
+import { getClientUserKey } from '../actions/authActions';
 import {
   requestLocationPermission,
   getLocation,
@@ -124,10 +124,10 @@ const MapScreen = props => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         setUser(user);
-        getCurrentUserKey(user)
-          .then(data => {
-            setUserKey(data.key);
-            checkForLocationPermission(data.key);
+        getClientUserKey(user)
+          .then(key => {
+            setUserKey(key);
+            checkForLocationPermission(key);
           })
           .catch(err => {
             console.log('error: ', err);
@@ -143,7 +143,6 @@ const MapScreen = props => {
     getUsersLocations()
       .then(data => {
         setUsersLocationData(data);
-        data.map(marker => console.log('valuee: ', marker._value.coordinates));
       })
       .catch(err => {
         console.log('error: ', err);

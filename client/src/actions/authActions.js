@@ -5,143 +5,144 @@ const usersRef = firebase
   .ref('people/')
   .child('users');
 
-// Navigate to the screen that completes missing information in User Profile
-export const navigateToIncomplete = (user, props) => {
-  usersRef
-    .orderByChild('userID')
-    .equalTo(user.uid)
-    .once('value', snapshot => {
-      snapshot.forEach(data => {
-        if (!user.displayName) {
-          props.navigation.navigate('Create', {
-            user,
-            dataKey: data.key,
-          });
-        }
-        if (user.displayName && !user.photoURL) {
-          props.navigation.navigate('ProfilePhoto', {
-            user,
-            dataKey: data.key,
-          });
-        }
-      });
-    });
+// Key refers to non-admin database key for locating Current User
+// This redudancy is unavoidable in Firebase
+// Function used in: MapScreen, UserProfileScreen, OtherUserScreen
+export const getClientUserKey = async user => {
+  try {
+    const rawData = await usersRef
+      .orderByChild('userID')
+      .equalTo(user.uid)
+      .once('value');
+
+    const key = rawData._childKeys[0];
+    return key;
+  } catch (err) {
+    console.warn(err);
+  }
+};
+
+// Function used to get profile data of client
+// Function used in: UserProfileScreen
+export const getProfileData = async key => {
+  try {
+    const rawData = await usersRef.child(key).once('value');
+    const profileData = rawData.val();
+    return profileData;
+  } catch (err) {
+    console.warn(err);
+  }
+};
+
+// Function used to retrieve firebase key of the person's profile
+// that the client accessed by clicking on that person's avatar
+export const getOtherPersonsKey = async data => {
+  try {
+    const rawData = await usersRef
+      .orderByChild('username')
+      .equalTo(data.username)
+      .once('value');
+
+    const key = rawData._childKeys[0];
+    return key;
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
 // Determining if user exists in secondary non-admin database
 // Function used in: LandingPageScreen
-export const confirmUserExistsinDB = (user, props, setIsLoaded) => {
-  usersRef
-    .orderByChild('userID')
-    .equalTo(user.uid)
-    .once('value', snapshot => {
-      if (!snapshot.val()) {
-        // user does not exist in secondary database
-        setIsLoaded(true);
-      } else {
-        // User Exists
-        if (user.displayName && user.photoURL) {
-          props.navigation.navigate('Home', {
-            user,
-          });
-        }
-        if (!user.displayName || !user.photoURL) {
-          navigateToIncomplete(user, props);
-        }
-      }
-    });
+export const confirmUserinFireBase = async user => {
+  try {
+    const data = await usersRef
+      .orderByChild('userID')
+      .equalTo(user.uid)
+      .once('value');
+
+    const res = data._value ? true : false;
+    return res;
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
-// function to update non-admin database
-const uploadUsernametoDB = (user, username, dataKey, alert, props) => {
+// Navigate to the screen that completes missing information in User Profile
+// Function used in: LandingPageScreen,
+export const checkForProfileFields = async (user, props) => {
+  try {
+    const key = await getClientUserKey(user);
+
+    if (!user.displayName) {
+      props.navigation.navigate('Create', {
+        user,
+        dataKey: key,
+      });
+    }
+    if (user.displayName && !user.photoURL) {
+      props.navigation.navigate('ProfilePhoto', {
+        user,
+        dataKey: key,
+      });
+    }
+    if (user.displayName && user.photoURL) {
+      props.navigation.navigate('Home', {
+        user,
+      });
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+};
+
+// Creating User in secondary (non-admin) firebase database
+export const createInitialProfileFields = (user, props) => {
   usersRef
-    .child(dataKey)
-    .update({
-      username,
-      locationOn: false,
+    .push({
+      userID: user.uid,
+      userPhoneNumber: user.phoneNumber,
+      followingCount: 0,
+      followersCount: 0,
+      locationOn: true,
       coordinates: {
         latitude: 0,
         longitude: 0,
       },
     })
-    .then(() => {
-      props.navigation.navigate('ProfilePhoto', {
-        dataKey,
+    .then(data => {
+      props.navigation.navigate('Create', {
+        dataKey: data.key,
         user,
       });
     })
-    .catch(error => {
-      console.log('error ', error);
-      alert();
+    .catch(err => {
+      console.log(err);
     });
 };
 
-export const uploadUsername = (user, username, dataKey, alert, props) => {
+export const uploadUsername = (user, username, dataKey, props) => {
   // update Admin Database first
   user
     .updateProfile({
       displayName: username,
     })
     .then(() => {
-      // update Secondary Database
-      uploadUsernametoDB(user, username, dataKey, alert, props);
+      // update Secondary (non-admin) Database
+      usersRef
+        .child(dataKey)
+        .update({
+          username,
+        })
+        .then(() => {
+          props.navigation.navigate('ProfilePhoto', {
+            dataKey,
+            user,
+          });
+        })
+        .catch(error => {
+          console.log('error ', error);
+        });
     })
     .catch(error => {
       console.log(error);
-      alert();
     });
-};
-
-// Creating User in non-admin database
-// locationOn attribute will be turned to false if user rejects location Permissions
-export const createUserinDB = (user, props) => {
-  usersRef
-    .orderByChild('userID')
-    .equalTo(user.uid)
-    .once('value', snapshot => {
-      if (!snapshot.val()) {
-        usersRef
-          .push({
-            userID: user.uid,
-            userPhoneNumber: user.phoneNumber,
-            followingCount: 0,
-            followersCount: 0,
-            locationOn: true,
-          })
-          .then(data => {
-            props.navigation.navigate('Create', {
-              dataKey: data.key,
-              user,
-            });
-          })
-          .catch(err => {
-            console.log('error ', err);
-          });
-      } else {
-        // User already exists
-        navigateToIncomplete(user, props);
-      }
-    });
-};
-
-// Key refers to non-admin database key for locating Current User
-// This redudancy is unavoidable in Firebase
-// Function used in: MapScreen, UserProfileScreen, OtherUserScreen
-export const getCurrentUserKey = user => {
-  return new Promise((resolve, reject) => {
-    usersRef
-      .orderByChild('userID')
-      .equalTo(user.uid)
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          resolve(data);
-        });
-      })
-      .then(() => {
-        console.log('user key successfully obtained');
-      })
-      .catch(() => {
-        reject(new Error('unable to obtain user key'));
-      });
-  });
 };

@@ -45,15 +45,9 @@ const CreateAccountScreen = props => {
   const [user] = useState(props.navigation.getParam('user', null));
   const [dataKey] = useState(props.navigation.getParam('dataKey', null));
   // Event Handlers
-  const alert = () => {
-    Alert.alert(
-      'Oops something went wrong! Please make sure you are connected to the internet and try again!',
-    );
-  };
-
   const handlePress = () => {
     if (username.length > 2) {
-      uploadUsername(user, username, dataKey, alert, props);
+      uploadUsername(user, username, dataKey, props);
     } else {
       Alert.alert('Username must be minimum 3 characters!');
     }
