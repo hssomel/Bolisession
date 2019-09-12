@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
-import GradientButton from '../components/GradientButton';
+import GradientButton from '../../components/GradientButton';
 
 export default function AccountTypeScreen(props) {
   // Initial State

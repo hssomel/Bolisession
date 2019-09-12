@@ -8,12 +8,12 @@ import {
   Dimensions,
 } from 'react-native';
 import { Text } from 'react-native-elements';
-import GradientButton from '../components/GradientButton';
+import GradientButton from '../../components/GradientButton';
 import {
   confirmUserinFireBase,
   checkForProfileFields,
   createInitialProfileFields,
-} from '../actions/authActions';
+} from '../../actions/authActions';
 
 const { height, width } = Dimensions.get('window');
 

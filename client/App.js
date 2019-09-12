@@ -8,14 +8,16 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Provider } from 'react-redux';
 import store from './src/store/store';
-// Screens
-import PhoneNumberScreen from './src/screens/PhoneNumberScreen';
-import LandingPageScreen from './src/screens/LandingPageScreen';
+// Authentication Screens
+import LandingPageScreen from './src/screens/AuthenticationScreens/LandingPageScreen';
+import PhoneNumberScreen from './src/screens/AuthenticationScreens/PhoneNumberScreen';
+import PhoneConfirmationScreen from './src/screens/AuthenticationScreens/PhoneConfirmationScreen';
+// Initial Profile Construction Screens (Before user can enter HomeScreen)
+import CreateAccountScreen from './src/screens/ProfileConstructionScreens/CreateAccountScreen';
+import ProfilePhotoScreen from './src/screens/ProfileConstructionScreens/ProfilePhotoScreen';
+import AccountTypeScreen from './src/screens/ProfileConstructionScreens/AccountTypeScreen';
+// Main Home Screen when user is already logged in
 import HomeScreen from './src/screens/HomeScreen';
-import PhoneConfirmationScreen from './src/screens/PhoneConfirmationScreen';
-import CreateAccountScreen from './src/screens/CreateAccountScreen';
-import ProfilePhotoScreen from './src/screens/ProfilePhotoScreen';
-import AccountTypeScreen from './src/screens/AccountTypeScreen';
 import MapScreen from './src/screens/MapScreen';
 import MessagingListScreen from './src/screens/MessagingListScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';

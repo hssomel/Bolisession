@@ -136,64 +136,6 @@ export const removeUserFromLikesArray = (key, name) => {
     });
 };
 
-// Function to update firebase db with url to profile pic
-const uploadUserImagetoDB = (url, user, dataKey) => {
-  return new Promise((resolve, reject) => {
-    const verifyRef = usersRef.child(dataKey);
-    user
-      .updateProfile({
-        photoURL: url,
-      })
-      .then(() => {
-        verifyRef
-          .update({
-            profilePhoto: url,
-          })
-          .then(() => {
-            console.log('successfully uploaded');
-            resolve();
-          })
-          .catch(error => {
-            console.log('error ', error);
-            reject(new Error('unsuccessful upload'));
-          });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  });
-};
-
-export const uploadImageToFirebaseStorage = (image, user, dataKey) => {
-  return new Promise((resolve, reject) => {
-    const storeImageRef = firebase.storage().ref(`images/${user.uid}`);
-
-    storeImageRef
-      .put(image.path, { contentType: 'image/jpeg' })
-      .then(() => {
-        storeImageRef
-          .getDownloadURL()
-          .then(url => {
-            uploadUserImagetoDB(url, user, dataKey)
-              .then(() => {
-                resolve();
-              })
-              .catch(err => {
-                console.log(err);
-                reject();
-              });
-          })
-          .catch(err => {
-            console.log(err);
-            reject(err);
-          });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  });
-};
-
 export const uploadProfileVid = (key, url, startTime) => {
   const ref = usersRef.child(key);
 

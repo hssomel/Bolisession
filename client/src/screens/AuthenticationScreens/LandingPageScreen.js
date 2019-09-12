@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
 import Video from 'react-native-video';
 import firebase from 'react-native-firebase';
-import GradientButton from '../components/GradientButton';
-import LoadingIndicator from '../components/LoadingIndicator';
+import GradientButton from '../../components/GradientButton';
+import LoadingIndicator from '../../components/LoadingIndicator';
 import {
   confirmUserinFireBase,
   checkForProfileFields,
-} from '../actions/authActions';
+} from '../../actions/authActions';
 
 const { width } = Dimensions.get('window');
 
@@ -55,7 +55,7 @@ const LandingPageScreen = props => {
       {isLoaded ? (
         <View style={styles.container}>
           <Video
-            source={require('../assets/videos/sample1.mp4')}
+            source={require('../../assets/videos/sample1.mp4')}
             ref={ref => {
               player = ref;
             }}

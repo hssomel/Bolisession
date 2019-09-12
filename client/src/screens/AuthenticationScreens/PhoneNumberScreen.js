@@ -8,13 +8,13 @@ import {
 } from 'react-native';
 import { Text } from 'react-native-elements';
 import firebase from 'react-native-firebase';
-import PhoneNumberInput from '../components/PhoneNumberInput';
-import CountrySelector from '../components/CountrySelector';
-import GradientButton from '../components/GradientButton';
+import PhoneNumberInput from '../../components/PhoneNumberInput';
+import CountrySelector from '../../components/CountrySelector';
+import GradientButton from '../../components/GradientButton';
 // Assets & Data
-import flagCollection from '../assets/flags/index';
-import countryData from '../assets/countryData';
-import { checkForProfileFields } from '../actions/authActions';
+import flagCollection from '../../assets/flags/index';
+import countryData from '../../assets/countryData';
+import { checkForProfileFields } from '../../actions/authActions';
 // Style
 const { height, width } = Dimensions.get('window');
 

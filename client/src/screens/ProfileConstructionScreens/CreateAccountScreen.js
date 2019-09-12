@@ -10,8 +10,8 @@ import {
   Dimensions,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import GradientButton from '../components/GradientButton';
-import { uploadUsername } from '../actions/authActions';
+import GradientButton from '../../components/GradientButton';
+import { uploadUsername } from '../../actions/profileConstructionActions';
 
 const { height, width } = Dimensions.get('window');
 
@@ -57,7 +57,7 @@ const CreateAccountScreen = props => {
     <SafeAreaView style={styles.container}>
       <View style={styles.viewOne}>
         <Image
-          source={require('../assets/images/logoName.png')}
+          source={require('../../assets/images/logoName.png')}
           style={styles.image}
         />
         <Text style={styles.text}>Create your account</Text>

@@ -118,31 +118,3 @@ export const createInitialProfileFields = (user, props) => {
       console.log(err);
     });
 };
-
-export const uploadUsername = (user, username, dataKey, props) => {
-  // update Admin Database first
-  user
-    .updateProfile({
-      displayName: username,
-    })
-    .then(() => {
-      // update Secondary (non-admin) Database
-      usersRef
-        .child(dataKey)
-        .update({
-          username,
-        })
-        .then(() => {
-          props.navigation.navigate('ProfilePhoto', {
-            dataKey,
-            user,
-          });
-        })
-        .catch(error => {
-          console.log('error ', error);
-        });
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};

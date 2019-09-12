@@ -1,3 +1,5 @@
+// **** FULL REDUX INTEGRATION NOT CURRENTLY IMPLEMENTED ***
+// **** THIS CODE IS A STARTING POINT ****
 import { SET_CURRENT_PHONE_NUMBER } from './actionTypes';
 import { SET_CURRENT_USER } from './actionTypes';
 import { SIGN_OUT_USER } from './actionTypes';
