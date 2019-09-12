@@ -6,13 +6,13 @@ import {
   TouchableHighlight,
   Alert,
 } from 'react-native';
-import firebase from 'react-native-firebase';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { withNavigation } from 'react-navigation';
 import {
   addUserToLikesArray,
   removeUserFromLikesArray,
+  checkForLikes,
 } from '../actions/userProfileActions';
 
 const Post = props => {
@@ -20,49 +20,33 @@ const Post = props => {
   const { item, user } = props;
   const [liked, setHasLiked] = useState(null);
   const [likeCounter, setLikeCounter] = useState(null);
-  // Firebase Reference
-  const postsRef = firebase.database().ref('posts/');
   // Event Handlers
-  const hasUserLiked = () => {
-    postsRef
-      .child(item.key)
-      .child('usersLiked')
-      .orderByChild('user_name')
-      .equalTo(user.displayName)
-      .once('value')
-      .then(snapshot => {
-        setHasLiked(snapshot.val());
-        setLikeCounter(item._value.likes);
-      });
+  const hasUserLikedPost = async () => {
+    try {
+      const initalLike = await checkForLikes(item, user);
+      setHasLiked(initalLike);
+      setLikeCounter(item._value.likes);
+    } catch (err) {
+      console.warn(err);
+    }
   };
 
-  const adjustLikes = key => {
-    const userLikedRef = postsRef.child(key).child('usersLiked');
-    userLikedRef
-      .orderByChild('user_name')
-      .equalTo(user.displayName)
-      .once('value', snapshot => {
-        if (!snapshot.val()) {
-          addUserToLikesArray(key, user.displayName);
-        } else {
-          removeUserFromLikesArray(key, user.displayName);
-        }
-      });
-  };
-
-  const handlePress = item => {
-    setTimeout(() => {
-      adjustLikes(item.key);
+  const handleLikeButtonPress = async item => {
+    try {
       if (liked) {
         setHasLiked(null);
         const counter = likeCounter - 1;
         setLikeCounter(counter);
+        await removeUserFromLikesArray(item.key, user.displayName);
       } else {
         setHasLiked(true);
         const positivecounter = likeCounter + 1;
         setLikeCounter(positivecounter);
+        await addUserToLikesArray(item.key, user.displayName);
       }
-    }, 100);
+    } catch (err) {
+      console.warn(err);
+    }
   };
 
   const handleAvatarPress = () => {
@@ -90,7 +74,8 @@ const Post = props => {
   };
 
   useEffect(() => {
-    hasUserLiked();
+    // Check if client has liked the post
+    hasUserLikedPost();
   }, []);
 
   return (
@@ -139,14 +124,14 @@ const Post = props => {
                 name="ios-heart"
                 size={20}
                 color="red"
-                onPress={() => handlePress(item)}
+                onPress={() => handleLikeButtonPress(item)}
               />
             )}
             {!liked && (
               <Icon
                 name="ios-heart-empty"
                 size={20}
-                onPress={() => handlePress(item)}
+                onPress={() => handleLikeButtonPress(item)}
               />
             )}
             <Text style={styles.badgeCount}>{likeCounter}</Text>

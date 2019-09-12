@@ -5,32 +5,23 @@ const usersRef = firebase
   .ref('people/')
   .child('users');
 
-export const uploadUsername = (user, username, dataKey, props) => {
-  // update Admin Database first
-  user
-    .updateProfile({
+export const uploadUsername = async (user, username, dataKey, props) => {
+  try {
+    // update Admin Database first
+    await user.updateProfile({
       displayName: username,
-    })
-    .then(() => {
-      // update Secondary (non-admin) Database
-      usersRef
-        .child(dataKey)
-        .update({
-          username,
-        })
-        .then(() => {
-          props.navigation.navigate('ProfilePhoto', {
-            dataKey,
-            user,
-          });
-        })
-        .catch(error => {
-          console.log('error ', error);
-        });
-    })
-    .catch(error => {
-      console.log(error);
     });
+    // update secondary Non-admin database
+    await usersRef.child(dataKey).update({
+      username,
+    });
+    props.navigation.navigate('ProfilePhoto', {
+      dataKey,
+      user,
+    });
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
 // Function to update firebase db with url to profile pic

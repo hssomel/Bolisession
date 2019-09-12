@@ -6,136 +6,139 @@ const usersRef = firebase
   .child('users');
 const postsRef = firebase.database().ref('posts/');
 
-export const increaseFollowingList = (key, name) => {
-  const ref = usersRef.child(key);
-  ref
-    .child('following')
-    .push({
+// Increases clients following list when they follow another user
+export const increaseFollowingList = async (key, name) => {
+  try {
+    const ref = usersRef.child(key);
+    await ref.child('following').push({
       user_name: name,
-    })
-    .then(() => {
-      ref.child('followingCount').transaction(currentVal => {
-        return (currentVal || 0) + 1;
-      });
-    })
-    .catch(err => {
-      console.log(err);
     });
+
+    ref.child('followingCount').transaction(currentVal => {
+      return (currentVal || 0) + 1;
+    });
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
-export const decreaseFollowingList = (key, name) => {
-  const ref = usersRef.child(key).child('following');
-  ref
-    .orderByChild('user_name')
-    .equalTo(name)
-    .once('value', snapshot => {
-      snapshot.forEach(data => {
-        ref
-          .child(data.key)
-          .remove()
-          .then(() => {
-            const decreaseRef = usersRef.child(key).child('followingCount');
-            decreaseRef.transaction(currentVal => {
-              return (currentVal || 0) - 1;
-            });
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      });
+// Decreases clients following list when they unfollow another user
+export const decreaseFollowingList = async (key, name) => {
+  try {
+    const ref = usersRef.child(key).child('following');
+    const snapshot = await ref
+      .orderByChild('user_name')
+      .equalTo(name)
+      .once('value');
+
+    await snapshot.forEach(data => {
+      ref.child(data.key).remove();
     });
+
+    const decreaseRef = usersRef.child(key).child('followingCount');
+    decreaseRef.transaction(currentVal => {
+      return (currentVal || 0) - 1;
+    });
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
-export const increaseFollowerList = (key, name) => {
-  const ref = usersRef.child(key);
-  ref
-    .child('followers')
-    .push({
+// The user that the client follows has their follower list increase
+export const increaseFollowerList = async (key, name) => {
+  try {
+    const ref = usersRef.child(key);
+    await ref.child('followers').push({
       user_name: name,
-    })
-    .then(() => {
-      const increaseFollowersRef = ref.child('followersCount');
-      increaseFollowersRef.transaction(currentVal => {
-        return (currentVal || 0) + 1;
-      });
-    })
-    .catch(err => {
-      console.log(err);
     });
-};
 
-export const decreaseFollowersList = (key, name) => {
-  const ref = usersRef.child(key).child('followers');
-  ref
-    .orderByChild('user_name')
-    .equalTo(name)
-    .once('value', snapshot => {
-      snapshot.forEach(data => {
-        ref
-          .child(data.key)
-          .remove()
-          .then(() => {
-            const decreaseRef = usersRef.child(key).child('followersCount');
-            decreaseRef.transaction(currentVal => {
-              return (currentVal || 0) - 1;
-            });
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      });
+    const increaseFollowersRef = ref.child('followersCount');
+    increaseFollowersRef.transaction(currentVal => {
+      return (currentVal || 0) + 1;
     });
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
-const increaseLikeCount = key => {
-  const ref = postsRef.child(key).child('likes');
-  ref.transaction(currentVal => {
-    return (currentVal || 0) + 1;
-  });
+// The user that the client unfollows has their follower list decrease
+export const decreaseFollowersList = async (key, name) => {
+  try {
+    const ref = usersRef.child(key).child('followers');
+    const snapshot = await ref
+      .orderByChild('user_name')
+      .equalTo(name)
+      .once('value');
+
+    await snapshot.forEach(data => {
+      ref.child(data.key).remove();
+    });
+
+    const decreaseRef = usersRef.child(key).child('followersCount');
+    decreaseRef.transaction(currentVal => {
+      return (currentVal || 0) - 1;
+    });
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
-const decreaseLikeCount = key => {
-  const ref = postsRef.child(key).child('likes');
-  ref.transaction(currentVal => {
-    return (currentVal || 0) - 1;
-  });
-};
-
-export const addUserToLikesArray = (key, name) => {
-  const ref = postsRef.child(key);
-  ref
-    .child('usersLiked')
-    .push({
+// Function called by Post(Tweet) Component when user likes a post
+export const addUserToLikesArray = async (key, name) => {
+  try {
+    const ref = postsRef.child(key);
+    await ref.child('usersLiked').push({
       user_name: name,
-    })
-    .then(() => {
-      increaseLikeCount(key);
-    })
-    .catch(error => {
-      console.log('error ', error);
     });
+    // Increasing Like Count
+    ref.child('likes').transaction(currentVal => {
+      return (currentVal || 0) + 1;
+    });
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
-export const removeUserFromLikesArray = (key, name) => {
-  const removeUserRef = postsRef.child(key).child('usersLiked');
-  removeUserRef
-    .orderByChild('user_name')
-    .equalTo(name)
-    .once('value', snapshot => {
-      snapshot.forEach(data => {
-        removeUserRef
-          .child(data.key)
-          .remove()
-          .then(() => {
-            decreaseLikeCount(key);
-          })
-          .catch(error => {
-            console.log('error ', error);
-          });
-      });
+// Function called by Post(Tweet) Component when user unlikes a post
+export const removeUserFromLikesArray = async (key, name) => {
+  try {
+    const removeRef = postsRef.child(key).child('usersLiked');
+    const snapshot = await removeRef
+      .orderByChild('user_name')
+      .equalTo(name)
+      .once('value');
+
+    await snapshot.forEach(data => {
+      removeRef.child(data.key).remove();
     });
+
+    const ref = postsRef.child(key).child('likes');
+    ref.transaction(currentVal => {
+      return (currentVal || 0) - 1;
+    });
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
+// Function to check if user has liked a post
+export const checkForLikes = async (item, user) => {
+  try {
+    const snapshot = await postsRef
+      .child(item.key)
+      .child('usersLiked')
+      .orderByChild('user_name')
+      .equalTo(user.displayName)
+      .once('value');
+
+    // snapshot.val() is null if user has not liked post
+    return snapshot.val();
+  } catch (err) {
+    console.warn(err);
+  }
+};
+
+// Function to upload youtube video URL & startTime to database
 export const uploadProfileVid = (key, url, startTime) => {
   const ref = usersRef.child(key);
 
@@ -152,6 +155,7 @@ export const uploadProfileVid = (key, url, startTime) => {
     });
 };
 
+// Function triggered when client posts a new tweet
 export const writeUserData = (tweet, user) => {
   postsRef
     .push({
