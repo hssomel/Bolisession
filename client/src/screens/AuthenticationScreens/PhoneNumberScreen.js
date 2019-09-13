@@ -14,7 +14,7 @@ import GradientButton from '../../components/GradientButton';
 // Assets & Data
 import flagCollection from '../../assets/flags/index';
 import countryData from '../../assets/countryData';
-import { checkForProfileFields } from '../../actions/authActions';
+import { checkForProfileFields } from '../../actions/Authentication/authActions';
 // Style
 const { height, width } = Dimensions.get('window');
 

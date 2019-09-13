@@ -13,7 +13,7 @@ import {
   confirmUserinFireBase,
   checkForProfileFields,
   createInitialProfileFields,
-} from '../../actions/authActions';
+} from '../../actions/Authentication/authActions';
 
 const { height, width } = Dimensions.get('window');
 

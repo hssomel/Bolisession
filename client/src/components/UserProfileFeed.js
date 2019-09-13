@@ -5,7 +5,7 @@ import LoadingIndicator from './LoadingIndicator';
 import Post from './Post';
 
 export default function UserProfileFeed(props) {
-  const { ListHeaderComponent, otherUserData } = props;
+  const { ListHeaderComponent, otherUserData, name3 } = props;
   // Initial State
   const [feedData, setFeedData] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -44,12 +44,7 @@ export default function UserProfileFeed(props) {
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
-      if (!otherUserData) {
-        // client used navigation icon
-        getItemsbyUser(user.displayName);
-      } else {
-        getItemsbyUser(otherUserData.username);
-      }
+      getItemsbyUser(name3);
     });
     return () => {
       if (unsubscribe) unsubscribe();

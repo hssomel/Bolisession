@@ -13,7 +13,7 @@ import YouTubeVideo from './YouTubeVideo';
 const { width } = Dimensions.get('window');
 const videoHeight = width * 0.6;
 
-const UserProfileFeedHeader = props => {
+const UserProfileHeader = props => {
   const { user, userData, userKey } = props;
   // Initial State
   const [isLoaded, setIsLoaded] = useState(null);
@@ -39,7 +39,6 @@ const UserProfileFeedHeader = props => {
       setBio(userData.bio);
     }
     setIsLoaded(true);
-
     return () => {
       setIsLoaded(false);
     };
@@ -88,7 +87,7 @@ const UserProfileFeedHeader = props => {
   );
 };
 
-export default withNavigation(UserProfileFeedHeader);
+export default withNavigation(UserProfileHeader);
 
 const styles = StyleSheet.create({
   container: {

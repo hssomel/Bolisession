@@ -7,7 +7,7 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 import {
   confirmUserinFireBase,
   checkForProfileFields,
-} from '../../actions/authActions';
+} from '../../actions/Authentication/authActions';
 
 const { width } = Dimensions.get('window');
 

@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import firebase from 'react-native-firebase';
 import MapSearchModal from '../components/MapScreenComponents/MapSearchModal';
 import MapSettingsModal from '../components/MapScreenComponents/MapSettingsModal';
-import { getClientUserKey } from '../actions/authActions';
+import { getClientUserKey } from '../actions/Authentication/authActions';
 import {
   requestLocationPermission,
   getLocation,
@@ -45,11 +45,13 @@ const MapScreen = props => {
   // Event Handlers
   const navigateToProfile = item => {
     if (user.displayName == item._value.username) {
-      props.navigation.navigate('Profile');
+      props.navigation.navigate('Profile', {
+        sameUser: true,
+      });
     } else {
-      props.navigation.navigate('OtherUser', {
-        item: item._value,
-        key: item.key,
+      props.navigation.navigate('Profile', {
+        sameUser: false,
+        username: item._value.username,
       });
     }
   };

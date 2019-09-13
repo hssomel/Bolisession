@@ -36,11 +36,12 @@ export const getProfileData = async key => {
 
 // Function used to retrieve firebase key of the person's profile
 // that the client accessed by clicking on that person's avatar
-export const getOtherPersonsKey = async data => {
+// Function used in: UserProfileScreen
+export const getOtherPersonsKey = async name => {
   try {
     const rawData = await usersRef
       .orderByChild('username')
-      .equalTo(data.username)
+      .equalTo(name)
       .once('value');
 
     const key = rawData._childKeys[0];
@@ -51,7 +52,7 @@ export const getOtherPersonsKey = async data => {
 };
 
 // Determining if user exists in secondary non-admin database
-// Function used in: LandingPageScreen
+// Function used in: LandingPageScreen, PhoneConfirmationScreen
 export const confirmUserinFireBase = async user => {
   try {
     const data = await usersRef
@@ -67,7 +68,7 @@ export const confirmUserinFireBase = async user => {
 };
 
 // Navigate to the screen that completes missing information in User Profile
-// Function used in: LandingPageScreen,
+// Function used in: LandingPageScreen, PhoneNumberScreen, PhoneConfirmationScreen
 export const checkForProfileFields = async (user, props) => {
   try {
     const key = await getClientUserKey(user);
@@ -95,6 +96,7 @@ export const checkForProfileFields = async (user, props) => {
 };
 
 // Creating User in secondary (non-admin) firebase database
+// Function used in: PhoneConfirmationScreen
 export const createInitialProfileFields = (user, props) => {
   usersRef
     .push({

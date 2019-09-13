@@ -18,7 +18,7 @@ import {
 const { width } = Dimensions.get('window');
 const videoHeight = width * 0.6;
 
-const OtherUserProfileFeedHeader = props => {
+const OtherUserProfileHeader = props => {
   const { otherUserData, otherUserKey, userKey, user } = props;
   // Initial State
   const [isLoaded, setIsLoaded] = useState(null);
@@ -105,7 +105,7 @@ const OtherUserProfileFeedHeader = props => {
     </View>
   );
 };
-export default withNavigation(OtherUserProfileFeedHeader);
+export default withNavigation(OtherUserProfileHeader);
 
 const styles = StyleSheet.create({
   container: {

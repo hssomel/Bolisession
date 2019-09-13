@@ -50,11 +50,17 @@ const Post = props => {
   };
 
   const handleAvatarPress = () => {
+    console.log('hey item._value is: ', item._value);
     if (user.displayName == item._value.username) {
-      props.navigation.navigate('Profile');
+      // Client has clicked on their own avatar of their own post
+      props.navigation.navigate('Profile', {
+        sameUser: true,
+      });
     } else {
-      props.navigation.navigate('OtherUser', {
-        tweet: item._value,
+      // Client has clicked on someone else's avatar
+      props.navigation.navigate('Profile', {
+        sameUser: false,
+        username: item._value.username,
       });
     }
   };
