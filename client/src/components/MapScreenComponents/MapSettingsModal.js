@@ -16,23 +16,22 @@ const MapSettingsModal = props => {
     userKey,
   } = props;
   // Event Handlers
-  const toggleLocation = value => {
-    setLocationOn(value);
-    // if user turned off location
-    if (!value) {
-      updateFirebaseLocation(userKey, 0, 0, false);
-    } else {
-      // user turned on location
-      getLocation()
-        .then(res => {
-          setCoordinates(res);
-          setLocationOn(true);
-          const { latitude, longitude } = res;
-          updateFirebaseLocation(userKey, latitude, longitude, true);
-        })
-        .catch(err => {
-          console.log('error: ', err);
-        });
+  const toggleLocation = async value => {
+    try {
+      setLocationOn(value);
+      // if user turned off location
+      if (!value) {
+        updateFirebaseLocation(userKey, 0, 0, false);
+      } else {
+        // user turned on location
+        const coords = await getLocation();
+        setCoordinates(coords);
+        setLocationOn(true);
+        const { latitude, longitude } = coords;
+        updateFirebaseLocation(userKey, latitude, longitude, true);
+      }
+    } catch (err) {
+      console.warn(err);
     }
   };
 

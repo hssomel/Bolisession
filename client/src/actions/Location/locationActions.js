@@ -22,6 +22,7 @@ export const getLocation = () => {
       },
       error => {
         reject(new Error(error.message));
+        return false;
       },
       { enableHighAccuracy: true },
     );
@@ -104,8 +105,6 @@ export const isUserLocationOn = async key => {
       .child(key)
       .child('locationOn')
       .once('value');
-
-    console.log('location On is: ', snapshot.val());
     return snapshot.val();
   } catch (err) {
     console.warn(err);

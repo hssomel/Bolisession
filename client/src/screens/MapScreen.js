@@ -101,22 +101,7 @@ const MapScreen = props => {
         setLocationOn(true);
         const { latitude, longitude } = coords;
         updateFirebaseLocation(key, latitude, longitude, true);
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
-
-  const checkOSLevelPermission = async key => {
-    try {
-      const requestOk = await requestLocationPermission();
-      if (requestOk) {
-        // User granted OS level permission. Still need to check app settings
-        // If user has enabled or disabled location settings
-        checkAppLevelPermission(key);
-      } else {
-        updateFirebaseLocation(key, 0, 0, false);
-        setLocationOn(false);
+        return true;
       }
     } catch (err) {
       console.warn(err);
@@ -129,7 +114,13 @@ const MapScreen = props => {
       setUserKey(key);
       const userLocations = await getUsersLocations();
       setUsersLocationData(userLocations);
-      checkOSLevelPermission(key);
+      const OSLevelPerm = await requestLocationPermission();
+      if (OSLevelPerm) {
+        await checkAppLevelPermission(key);
+      } else {
+        updateFirebaseLocation(key, 0, 0, false);
+        setLocationOn(false);
+      }
     } catch (err) {
       console.warn(err);
     }
