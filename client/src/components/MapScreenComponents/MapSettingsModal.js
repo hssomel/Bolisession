@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {
   updateFirebaseLocation,
   getLocation,
-} from '../../actions/locationActions';
+} from '../../actions/Location/locationActions';
 
 const MapSettingsModal = props => {
   const {

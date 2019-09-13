@@ -20,7 +20,7 @@ import {
   getUsersLocations,
   updateFirebaseLocation,
   isUserLocationOn,
-} from '../actions/locationActions';
+} from '../actions/Location/locationActions';
 
 const { width } = Dimensions.get('window');
 
@@ -92,33 +92,46 @@ const MapScreen = props => {
     }
   };
 
-  const checkForInternalPermission = async key => {
-    const location = await isUserLocationOn(key);
-    if (location) {
-      getLocation()
-        .then(res => {
-          setCoordinates(res);
-          setLocationOn(true);
-          const { latitude, longitude } = res;
-          updateFirebaseLocation(key, latitude, longitude, true);
-        })
-        .catch(err => {
-          console.log('error: ', err);
-        });
-    } else {
-      updateFirebaseLocation(key, 0, 0, false);
-      setLocationOn(false);
+  const checkAppLevelPermission = async key => {
+    try {
+      const location = await isUserLocationOn(key);
+      if (location) {
+        const coords = await getLocation();
+        setCoordinates(coords);
+        setLocationOn(true);
+        const { latitude, longitude } = coords;
+        updateFirebaseLocation(key, latitude, longitude, true);
+      }
+    } catch (err) {
+      console.warn(err);
     }
   };
 
-  const checkForLocationPermission = async key => {
-    const requestOk = await requestLocationPermission();
-    if (requestOk) {
-      // This is to check if user internally turned off location within the app
-      checkForInternalPermission(key);
-    } else {
-      updateFirebaseLocation(key, 0, 0, false);
-      setLocationOn(false);
+  const checkOSLevelPermission = async key => {
+    try {
+      const requestOk = await requestLocationPermission();
+      if (requestOk) {
+        // User granted OS level permission. Still need to check app settings
+        // If user has enabled or disabled location settings
+        checkAppLevelPermission(key);
+      } else {
+        updateFirebaseLocation(key, 0, 0, false);
+        setLocationOn(false);
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const initializePermissionsAndFields = async user => {
+    try {
+      const key = await getClientUserKey(user);
+      setUserKey(key);
+      const userLocations = await getUsersLocations();
+      setUsersLocationData(userLocations);
+      checkOSLevelPermission(key);
+    } catch (err) {
+      console.warn(err);
     }
   };
 
@@ -126,29 +139,12 @@ const MapScreen = props => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         setUser(user);
-        getClientUserKey(user)
-          .then(key => {
-            setUserKey(key);
-            checkForLocationPermission(key);
-          })
-          .catch(err => {
-            console.log('error: ', err);
-          });
+        initializePermissionsAndFields(user);
       }
     });
     return () => {
       if (unsubscribe) unsubscribe();
     };
-  }, []);
-
-  useEffect(() => {
-    getUsersLocations()
-      .then(data => {
-        setUsersLocationData(data);
-      })
-      .catch(err => {
-        console.log('error: ', err);
-      });
   }, []);
 
   return (

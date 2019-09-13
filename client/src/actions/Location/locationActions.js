@@ -81,41 +81,33 @@ export const updateFirebaseLocation = (
 };
 
 // Get location of all users with location permission granted
-export const getUsersLocations = () => {
-  return new Promise((resolve, reject) => {
+export const getUsersLocations = async () => {
+  try {
     const userLocations = [];
-
-    usersRef
+    const snapshot = await usersRef
       .orderByChild('locationOn')
       .equalTo(true)
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          userLocations.push(data);
-        });
-      })
-      .then(() => {
-        resolve(userLocations);
-      })
-      .catch(err => {
-        reject(new Error(err));
-      });
-  });
+      .once('value');
+    snapshot.forEach(data => {
+      userLocations.push(data);
+    });
+    return userLocations;
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
 // Determining if the user location is turned on internally in the app
-export const isUserLocationOn = key => {
-  return new Promise((resolve, reject) => {
-    usersRef
+export const isUserLocationOn = async key => {
+  try {
+    const snapshot = await usersRef
       .child(key)
       .child('locationOn')
-      .once('value', snapshot => {
-        resolve(snapshot.val());
-      })
-      .then(() => {
-        console.log('successful operation');
-      })
-      .catch(() => {
-        reject(new Error('unable to determine if user location is on'));
-      });
-  });
+      .once('value');
+
+    console.log('location On is: ', snapshot.val());
+    return snapshot.val();
+  } catch (err) {
+    console.warn(err);
+  }
 };

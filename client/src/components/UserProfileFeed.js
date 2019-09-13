@@ -4,51 +4,33 @@ import firebase from 'react-native-firebase';
 import LoadingIndicator from './LoadingIndicator';
 import Post from './Post';
 
-export default function UserProfileFeed(props) {
-  const { ListHeaderComponent, otherUserData, name3 } = props;
+const UserProfileFeed = props => {
+  const { ListHeaderComponent, name, user } = props;
   // Initial State
   const [feedData, setFeedData] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [thisUser, setUser] = useState(null);
   // Firebase References
   const postsRef = firebase.database().ref('posts/');
   // Event Handlers
-  const renderData = twitPosts => {
-    return new Promise((resolve, reject) => {
-      setFeedData(twitPosts.reverse());
-      resolve();
-    });
-  };
-
-  const getItemsbyUser = name => {
-    const userPosts = [];
-    postsRef
-      .orderByChild('username')
-      .equalTo(name)
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          userPosts.push(data);
-        });
-      })
-      .then(() => {
-        renderData(userPosts)
-          .then(() => {
-            setIsLoaded(true);
-          })
-          .catch(err => {
-            console.log(err);
-          });
+  const getPostsbyUser = async name => {
+    try {
+      const userPosts = [];
+      const snapshot = await postsRef
+        .orderByChild('username')
+        .equalTo(name)
+        .once('value');
+      snapshot.forEach(data => {
+        userPosts.push(data);
       });
+      setFeedData(userPosts.reverse());
+      setIsLoaded(true);
+    } catch (err) {
+      console.warn(err);
+    }
   };
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      setUser(user);
-      getItemsbyUser(name3);
-    });
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
+    getPostsbyUser(name);
   }, []);
 
   return (
@@ -58,10 +40,12 @@ export default function UserProfileFeed(props) {
         <FlatList
           data={feedData}
           keyExtractor={item => item.key}
-          renderItem={({ item }) => <Post item={item} user={thisUser} />}
+          renderItem={({ item }) => <Post item={item} user={user} />}
           ListHeaderComponent={ListHeaderComponent}
         />
       </View>
     </SafeAreaView>
   );
-}
+};
+
+export default UserProfileFeed;

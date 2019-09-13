@@ -64,7 +64,8 @@ const UserProfileScreen = props => {
         {isLoaded && (
           <View>
             <UserProfileFeed
-              name3={sameUser ? userData.username : otherUserData.username}
+              name={sameUser ? userData.username : otherUserData.username}
+              user={user}
               ListHeaderComponent={
                 sameUser ? (
                   <UserProfileHeader

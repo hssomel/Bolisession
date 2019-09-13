@@ -104,7 +104,7 @@ export const createInitialProfileFields = (user, props) => {
       userPhoneNumber: user.phoneNumber,
       followingCount: 0,
       followersCount: 0,
-      locationOn: true,
+      locationOn: false,
       coordinates: {
         latitude: 0,
         longitude: 0,
