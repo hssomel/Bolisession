@@ -16,7 +16,7 @@ export default function YouTubeModal(props) {
   const {
     modalOpen,
     closeModal,
-    handlePress,
+    handleURLinsert,
     setStartTime,
     setYoutubeURL,
   } = props;
@@ -39,7 +39,7 @@ export default function YouTubeModal(props) {
           />
           <TouchableOpacity
             style={styles.postButton}
-            onPress={() => handlePress()}
+            onPress={() => handleURLinsert()}
           >
             <Text style={styles.postText}>Post</Text>
           </TouchableOpacity>

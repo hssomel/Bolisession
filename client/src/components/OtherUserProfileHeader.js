@@ -23,6 +23,7 @@ const OtherUserProfileHeader = props => {
   // Initial State
   const [isLoaded, setIsLoaded] = useState(null);
   const [bio, setBio] = useState(null);
+  const [videoExists, setVideoExists] = useState(null);
   const [following] = useState(otherUserData.followingCount);
   const [followers, setFollowersCount] = useState(otherUserData.followersCount);
   // Event Handlers
@@ -39,6 +40,9 @@ const OtherUserProfileHeader = props => {
     if (otherUserData.bio) {
       setBio(otherUserData.bio);
     }
+    if (otherUserData.youtubeURL) {
+      setVideoExists(true);
+    }
     setIsLoaded(true);
 
     return () => {
@@ -51,10 +55,23 @@ const OtherUserProfileHeader = props => {
       {isLoaded && (
         <View style={styles.container}>
           <View style={styles.viewOne}>
-            <YouTubeVideo
-              otherUserKey={otherUserKey}
-              style={{ height: '100%', width: '100%' }}
-            />
+            {videoExists ? (
+              <YouTubeVideo
+                key={otherUserKey}
+                style={{ height: '100%', width: '100%' }}
+                url={otherUserData.youtubeURL}
+                startTime={otherUserData.startTime}
+              />
+            ) : (
+              <Avatar
+                size="large"
+                icon={{ name: 'md-add-circle', type: 'ionicon', size: 72 }}
+                containerStyle={{
+                  height: '100%',
+                  width: '100%',
+                }}
+              />
+            )}
           </View>
           <View style={styles.viewTwo}>
             <View style={styles.viewThree}>

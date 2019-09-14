@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
+import LoadingIndicator from './LoadingIndicator';
 import YouTubeVideo from './YouTubeVideo';
 
 const { width } = Dimensions.get('window');
@@ -18,6 +19,7 @@ const UserProfileHeader = props => {
   // Initial State
   const [isLoaded, setIsLoaded] = useState(null);
   const [bio, setBio] = useState(null);
+  const [videoExists, setVideoExists] = useState(null);
   // Event Handlers
   const editButtonPress = () => {
     props.navigation.navigate('Edit', {
@@ -38,22 +40,40 @@ const UserProfileHeader = props => {
     if (userData.bio) {
       setBio(userData.bio);
     }
+    if (userData.youtubeURL) {
+      setVideoExists(true);
+    }
     setIsLoaded(true);
     return () => {
       setIsLoaded(false);
+      console.log('user Profile Feed Header unmounted');
     };
   }, []);
 
   return (
     <View>
+      {!isLoaded && <LoadingIndicator />}
       {isLoaded && (
         <View style={styles.container}>
           <View style={styles.viewOne}>
-            <YouTubeVideo
-              userKey={userKey}
-              style={{ height: '100%', width: '100%' }}
-              navigateToVideo={navigateToVideo}
-            />
+            {videoExists ? (
+              <YouTubeVideo
+                key={userKey}
+                style={{ height: '100%', width: '100%' }}
+                url={userData.youtubeURL}
+                startTime={userData.startTime}
+              />
+            ) : (
+              <Avatar
+                size="large"
+                icon={{ name: 'md-add-circle', type: 'ionicon', size: 72 }}
+                containerStyle={{
+                  height: '100%',
+                  width: '100%',
+                }}
+                onPress={navigateToVideo}
+              />
+            )}
           </View>
           <View style={styles.viewTwo}>
             <View style={styles.viewThree}>

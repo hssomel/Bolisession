@@ -4,7 +4,6 @@ import { Button } from 'react-native-elements';
 
 export default function EditProfileScreen(props) {
   // Initial State
-  // Added test comment
   const [userKey] = useState(props.navigation.getParam('userKey', null));
   const [user] = useState(props.navigation.getParam('user', null));
   // Event Handlers

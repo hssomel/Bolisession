@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
+import LoadingIndicator from '../components/LoadingIndicator';
+import { getClientUserKey } from '../actions/Authentication/authActions';
 
-export default function SettingsScreen(props) {
+const SettingsScreen = props => {
   // Intial State
   const [user, setUser] = useState(null);
+  const [userKey, setUserKey] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(null);
   // Firebase References
   const postsRef = firebase.database().ref('posts/');
   const usersRef = firebase
@@ -13,14 +17,26 @@ export default function SettingsScreen(props) {
     .child('users/');
 
   //Event Handlers
+  const setFields = async user => {
+    try {
+      const key = await getClientUserKey(user);
+      setUserKey(key);
+      setIsLoaded(true);
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
   useEffect(() => {
-    console.log('useEffect triggered');
+    console.log('mounted to settings screen');
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
+      setFields(user);
     });
 
     return () => {
       if (unsubscribe) unsubscribe();
+      console.log('unmounted from settings screen');
     };
   }, []);
 
@@ -87,9 +103,14 @@ export default function SettingsScreen(props) {
       <TouchableOpacity style={styles.button} onPress={signOut}>
         <Text style={styles.ButtonText}>Sign Out</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.ButtonText}>Edit Profile Video</Text>
+      </TouchableOpacity>
     </View>
   );
-}
+};
+
+export default SettingsScreen;
 
 const styles = StyleSheet.create({
   container: {

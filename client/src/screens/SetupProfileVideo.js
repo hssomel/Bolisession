@@ -7,32 +7,34 @@ import { uploadProfileVid } from '../actions/userProfileActions';
 import YouTubeModal from '../components/YouTubeModal';
 import YouTubeVideo from '../components/YouTubeVideo';
 
-SetupProfileVideo = props => {
+// Two ways to reach this route: One by clicking on the gray background
+// modal when user has not created a background video yet
+// The other from the 'Edit Screen'
+const SetupProfileVideo = props => {
   //Initial State
   const [modalOpen, setModalOpen] = useState(false);
   const [userKey] = useState(props.navigation.getParam('userKey', null));
   const [youtubeURL, setYoutubeURL] = useState(null);
   const [startTime, setStartTime] = useState(null);
-  const [finalURL, setFinalURL] = useState(null);
-  const [allowYoutube, setAllowYoutube] = useState(false);
-  const [fromSettings] = useState(true);
+  const [finalSlicedURL, setFinalURL] = useState(null);
+  const [videoSelected, setVideoSelected] = useState(false);
 
-  const sliceString = () => {
+  const sliceYouTubeURL = () => {
     return new Promise((resolve, reject) => {
-      const slice = youtubeURL.slice(-11);
-      setFinalURL(slice);
+      const slicedURL = youtubeURL.slice(-11);
+      setFinalURL(slicedURL);
       const time = Number(startTime);
       setStartTime(time);
-      resolve(slice);
+      resolve(slicedURL);
     });
   };
 
-  const handlePress = () => {
+  const handleURLinsert = () => {
     setModalOpen(false);
-    sliceString()
+    sliceYouTubeURL()
       .then(res => {
         if (res) {
-          setAllowYoutube(true);
+          setVideoSelected(true);
         }
       })
       .catch(err => {
@@ -42,7 +44,7 @@ SetupProfileVideo = props => {
 
   const reUpload = () => {
     setModalOpen(true);
-    setAllowYoutube(false);
+    setVideoSelected(false);
   };
 
   const closeModal = () => {
@@ -50,7 +52,7 @@ SetupProfileVideo = props => {
   };
 
   const uploadVideo = () => {
-    uploadProfileVid(userKey, finalURL, startTime);
+    uploadProfileVid(userKey, finalSlicedURL, startTime);
   };
 
   const goBack = () => {
@@ -60,7 +62,18 @@ SetupProfileVideo = props => {
   return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
-        {!allowYoutube ? (
+        {videoSelected ? (
+          <View style={styles.containerTwo}>
+            <Text style={{ fontSize: 32, marginBottom: 5, color: '#424949' }}>
+              Preview Video
+            </Text>
+            <YouTubeVideo
+              style={{ height: '75%', width: '100%' }}
+              url={finalSlicedURL}
+              startTime={startTime}
+            />
+          </View>
+        ) : (
           <View style={styles.containerOne}>
             <View style={{ alignItems: 'flex-start' }}>
               <Icon
@@ -76,23 +89,10 @@ SetupProfileVideo = props => {
               time that showcases your best 15 seconds!
             </Text>
           </View>
-        ) : (
-          <View style={styles.containerTwo}>
-            <Text style={{ fontSize: 32, marginBottom: 5, color: '#424949' }}>
-              Preview Video
-            </Text>
-            <YouTubeVideo
-              style={{ height: '75%', width: '100%' }}
-              newURL={finalURL}
-              newStartTime={startTime}
-              userKey={userKey}
-              fromSettings={fromSettings}
-            />
-          </View>
         )}
       </View>
       <View style={styles.bottomContainer}>
-        {startTime && finalURL && allowYoutube && (
+        {startTime && finalSlicedURL && videoSelected && (
           <Button
             onPress={() => uploadVideo()}
             containerStyle={styles.buttonContainer}
@@ -101,7 +101,7 @@ SetupProfileVideo = props => {
             titleStyle={styles.buttonText}
           />
         )}
-        {allowYoutube ? (
+        {videoSelected ? (
           <GradientButton onPress={reUpload} title="Reupload youtube link" />
         ) : (
           <Avatar
@@ -124,7 +124,7 @@ SetupProfileVideo = props => {
       <YouTubeModal
         modalOpen={modalOpen}
         closeModal={closeModal}
-        handlePress={handlePress}
+        handleURLinsert={handleURLinsert}
         setYoutubeURL={setYoutubeURL}
         setStartTime={setStartTime}
       />
