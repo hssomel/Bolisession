@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import GradientButton from '../../components/GradientButton';
-import { uploadUsername } from '../../actions/profileConstructionActions';
+import { uploadUsername } from '../../actions/ProfileFields/profileConstructionActions';
 
 const { height, width } = Dimensions.get('window');
 

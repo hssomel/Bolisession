@@ -2,20 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
 import LoadingIndicator from '../components/LoadingIndicator';
-import { getClientUserKey } from '../actions/Authentication/authActions';
+import {
+  getClientUserKey,
+  removeUserFromDatabases,
+} from '../actions/Authentication/authActions';
 
 const SettingsScreen = props => {
   // Intial State
   const [user, setUser] = useState(null);
   const [userKey, setUserKey] = useState(null);
   const [isLoaded, setIsLoaded] = useState(null);
-  // Firebase References
-  const postsRef = firebase.database().ref('posts/');
-  const usersRef = firebase
-    .database()
-    .ref('people/')
-    .child('users/');
-
   //Event Handlers
   const setFields = async user => {
     try {
@@ -28,7 +24,6 @@ const SettingsScreen = props => {
   };
 
   useEffect(() => {
-    console.log('mounted to settings screen');
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
       setFields(user);
@@ -36,57 +31,20 @@ const SettingsScreen = props => {
 
     return () => {
       if (unsubscribe) unsubscribe();
-      console.log('unmounted from settings screen');
     };
   }, []);
 
-  const removeFromUsersDB = () => {
-    usersRef
-      .orderByChild('username')
-      .equalTo(user.displayName)
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          const removeRef = usersRef.child(data.key);
-          removeRef
-            .remove()
-            .then(() => {
-              removeFromPostsDB();
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        });
-      });
-  };
-
-  const removeFromPostsDB = () => {
-    postsRef
-      .orderByChild('username')
-      .equalTo(user.displayName)
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          const removeRef = postsRef.child(data.key);
-          removeRef
-            .remove()
-            .then(() => {})
-            .catch(err => {
-              console.log(err);
-            });
-        });
-        deleteUser();
-      });
-  };
-
-  const deleteUser = () => {
-    user
-      .delete()
-      .then(() => {
-        props.navigation.navigate('phone');
-      })
-      .catch(err => {
-        console.log(err);
-        signOut();
-      });
+  const removeUser = async () => {
+    try {
+      // First removing user from non-admin database
+      await removeUserFromDatabases(userKey, user.displayName);
+      // Permanently deleting user from admin database
+      await user.delete();
+      // Then navigate to phone number entry screen
+    } catch (err) {
+      console.warn(err);
+      signOut();
+    }
   };
 
   const signOut = () => {
@@ -95,17 +53,37 @@ const SettingsScreen = props => {
     props.navigation.navigate('phone');
   };
 
+  const navigateToVideo = () => {
+    props.navigation.navigate('Video', {
+      userKey,
+    });
+  };
+
+  const navigateToBio = () => {
+    props.navigation.navigate('Bio', {
+      userKey,
+    });
+  };
+
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={removeFromUsersDB}>
-        <Text style={styles.ButtonText}>Delete Account</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={signOut}>
-        <Text style={styles.ButtonText}>Sign Out</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.ButtonText}>Edit Profile Video</Text>
-      </TouchableOpacity>
+    <View>
+      {!isLoaded && <LoadingIndicator />}
+      {isLoaded && (
+        <View style={styles.container}>
+          <TouchableOpacity style={styles.button} onPress={removeUser}>
+            <Text style={styles.ButtonText}>Delete Account</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={signOut}>
+            <Text style={styles.ButtonText}>Sign Out</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={navigateToVideo}>
+            <Text style={styles.ButtonText}>Edit Profile Video</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={navigateToBio}>
+            <Text style={styles.ButtonText}>Edit Your Bio</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

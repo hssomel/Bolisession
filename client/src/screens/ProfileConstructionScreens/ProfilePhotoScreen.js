@@ -10,7 +10,7 @@ import {
 import { Button, Avatar } from 'react-native-elements';
 import ImagePicker from 'react-native-image-crop-picker';
 import GradientButton from '../../components/GradientButton';
-import { uploadImageToFirebaseStorage } from '../../actions/profileConstructionActions';
+import { uploadImageToFirebaseStorage } from '../../actions/ProfileFields/profileConstructionActions';
 
 export default function ProfilePhotoScreen(props) {
   // Initial State

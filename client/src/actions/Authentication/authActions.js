@@ -4,6 +4,7 @@ const usersRef = firebase
   .database()
   .ref('people/')
   .child('users');
+const postsRef = firebase.database().ref('posts/');
 
 // Key refers to non-admin database key for locating Current User
 // This redudancy is unavoidable in Firebase
@@ -119,4 +120,22 @@ export const createInitialProfileFields = (user, props) => {
     .catch(err => {
       console.log(err);
     });
+};
+
+export const removeUserFromDatabases = async (key, name) => {
+  try {
+    // Removing from 'User' Collection in database
+    await usersRef.child(key).remove();
+    // Removing from 'Posts' Collection in database
+    // Deleting every post created by user
+    const snapshot = await postsRef
+      .orderByChild('username')
+      .equalTo(name)
+      .once('value');
+    snapshot.forEach(post => {
+      postsRef.child(post.key).remove();
+    });
+  } catch (err) {
+    console.warn(err);
+  }
 };

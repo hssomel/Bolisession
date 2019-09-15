@@ -5,6 +5,7 @@ const usersRef = firebase
   .ref('people/')
   .child('users');
 
+// Function used in: 'CreateAccountScreen' to set username
 export const uploadUsername = async (user, username, dataKey, props) => {
   try {
     // update Admin Database first
@@ -24,7 +25,7 @@ export const uploadUsername = async (user, username, dataKey, props) => {
   }
 };
 
-// Function to update firebase db with url to profile pic
+// Function to update firebase db with url to profile picture
 const uploadUserImagetoDatabases = (url, user, dataKey) => {
   const verifyRef = usersRef.child(dataKey);
   user
@@ -41,6 +42,7 @@ const uploadUserImagetoDatabases = (url, user, dataKey) => {
     });
 };
 
+// Function used in: 'ProfilePhotoScreen' to upload image to firebase storage
 export const uploadImageToFirebaseStorage = async (image, user, key) => {
   try {
     const storeImageRef = firebase.storage().ref(`images/${user.uid}`);
@@ -51,4 +53,22 @@ export const uploadImageToFirebaseStorage = async (image, user, key) => {
   } catch (err) {
     console.warn(err);
   }
+};
+
+// Function to upload youtube video URL & startTime to database
+// Function used in: 'SetupProfileVideo'
+export const uploadProfileVideo = (key, url, startTime) => {
+  const ref = usersRef.child(key);
+
+  ref
+    .update({
+      youtubeURL: url,
+      startTime,
+    })
+    .then(data => {
+      console.log('data ', data);
+    })
+    .catch(error => {
+      console.log('error ', error);
+    });
 };

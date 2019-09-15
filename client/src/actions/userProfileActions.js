@@ -138,23 +138,6 @@ export const checkForLikes = async (item, user) => {
   }
 };
 
-// Function to upload youtube video URL & startTime to database
-export const uploadProfileVid = (key, url, startTime) => {
-  const ref = usersRef.child(key);
-
-  ref
-    .update({
-      youtubeURL: url,
-      startTime,
-    })
-    .then(data => {
-      console.log('data ', data);
-    })
-    .catch(error => {
-      console.log('error ', error);
-    });
-};
-
 // Function triggered when client posts a new tweet
 export const writeUserData = (tweet, user) => {
   postsRef

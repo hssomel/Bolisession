@@ -9,7 +9,7 @@ import {
 import { Avatar } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
 import LoadingIndicator from './LoadingIndicator';
-import YouTubeVideo from './YouTubeVideo';
+import YouTubeVideo from './VideoUploadComponents/YouTubeVideo';
 
 const { width } = Dimensions.get('window');
 const videoHeight = width * 0.6;
@@ -22,10 +22,7 @@ const UserProfileHeader = props => {
   const [videoExists, setVideoExists] = useState(null);
   // Event Handlers
   const editButtonPress = () => {
-    props.navigation.navigate('Edit', {
-      userKey,
-      user,
-    });
+    props.navigation.navigate('Settings');
   };
 
   const navigateToVideo = () => {

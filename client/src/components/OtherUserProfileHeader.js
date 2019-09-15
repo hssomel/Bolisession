@@ -9,7 +9,7 @@ import {
 import { Avatar } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
 import ToggleSwitch from './ToggleSwitch';
-import YouTubeVideo from './YouTubeVideo';
+import YouTubeVideo from './VideoUploadComponents/YouTubeVideo';
 import {
   generateThreadKey,
   verifyIfThreadExists,

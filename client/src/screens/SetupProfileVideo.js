@@ -3,29 +3,26 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import GradientButton from '../components/GradientButton';
-import { uploadProfileVid } from '../actions/userProfileActions';
-import YouTubeModal from '../components/YouTubeModal';
-import YouTubeVideo from '../components/YouTubeVideo';
+import { uploadProfileVideo } from '../actions/ProfileFields/profileConstructionActions';
+import YouTubeModal from '../components/VideoUploadComponents/YouTubeModal';
+import YouTubeVideo from '../components/VideoUploadComponents/YouTubeVideo';
 
-// Two ways to reach this route: One by clicking on the gray background
-// modal when user has not created a background video yet
-// The other from the 'Edit Screen'
 const SetupProfileVideo = props => {
   //Initial State
   const [modalOpen, setModalOpen] = useState(false);
-  const [userKey] = useState(props.navigation.getParam('userKey', null));
+  const [key] = useState(props.navigation.getParam('userKey', null));
   const [youtubeURL, setYoutubeURL] = useState(null);
   const [startTime, setStartTime] = useState(null);
-  const [finalSlicedURL, setFinalURL] = useState(null);
+  const [slicedURL, setFinalURL] = useState(null);
   const [videoSelected, setVideoSelected] = useState(false);
-
+  // Event Handlers
   const sliceYouTubeURL = () => {
-    return new Promise((resolve, reject) => {
-      const slicedURL = youtubeURL.slice(-11);
-      setFinalURL(slicedURL);
+    return new Promise(resolve => {
+      const url = youtubeURL.slice(-11);
+      setFinalURL(url);
       const time = Number(startTime);
       setStartTime(time);
-      resolve(slicedURL);
+      resolve(url);
     });
   };
 
@@ -51,14 +48,6 @@ const SetupProfileVideo = props => {
     setModalOpen(false);
   };
 
-  const uploadVideo = () => {
-    uploadProfileVid(userKey, finalSlicedURL, startTime);
-  };
-
-  const goBack = () => {
-    props.navigation.goBack();
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
@@ -69,7 +58,7 @@ const SetupProfileVideo = props => {
             </Text>
             <YouTubeVideo
               style={{ height: '75%', width: '100%' }}
-              url={finalSlicedURL}
+              url={slicedURL}
               startTime={startTime}
             />
           </View>
@@ -80,7 +69,7 @@ const SetupProfileVideo = props => {
                 name="ios-arrow-round-back"
                 size={36}
                 color="orangered"
-                onPress={goBack}
+                onPress={() => props.navigation.goBack()}
               />
             </View>
             <Text style={styles.titleText}>Upload a profile video</Text>
@@ -92,9 +81,9 @@ const SetupProfileVideo = props => {
         )}
       </View>
       <View style={styles.bottomContainer}>
-        {startTime && finalSlicedURL && videoSelected && (
+        {startTime && slicedURL && videoSelected && (
           <Button
-            onPress={() => uploadVideo()}
+            onPress={() => uploadProfileVideo(key, slicedURL, startTime)}
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.buttonStyle}
             title="Confirm profile video"
