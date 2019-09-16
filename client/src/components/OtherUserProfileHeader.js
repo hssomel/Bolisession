@@ -11,8 +11,8 @@ import { withNavigation } from 'react-navigation';
 import ToggleSwitch from './ToggleSwitch';
 import YouTubeVideo from './VideoUploadComponents/YouTubeVideo';
 import {
-  generateThreadKey,
-  verifyIfThreadExists,
+  generateThreadID,
+  createOrVerifyThread,
 } from '../actions/messagingActions';
 
 const { width } = Dimensions.get('window');
@@ -27,15 +27,26 @@ const OtherUserProfileHeader = props => {
   const [following] = useState(otherUserData.followingCount);
   const [followers, setFollowersCount] = useState(otherUserData.followersCount);
   // Event Handlers
-  const navigateToMessage = () => {
-    generateThreadKey(user, otherUserData)
-      .then(res => {
-        verifyIfThreadExists(user, res, otherUserData, props);
-      })
-      .catch(err => {
-        console.log(err);
+  const onMessageButtonPress = async item => {
+    const threadID = await generateThreadID(user, otherUserData.userID);
+    const newThreadKey = await createOrVerifyThread(threadID);
+    if (newThreadKey) {
+      props.navigation.navigate('PrivateMessage', {
+        otherUserData,
+        user,
+        threadID,
+        threadKey: newThreadKey,
       });
+    } else {
+      // There is an existing messaging thread
+      props.navigation.navigate('PrivateMessage', {
+        otherUserData,
+        user,
+        threadID,
+      });
+    }
   };
+
   useEffect(() => {
     if (otherUserData.bio) {
       setBio(otherUserData.bio);
@@ -102,7 +113,7 @@ const OtherUserProfileHeader = props => {
             >
               <TouchableOpacity
                 style={styles.messageButton}
-                onPress={navigateToMessage}
+                onPress={onMessageButtonPress}
               >
                 <Text style={styles.messageButtonText}>Message</Text>
               </TouchableOpacity>

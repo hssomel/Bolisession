@@ -29,21 +29,17 @@ const UserProfileScreen = props => {
 
   // Event Handlers
   const setFields = async user => {
-    try {
-      const key = await getClientUserKey(user);
-      setUserKey(key);
-      const profileData = await getProfileData(key);
-      setUserData(profileData);
-      if (!sameUser) {
-        const key2 = await getOtherPersonsKey(otherUser);
-        setOtherUserKey(key2);
-        const profileData2 = await getProfileData(key2);
-        setOtherUserData(profileData2);
-      }
-      setIsLoaded(true);
-    } catch (err) {
-      console.warn(err);
+    const key = await getClientUserKey(user);
+    setUserKey(key);
+    const profileData = await getProfileData(key);
+    setUserData(profileData);
+    if (!sameUser) {
+      const key2 = await getOtherPersonsKey(otherUser);
+      setOtherUserKey(key2);
+      const profileData2 = await getProfileData(key2);
+      setOtherUserData(profileData2);
     }
+    setIsLoaded(true);
   };
 
   useEffect(() => {

@@ -71,28 +71,24 @@ export const confirmUserinFireBase = async user => {
 // Navigate to the screen that completes missing information in User Profile
 // Function used in: LandingPageScreen, PhoneNumberScreen, PhoneConfirmationScreen
 export const checkForProfileFields = async (user, props) => {
-  try {
-    const key = await getClientUserKey(user);
+  const key = await getClientUserKey(user);
 
-    if (!user.displayName) {
-      props.navigation.navigate('Create', {
-        user,
-        dataKey: key,
-      });
-    }
-    if (user.displayName && !user.photoURL) {
-      props.navigation.navigate('ProfilePhoto', {
-        user,
-        dataKey: key,
-      });
-    }
-    if (user.displayName && user.photoURL) {
-      props.navigation.navigate('Home', {
-        user,
-      });
-    }
-  } catch (err) {
-    console.warn(err);
+  if (!user.displayName) {
+    props.navigation.navigate('Create', {
+      user,
+      dataKey: key,
+    });
+  }
+  if (user.displayName && !user.photoURL) {
+    props.navigation.navigate('ProfilePhoto', {
+      user,
+      dataKey: key,
+    });
+  }
+  if (user.displayName && user.photoURL) {
+    props.navigation.navigate('Home', {
+      user,
+    });
   }
 };
 

@@ -35,15 +35,11 @@ const PhoneConfirmationScreen = props => {
   };
 
   const checkForExistingUser = async user => {
-    try {
-      const doesExist = await confirmUserinFireBase(user);
-      if (doesExist) {
-        checkForProfileFields(user, props);
-      } else {
-        createInitialProfileFields(user, props);
-      }
-    } catch (err) {
-      console.warn(err);
+    const doesExist = await confirmUserinFireBase(user);
+    if (doesExist) {
+      checkForProfileFields(user, props);
+    } else {
+      createInitialProfileFields(user, props);
     }
   };
 

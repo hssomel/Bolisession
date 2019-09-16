@@ -20,16 +20,12 @@ const LandingPageScreen = props => {
   };
 
   const recheckForUser = async user => {
-    try {
-      const doesExist = await confirmUserinFireBase(user);
-      if (doesExist) {
-        checkForProfileFields(user, props);
-      } else {
-        // user does not exist in secondary database
-        setIsLoaded(true);
-      }
-    } catch (err) {
-      console.warn(err);
+    const doesExist = await confirmUserinFireBase(user);
+    if (doesExist) {
+      checkForProfileFields(user, props);
+    } else {
+      // user does not exist in secondary database
+      setIsLoaded(true);
     }
   };
 

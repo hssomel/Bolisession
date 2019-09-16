@@ -3,12 +3,12 @@ import { View, FlatList, StyleSheet } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import {
-  generateThreadKey,
-  verifyIfThreadExists,
+  generateThreadID,
+  createOrVerifyThread,
   getUsers,
 } from '../actions/messagingActions';
 
-export default function MessagingListScreen(props) {
+const MessagingListScreen = props => {
   // Initial State
   const [user, setUser] = useState(null);
   const [usersData, setUsersData] = useState(null);
@@ -29,32 +29,39 @@ export default function MessagingListScreen(props) {
     setSearch(text);
   };
 
-  const onAvatarPress = item => {
-    generateThreadKey(user, item._value)
-      .then(res => {
-        verifyIfThreadExists(user, res, item._value, props);
-      })
-      .catch(err => {
-        console.log(err);
+  const onListItemPress = async item => {
+    const threadID = await generateThreadID(user, item._value.userID);
+    const newThreadKey = await createOrVerifyThread(threadID);
+    if (newThreadKey) {
+      props.navigation.navigate('PrivateMessage', {
+        otherUserData: item._value,
+        user,
+        threadID,
+        threadKey: newThreadKey,
       });
+    } else {
+      // There is an existing messaging thread
+      props.navigation.navigate('PrivateMessage', {
+        otherUserData: item._value,
+        user,
+        threadID,
+      });
+    }
+  };
+
+  const setFields = async user => {
+    const data = await getUsers(user);
+    setUsersData(data);
+    setUsersDataCopy(data);
   };
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
-      getUsers(user)
-        .then(data => {
-          setUsersData(data);
-          setUsersDataCopy(data);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      setFields(user);
     });
-
     return () => {
       if (unsubscribe) unsubscribe();
-      console.log('unmounted from MessagingList Screen');
     };
   }, []);
 
@@ -98,7 +105,7 @@ export default function MessagingListScreen(props) {
               size: 60,
               marginLeft: 5,
             }}
-            onPress={() => onAvatarPress(item)}
+            onPress={() => onListItemPress(item)}
             containerStyle={{ borderBottomWidth: 0, paddingVertical: 7.5 }}
           />
         )}
@@ -107,7 +114,9 @@ export default function MessagingListScreen(props) {
       />
     </View>
   );
-}
+};
+
+export default MessagingListScreen;
 
 const styles = StyleSheet.create({
   viewStyle: {

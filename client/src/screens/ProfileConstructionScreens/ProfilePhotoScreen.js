@@ -12,7 +12,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import GradientButton from '../../components/GradientButton';
 import { uploadImageToFirebaseStorage } from '../../actions/ProfileFields/profileConstructionActions';
 
-export default function ProfilePhotoScreen(props) {
+const ProfilePhotoScreen = props => {
   // Initial State
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [allowContinue, setAllowContinue] = useState(false);
@@ -113,7 +113,9 @@ export default function ProfilePhotoScreen(props) {
       </Modal>
     </SafeAreaView>
   );
-}
+};
+
+export default ProfilePhotoScreen;
 
 const styles = StyleSheet.create({
   container: {

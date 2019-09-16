@@ -14,13 +14,9 @@ const SettingsScreen = props => {
   const [isLoaded, setIsLoaded] = useState(null);
   //Event Handlers
   const setFields = async user => {
-    try {
-      const key = await getClientUserKey(user);
-      setUserKey(key);
-      setIsLoaded(true);
-    } catch (err) {
-      console.warn(err);
-    }
+    const key = await getClientUserKey(user);
+    setUserKey(key);
+    setIsLoaded(true);
   };
 
   useEffect(() => {

@@ -93,36 +93,28 @@ const MapScreen = props => {
   };
 
   const checkAppLevelPermission = async key => {
-    try {
-      const location = await isUserLocationOn(key);
-      if (location) {
-        const coords = await getLocation();
-        setCoordinates(coords);
-        setLocationOn(true);
-        const { latitude, longitude } = coords;
-        updateFirebaseLocation(key, latitude, longitude, true);
-        return true;
-      }
-    } catch (err) {
-      console.warn(err);
+    const location = await isUserLocationOn(key);
+    if (location) {
+      const coords = await getLocation();
+      setCoordinates(coords);
+      setLocationOn(true);
+      const { latitude, longitude } = coords;
+      updateFirebaseLocation(key, latitude, longitude, true);
+      return true;
     }
   };
 
   const initializePermissionsAndFields = async user => {
-    try {
-      const key = await getClientUserKey(user);
-      setUserKey(key);
-      const userLocations = await getUsersLocations();
-      setUsersLocationData(userLocations);
-      const OSLevelPerm = await requestLocationPermission();
-      if (OSLevelPerm) {
-        await checkAppLevelPermission(key);
-      } else {
-        updateFirebaseLocation(key, 0, 0, false);
-        setLocationOn(false);
-      }
-    } catch (err) {
-      console.warn(err);
+    const key = await getClientUserKey(user);
+    setUserKey(key);
+    const userLocations = await getUsersLocations();
+    setUsersLocationData(userLocations);
+    const OSLevelPerm = await requestLocationPermission();
+    if (OSLevelPerm) {
+      await checkAppLevelPermission(key);
+    } else {
+      updateFirebaseLocation(key, 0, 0, false);
+      setLocationOn(false);
     }
   };
 
