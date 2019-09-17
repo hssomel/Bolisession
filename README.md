@@ -29,7 +29,7 @@ In Client directory run "npm install" in terminal to install all dependencies an
 Entry point of application is 'App.js'
 App.js shows the different navigators used to construct the routes for the app.
 
-- All the screens are located under 'client/src/screens' (16 total different screens)
+- All the screens are located under 'client/src/screens' (14 total different screens)
 
 ###### Authentication Screens (If user has not created an account)
 - LandingPageScreen.js
