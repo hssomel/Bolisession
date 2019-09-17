@@ -29,7 +29,7 @@ In Client directory run "npm install" in terminal to install all dependencies an
 Entry point of application is 'App.js'
 App.js shows the different navigators used to construct the routes for the app.
 
-- All the screens are located under 'client/src/screens' (16 total different screens)
+- All the screens are located under 'client/src/screens' (14 total different screens)
 
 ###### Authentication Screens (If user has not created an account)
 - LandingPageScreen.js
@@ -44,10 +44,8 @@ App.js shows the different navigators used to construct the routes for the app.
 ### Main App Stacks ( Home, Map, Message )
 ##### Home Stack
 - HomeScreen.js          (entry screen for the HomeStack. contains twitter like posts feed)
-- UserProfileScreen.js   (the current user's profile screen)
-- OtherUserScreen.js     (profile screen when current user clicks on someone else's avatar)
+- UserProfileScreen.js   (profile screen of client or of other user)
 - SettingsScreen.js      (allows user to sign out or delete their account)
-- EditProfileScreen.js   (allows user to edit their bio, team affiliation, profile picture, etc.)
 - UserBioScreen.js       (allows user to edit their bio)
 - SetUpProfileVideo.js   (allows user to set up profile background video)
 
