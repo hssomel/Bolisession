@@ -99,7 +99,7 @@ export const addUserToLikesArray = async (key, name) => {
   }
 };
 
-// Function called by Post(Tweet) Component when user unlikes a post
+// Function called by Post.js when user unlikes a post
 export const removeUserFromLikesArray = async (key, name) => {
   try {
     const removeRef = postsRef.child(key).child('usersLiked');
@@ -122,6 +122,7 @@ export const removeUserFromLikesArray = async (key, name) => {
 };
 
 // Function to check if user has liked a post
+// Function used in component: Post.js
 export const checkForLikes = async (item, user) => {
   try {
     const snapshot = await postsRef
@@ -132,6 +133,23 @@ export const checkForLikes = async (item, user) => {
       .once('value');
 
     // snapshot.val() is null if user has not liked post
+    return snapshot.val();
+  } catch (err) {
+    console.warn(err);
+  }
+};
+
+// Function checks if Client is following the other user
+// Function called by FollowSwitch.js
+export const checkIfFollowing = async (userKey, username) => {
+  try {
+    const snapshot = await usersRef
+      .child(userKey)
+      .child('following')
+      .orderByChild('user_name')
+      .equalTo(username)
+      .once('value');
+    // if Client is not following other user the return is null
     return snapshot.val();
   } catch (err) {
     console.warn(err);

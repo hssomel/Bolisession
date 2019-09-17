@@ -4,7 +4,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  ActivityIndicator,
   Dimensions,
 } from 'react-native';
 import { Text, Image } from 'react-native-elements';
@@ -15,7 +14,6 @@ const { width } = Dimensions.get('window');
 const componentHeight = 50;
 const componentWidth = width * 0.9;
 const inputFontSize = componentWidth / 18;
-const leftViewPercent = 40;
 
 const styles = StyleSheet.create({
   container: {

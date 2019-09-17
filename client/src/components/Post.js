@@ -20,37 +20,39 @@ const Post = props => {
   const { item, user } = props;
   const [liked, setHasLiked] = useState(null);
   const [likeCounter, setLikeCounter] = useState(null);
+  // Destructuring props
+  const { displayName } = user;
+  const {
+    username,
+    text,
+    profilePhoto,
+    comments,
+    retweets,
+    likes,
+  } = item._value;
   // Event Handlers
   const hasUserLikedPost = async () => {
-    try {
-      const initalLike = await checkForLikes(item, user);
-      setHasLiked(initalLike);
-      setLikeCounter(item._value.likes);
-    } catch (err) {
-      console.warn(err);
-    }
+    const initalLike = await checkForLikes(item, user);
+    setHasLiked(initalLike);
+    setLikeCounter(likes);
   };
 
-  const handleLikeButtonPress = async item => {
-    try {
-      if (liked) {
-        setHasLiked(null);
-        const counter = likeCounter - 1;
-        setLikeCounter(counter);
-        await removeUserFromLikesArray(item.key, user.displayName);
-      } else {
-        setHasLiked(true);
-        const positivecounter = likeCounter + 1;
-        setLikeCounter(positivecounter);
-        await addUserToLikesArray(item.key, user.displayName);
-      }
-    } catch (err) {
-      console.warn(err);
+  const handleLikeButtonPress = async () => {
+    let counter;
+    if (liked) {
+      setHasLiked(null);
+      counter = likeCounter - 1;
+      await removeUserFromLikesArray(item.key, displayName);
+    } else {
+      setHasLiked(true);
+      counter = likeCounter + 1;
+      await addUserToLikesArray(item.key, displayName);
     }
+    setLikeCounter(counter);
   };
 
   const handleAvatarPress = () => {
-    if (user.displayName == item._value.username) {
+    if (displayName == username) {
       // Client has clicked on their own avatar of their own post
       props.navigation.navigate('Profile', {
         sameUser: true,
@@ -59,7 +61,7 @@ const Post = props => {
       // Client has clicked on someone else's avatar
       props.navigation.navigate('Profile', {
         sameUser: false,
-        username: item._value.username,
+        username,
       });
     }
   };
@@ -90,7 +92,7 @@ const Post = props => {
           <View>
             <Avatar
               source={{
-                uri: item._value.profilePhoto,
+                uri: profilePhoto,
               }}
               rounded
               size={60}
@@ -101,27 +103,19 @@ const Post = props => {
       </View>
       <View style={styles.secondaryContainer}>
         <View style={styles.usernameContainer}>
-          <Text style={styles.usernameText}>{'@' + item._value.username}</Text>
+          <Text style={styles.usernameText}>{'@' + username}</Text>
         </View>
         <View style={styles.tweetBodyContainer}>
-          <Text style={styles.tweetText}>{item._value.text}</Text>
+          <Text style={styles.tweetText}>{text}</Text>
         </View>
         <View style={styles.footerContainer}>
           <View style={styles.iconContainer}>
-            <Icon
-              name="md-chatboxes"
-              size={20}
-              onPress={() => handleRetweetPress()}
-            />
-            <Text style={styles.badgeCount}>{item._value.comments}</Text>
+            <Icon name="md-chatboxes" size={20} onPress={handleRetweetPress} />
+            <Text style={styles.badgeCount}>{comments}</Text>
           </View>
           <View style={styles.iconContainer}>
-            <Icon
-              name="md-repeat"
-              size={20}
-              onPress={() => handleRetweetPress()}
-            />
-            <Text style={styles.badgeCount}>{item._value.retweets}</Text>
+            <Icon name="md-repeat" size={20} onPress={handleRetweetPress} />
+            <Text style={styles.badgeCount}>{retweets}</Text>
           </View>
           <View style={styles.iconContainer}>
             {liked && (
@@ -129,14 +123,14 @@ const Post = props => {
                 name="ios-heart"
                 size={20}
                 color="red"
-                onPress={() => handleLikeButtonPress(item)}
+                onPress={handleLikeButtonPress}
               />
             )}
             {!liked && (
               <Icon
                 name="ios-heart-empty"
                 size={20}
-                onPress={() => handleLikeButtonPress(item)}
+                onPress={handleLikeButtonPress}
               />
             )}
             <Text style={styles.badgeCount}>{likeCounter}</Text>

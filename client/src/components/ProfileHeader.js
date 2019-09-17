@@ -9,13 +9,19 @@ import {
 import { Avatar } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
 import LoadingIndicator from './LoadingIndicator';
-import ToggleSwitch from './ToggleSwitch';
+import FollowSwitch from './FollowSwitch';
 import YouTubeVideo from './VideoUploadComponents/YouTubeVideo';
 import {
   generateThreadID,
   createOrVerifyThread,
   getMessageThreadKey,
 } from '../actions/Messaging/messagingActions';
+import {
+  increaseFollowingList,
+  decreaseFollowingList,
+  increaseFollowerList,
+  decreaseFollowersList,
+} from '../actions/userProfileActions';
 
 const { width } = Dimensions.get('window');
 const videoHeight = width * 0.6;
@@ -37,6 +43,20 @@ const ProfileHeader = props => {
   const [isLoaded, setIsLoaded] = useState(null);
   const [followers, setFollowersCount] = useState(followersCount);
   // Event Handlers
+  const toggleFollowSwitch = value => {
+    let counter;
+    if (!value) {
+      decreaseFollowingList(userKey, username);
+      decreaseFollowersList(otherUserKey, user.displayName);
+      counter = followers - 1;
+    } else {
+      increaseFollowingList(userKey, username);
+      increaseFollowerList(otherUserKey, user.displayName);
+      counter = followers + 1;
+    }
+    setFollowersCount(counter);
+  };
+
   const onMessageButtonPress = async () => {
     const threadID = await generateThreadID(user, userID);
     const newThreadKey = await createOrVerifyThread(threadID);
@@ -129,13 +149,14 @@ const ProfileHeader = props => {
                 >
                   <Text style={styles.messageButtonText}>Message</Text>
                 </TouchableOpacity>
-                <ToggleSwitch
-                  profileData={profileData}
+                <FollowSwitch
                   otherUserKey={otherUserKey}
                   userKey={userKey}
                   user={user}
                   followers={followers}
                   setFollowersCount={setFollowersCount}
+                  username={username}
+                  toggleFollowSwitch={toggleFollowSwitch}
                 />
               </View>
             ) : (

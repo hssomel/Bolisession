@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import { Text } from 'react-native-elements';
 import firebase from 'react-native-firebase';
-import PhoneNumberInput from '../../components/PhoneNumberInput';
-import CountrySelector from '../../components/CountrySelector';
+import PhoneNumberInput from '../../components/NumberEntryComponents/PhoneNumberInput';
+import CountrySelector from '../../components/NumberEntryComponents/CountrySelector';
 import GradientButton from '../../components/GradientButton';
 // Assets & Data
 import flagCollection from '../../assets/flags/index';
