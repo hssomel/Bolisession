@@ -50,7 +50,6 @@ const Post = props => {
   };
 
   const handleAvatarPress = () => {
-    console.log('hey item._value is: ', item._value);
     if (user.displayName == item._value.username) {
       // Client has clicked on their own avatar of their own post
       props.navigation.navigate('Profile', {

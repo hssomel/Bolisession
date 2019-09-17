@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import firebase from 'react-native-firebase';
 import LoadingIndicator from '../components/LoadingIndicator';
-import UserProfileHeader from '../components/UserProfileHeader';
-import UserProfileFeed from '../components/UserProfileFeed';
-import OtherUserProfileHeader from '../components/OtherUserProfileHeader';
+import ProfileHeader from '../components/ProfileHeader';
+import PostsFeed from '../components/PostsFeed';
 import {
   getClientUserKey,
   getProfileData,
@@ -17,27 +16,30 @@ const UserProfileScreen = props => {
   // userKey refers to non-admin firebase database key for locating Current User
   const [userKey, setUserKey] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  // 'userData' object is all the profile data fields stored in non-admin database
-  const [userData, setUserData] = useState(null);
   // True or False param passed in indicating if user has accessed this route by
   // clicking on their own avatar or someone else's in the universal post feed
   const [sameUser] = useState(props.navigation.getParam('sameUser', true));
-  // Username of whoever's avatar user clicked on in the universal post feed
+  // Username of whoever's avatar the client clicked on in the universal post feed
   const [otherUser] = useState(props.navigation.getParam('username', null));
   const [otherUserKey, setOtherUserKey] = useState(null);
-  const [otherUserData, setOtherUserData] = useState(null);
+  // Profile Data will either be of the client's or of another user if client
+  // accessed the profile screen by clicking on another user's avatar
+  const [profileData, setProfileData] = useState(null);
 
   // Event Handlers
   const setFields = async user => {
     const key = await getClientUserKey(user);
     setUserKey(key);
-    const profileData = await getProfileData(key);
-    setUserData(profileData);
-    if (!sameUser) {
+    if (sameUser) {
+      // Client clicked on their own profile
+      const data = await getProfileData(key);
+      setProfileData(data);
+    } else {
+      // Client clicked on another user's profile
       const key2 = await getOtherPersonsKey(otherUser);
       setOtherUserKey(key2);
-      const profileData2 = await getProfileData(key2);
-      setOtherUserData(profileData2);
+      const data = await getProfileData(key2);
+      setProfileData(data);
     }
     setIsLoaded(true);
   };
@@ -59,24 +61,16 @@ const UserProfileScreen = props => {
         {!isLoaded && <LoadingIndicator />}
         {isLoaded && (
           <View>
-            <UserProfileFeed
-              name={sameUser ? userData.username : otherUserData.username}
+            <PostsFeed
+              name={profileData.username}
               user={user}
               ListHeaderComponent={
-                sameUser ? (
-                  <UserProfileHeader
-                    user={user}
-                    userData={userData}
-                    userKey={userKey}
-                  />
-                ) : (
-                  <OtherUserProfileHeader
-                    user={user}
-                    userKey={userKey}
-                    otherUserData={otherUserData}
-                    otherUserKey={otherUserKey}
-                  />
-                )
+                <ProfileHeader
+                  user={user}
+                  profileData={profileData}
+                  userKey={userKey}
+                  otherUserKey={otherUserKey}
+                />
               }
             />
           </View>

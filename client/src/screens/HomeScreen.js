@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import UniversalFeed from '../components/UniversalFeed';
+import PostsFeed from '../components/PostsFeed';
 import HomeFeedHeader from '../components/HomeFeedHeader';
 
 const HomeScreen = props => {
@@ -27,7 +27,7 @@ const HomeScreen = props => {
           </View>
         ) : (
           <View>
-            <UniversalFeed
+            <PostsFeed
               user={user}
               ListHeaderComponent={<HomeFeedHeader user={user} />}
             />

@@ -1,46 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  FlatList,
-  SafeAreaView,
-  ActivityIndicator,
-  StyleSheet,
-} from 'react-native';
+import { View, FlatList, SafeAreaView } from 'react-native';
 import firebase from 'react-native-firebase';
+import LoadingIndicator from './LoadingIndicator';
 import Post from './Post';
 
-export default function UniversalFeed(props) {
-  const { ListHeaderComponent, user } = props;
+const PostsFeed = props => {
+  const { ListHeaderComponent, user, name } = props;
   // Initial State
   const [feedData, setFeedData] = useState([]);
   const [isLoaded, setIsLoaded] = useState(null);
   // Firebase References
   const postsRef = firebase.database().ref('posts/');
   // Event Handlers
-
-  const getAllPosts = () => {
-    const twitPosts = [];
-    const query = postsRef.limitToLast(100);
-    query
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          twitPosts.push(data);
-        });
-      })
-      .then(() => {
-        setFeedData(twitPosts.reverse());
-        setIsLoaded(true);
+  const getPosts = async username => {
+    try {
+      let snapshot;
+      const posts = [];
+      if (!username) {
+        // We are not on a user's profile page
+        // So we want all posts
+        snapshot = await postsRef.limitToLast(100).once('value');
+      } else {
+        // We want posts by the name prop passed in
+        snapshot = await postsRef
+          .orderByChild('username')
+          .equalTo(username)
+          .once('value');
+      }
+      snapshot.forEach(data => {
+        posts.push(data);
       });
+      setFeedData(posts.reverse());
+      setIsLoaded(true);
+    } catch (err) {
+      console.warn(err);
+    }
   };
 
   const updatePosts = () => {
     postsRef.on('child_added', () => {
-      getAllPosts();
+      getPosts(name);
     });
   };
 
   useEffect(() => {
-    getAllPosts();
+    getPosts(name);
     updatePosts();
     return () => {
       postsRef.off();
@@ -51,9 +55,7 @@ export default function UniversalFeed(props) {
     <SafeAreaView>
       <View style={{ justifyContent: 'flex-start' }}>
         {!isLoaded ? (
-          <View style={styles.container}>
-            <ActivityIndicator size="large" color="orangered" />
-          </View>
+          <LoadingIndicator />
         ) : (
           <FlatList
             data={feedData}
@@ -65,13 +67,6 @@ export default function UniversalFeed(props) {
       </View>
     </SafeAreaView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
-  },
-});
+export default PostsFeed;

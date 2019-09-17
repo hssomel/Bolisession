@@ -12,7 +12,7 @@ const ToggleSwitch = props => {
   const {
     userKey,
     otherUserKey,
-    otherUserData,
+    profileData,
     user,
     followers,
     setFollowersCount,
@@ -47,12 +47,12 @@ const ToggleSwitch = props => {
   const toggleSwitch = value => {
     setSwitchValue(value);
     if (!value) {
-      decreaseFollowingList(userKey, otherUserData.username);
+      decreaseFollowingList(userKey, profileData.username);
       decreaseFollowersList(otherUserKey, user.displayName);
       const counter = followers - 1;
       setFollowersCount(counter);
     } else {
-      increaseFollowingList(userKey, otherUserData.username);
+      increaseFollowingList(userKey, profileData.username);
       increaseFollowerList(otherUserKey, user.displayName);
       const counter = followers + 1;
       setFollowersCount(counter);
@@ -60,7 +60,7 @@ const ToggleSwitch = props => {
   };
 
   useEffect(() => {
-    initialToggleSwitchValue(userKey, otherUserData);
+    initialToggleSwitchValue(userKey, profileData);
   }, []);
 
   return (

@@ -9,41 +9,72 @@ import {
 import { Avatar } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
 import LoadingIndicator from './LoadingIndicator';
+import ToggleSwitch from './ToggleSwitch';
 import YouTubeVideo from './VideoUploadComponents/YouTubeVideo';
+import {
+  generateThreadID,
+  createOrVerifyThread,
+  getMessageThreadKey,
+} from '../actions/Messaging/messagingActions';
 
 const { width } = Dimensions.get('window');
 const videoHeight = width * 0.6;
 
-const UserProfileHeader = props => {
-  const { user, userData, userKey } = props;
+const ProfileHeader = props => {
+  const { user, profileData, userKey, otherUserKey } = props;
+  // Destructuring props
+  const {
+    username,
+    youtubeURL,
+    profilePhoto,
+    startTime,
+    followersCount,
+    followingCount,
+    bio,
+    userID,
+  } = profileData;
   // Initial State
   const [isLoaded, setIsLoaded] = useState(null);
-  const [bio, setBio] = useState(null);
-  const [videoExists, setVideoExists] = useState(null);
+  const [followers, setFollowersCount] = useState(followersCount);
   // Event Handlers
+  const onMessageButtonPress = async () => {
+    const threadID = await generateThreadID(user, userID);
+    const newThreadKey = await createOrVerifyThread(threadID);
+    if (newThreadKey) {
+      props.navigation.navigate('PrivateMessage', {
+        user,
+        threadKey: newThreadKey,
+      });
+    } else {
+      // There is an existing messaging thread
+      // Get the existing message thread key
+      const key = await getMessageThreadKey(threadID);
+      props.navigation.navigate('PrivateMessage', {
+        user,
+        threadKey: key,
+      });
+    }
+  };
+
   const editButtonPress = () => {
     props.navigation.navigate('Settings');
   };
 
   const navigateToVideo = () => {
-    props.navigation.navigate('Video', {
-      user,
-      currentUser: userData,
-      userKey,
-    });
+    // Video route only accessible if client is viewing own profile
+    if (!otherUserKey) {
+      props.navigation.navigate('Video', {
+        user,
+        currentUser: profileData,
+        userKey,
+      });
+    }
   };
 
   useEffect(() => {
-    if (userData.bio) {
-      setBio(userData.bio);
-    }
-    if (userData.youtubeURL) {
-      setVideoExists(true);
-    }
     setIsLoaded(true);
     return () => {
       setIsLoaded(false);
-      console.log('user Profile Feed Header unmounted');
     };
   }, []);
 
@@ -53,12 +84,12 @@ const UserProfileHeader = props => {
       {isLoaded && (
         <View style={styles.container}>
           <View style={styles.viewOne}>
-            {videoExists ? (
+            {youtubeURL ? (
               <YouTubeVideo
                 key={userKey}
                 style={{ height: '100%', width: '100%' }}
-                url={userData.youtubeURL}
-                startTime={userData.startTime}
+                url={youtubeURL}
+                startTime={startTime}
               />
             ) : (
               <Avatar
@@ -74,28 +105,47 @@ const UserProfileHeader = props => {
           </View>
           <View style={styles.viewTwo}>
             <View style={styles.viewThree}>
-              <Text style={styles.username}>{'@' + user.displayName}</Text>
+              <Text style={styles.username}>{'@' + username}</Text>
               <Avatar
                 rounded
                 size={100}
                 source={{
-                  uri: user.photoURL,
+                  uri: profilePhoto,
                 }}
                 containerStyle={styles.avatar}
               />
             </View>
             <View style={styles.viewFour}>
               <Text style={{ fontSize: 16 }}> Followers: </Text>
-              <Text style={styles.followCount}>{userData.followersCount}</Text>
+              <Text style={styles.followCount}>{followers}</Text>
               <Text style={{ fontSize: 16, paddingLeft: 15 }}>Following:</Text>
-              <Text style={styles.followCount}>{userData.followingCount}</Text>
+              <Text style={styles.followCount}>{followingCount}</Text>
             </View>
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={editButtonPress}
-            >
-              <Text style={styles.editText}>Edit Profile</Text>
-            </TouchableOpacity>
+            {otherUserKey ? (
+              <View style={styles.viewFive}>
+                <TouchableOpacity
+                  style={styles.messageButton}
+                  onPress={onMessageButtonPress}
+                >
+                  <Text style={styles.messageButtonText}>Message</Text>
+                </TouchableOpacity>
+                <ToggleSwitch
+                  profileData={profileData}
+                  otherUserKey={otherUserKey}
+                  userKey={userKey}
+                  user={user}
+                  followers={followers}
+                  setFollowersCount={setFollowersCount}
+                />
+              </View>
+            ) : (
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={editButtonPress}
+              >
+                <Text style={styles.editText}>Edit Profile</Text>
+              </TouchableOpacity>
+            )}
             <Text style={styles.bioText}>{bio}</Text>
           </View>
         </View>
@@ -104,7 +154,7 @@ const UserProfileHeader = props => {
   );
 };
 
-export default withNavigation(UserProfileHeader);
+export default withNavigation(ProfileHeader);
 
 const styles = StyleSheet.create({
   container: {
@@ -158,6 +208,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
+  viewFive: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   followCount: {
     fontSize: 15,
     fontWeight: 'bold',
@@ -190,5 +245,22 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     marginTop: 10,
+  },
+  messageButton: {
+    color: 'red',
+    height: 30,
+    width: '30%',
+    backgroundColor: 'red',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12.5,
+    borderRadius: 15,
+    marginBottom: 15,
+  },
+  messageButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: 'Roboto',
   },
 });
