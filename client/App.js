@@ -19,13 +19,16 @@ import AccountTypeScreen from './src/screens/ProfileConstructionScreens/AccountT
 // Main Home Screen when user is already logged in
 import HomeScreen from './src/screens/HomeScreen';
 import MapScreen from './src/screens/MapScreen';
-import MessagingListScreen from './src/screens/MessagingListScreen';
 import UserProfileScreen from './src/screens/UserProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
-import PrivateMessageScreen from './src/screens/PrivateMessageScreen';
 import UserBioScreen from './src/screens/UserBioScreen';
 import SetUpProfileVideo from './src/screens/SetupProfileVideo';
+// Screens implementing the Messaging Feature
+import MessagingListScreen from './src/screens/MessageScreens/MessagingListScreen';
+import PrivateMessageScreen from './src/screens/MessageScreens/PrivateMessageScreen';
 
+// ---------------------------------------------------- //
+// Beginning of stack navigators
 const LandingPageStack = createStackNavigator({
   Start: {
     screen: LandingPageScreen,

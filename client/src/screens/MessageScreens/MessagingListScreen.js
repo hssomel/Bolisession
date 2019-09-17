@@ -5,8 +5,9 @@ import firebase from 'react-native-firebase';
 import {
   generateThreadID,
   createOrVerifyThread,
+  getMessageThreadKey,
   getUsers,
-} from '../actions/messagingActions';
+} from '../../actions/Messaging/messagingActions';
 
 const MessagingListScreen = props => {
   // Initial State
@@ -34,17 +35,16 @@ const MessagingListScreen = props => {
     const newThreadKey = await createOrVerifyThread(threadID);
     if (newThreadKey) {
       props.navigation.navigate('PrivateMessage', {
-        otherUserData: item._value,
         user,
-        threadID,
         threadKey: newThreadKey,
       });
     } else {
       // There is an existing messaging thread
+      // Get the existing message thread key
+      const key = await getMessageThreadKey(threadID);
       props.navigation.navigate('PrivateMessage', {
-        otherUserData: item._value,
         user,
-        threadID,
+        threadKey: key,
       });
     }
   };

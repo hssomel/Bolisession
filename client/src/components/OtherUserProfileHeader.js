@@ -13,7 +13,8 @@ import YouTubeVideo from './VideoUploadComponents/YouTubeVideo';
 import {
   generateThreadID,
   createOrVerifyThread,
-} from '../actions/messagingActions';
+  getMessageThreadKey,
+} from '../actions/Messaging/messagingActions';
 
 const { width } = Dimensions.get('window');
 const videoHeight = width * 0.6;
@@ -27,22 +28,21 @@ const OtherUserProfileHeader = props => {
   const [following] = useState(otherUserData.followingCount);
   const [followers, setFollowersCount] = useState(otherUserData.followersCount);
   // Event Handlers
-  const onMessageButtonPress = async item => {
+  const onMessageButtonPress = async () => {
     const threadID = await generateThreadID(user, otherUserData.userID);
     const newThreadKey = await createOrVerifyThread(threadID);
     if (newThreadKey) {
       props.navigation.navigate('PrivateMessage', {
-        otherUserData,
         user,
-        threadID,
         threadKey: newThreadKey,
       });
     } else {
       // There is an existing messaging thread
+      // Get the existing message thread key
+      const key = await getMessageThreadKey(threadID);
       props.navigation.navigate('PrivateMessage', {
-        otherUserData,
         user,
-        threadID,
+        threadKey: key,
       });
     }
   };

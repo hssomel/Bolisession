@@ -31,10 +31,9 @@ export const createOrVerifyThread = async threadID => {
         messages: {},
       });
       return newThreadData.key;
-    } else {
-      // Message thread already exists
-      return false;
     }
+    // Message thread already exists
+    return false;
   } catch (err) {
     console.warn(err);
   }
@@ -58,41 +57,34 @@ export const getUsers = async user => {
   }
 };
 
-export const getExistingMessages = key => {
-  return new Promise((resolve, reject) => {
+export const getExistingMessages = async key => {
+  try {
     const priorMessages = [];
-    messageRef
+    const snapshot = await messageRef
       .child(key)
       .child('messages')
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          priorMessages.push(data._value.message[0]);
-        });
-      })
-      .then(() => {
-        resolve(priorMessages);
-      })
-      .catch(() => {
-        reject(new Error('unable to obtain existing messages'));
-      });
-  });
+      .once('value');
+
+    snapshot.forEach(data => {
+      priorMessages.push(data._value.message[0]);
+    });
+    return priorMessages;
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
-export const getThreadKey = threadID => {
-  return new Promise((resolve, reject) => {
-    messageRef
+// Function used in: PrivateMessageScreen.js
+export const getMessageThreadKey = async threadID => {
+  try {
+    const snapshot = await messageRef
       .orderByChild('_threadID')
       .equalTo(threadID)
-      .once('value', snapshot => {
-        snapshot.forEach(data => {
-          resolve(data.key);
-        });
-      })
-      .then(() => {
-        console.log('Thread key successfully obtained');
-      })
-      .catch(() => {
-        reject(new Error('unable to obtain thread key'));
-      });
-  });
+      .once('value');
+
+    const key = snapshot._childKeys[0];
+    return key;
+  } catch (err) {
+    console.warn(err);
+  }
 };
