@@ -9,7 +9,7 @@ import {
   checkForProfileFields,
 } from '../../actions/Authentication/authActions';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const LandingPageScreen = props => {
   // Initial State
@@ -61,7 +61,7 @@ const LandingPageScreen = props => {
           />
           <View style={styles.viewOne}>
             <Text style={styles.text}>Connect with the</Text>
-            <Text style={styles.text1}>Bhangra Community</Text>
+            <Text style={styles.text}>Bhangra Community</Text>
           </View>
           <View style={styles.viewTwo}>
             <GradientButton
@@ -81,36 +81,19 @@ export default LandingPageScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
+    height,
   },
   viewOne: {
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'transparent',
-    height: '100%',
-    width,
-    flex: 4,
-    marginTop: '10%',
+    marginTop: height * 0.08,
   },
   viewTwo: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    height: '100%',
     width,
-    flex: 1,
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: height * 0.08,
   },
   text: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    fontFamily: 'Helvetica',
-    color: 'white',
-  },
-  text1: {
     fontSize: 28,
     fontWeight: 'bold',
     fontFamily: 'Helvetica',

@@ -26,20 +26,18 @@ export const uploadUsername = async (user, username, dataKey, props) => {
 };
 
 // Function to update firebase db with url to profile picture
-const uploadUserImagetoDatabases = (url, user, dataKey) => {
-  const verifyRef = usersRef.child(dataKey);
-  user
-    .updateProfile({
+const uploadUserImagetoDatabases = async (url, user, dataKey) => {
+  try {
+    const verifyRef = usersRef.child(dataKey);
+    await user.updateProfile({
       photoURL: url,
-    })
-    .then(() => {
-      verifyRef.update({
-        profilePhoto: url,
-      });
-    })
-    .catch(err => {
-      console.log(err);
     });
+    await verifyRef.update({
+      profilePhoto: url,
+    });
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
 // Function used in: 'ProfilePhotoScreen' to upload image to firebase storage
@@ -49,7 +47,7 @@ export const uploadImageToFirebaseStorage = async (image, user, key) => {
     await storeImageRef.put(image.path, { contentType: 'image/jpeg' });
     const url = await storeImageRef.getDownloadURL();
     // Function to upload image to both Admin and Non-admin databases
-    uploadUserImagetoDatabases(url, user, key);
+    await uploadUserImagetoDatabases(url, user, key);
   } catch (err) {
     console.warn(err);
   }

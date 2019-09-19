@@ -5,6 +5,7 @@ import {
   Text,
   View,
   Modal,
+  Dimensions,
   ActivityIndicator,
 } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
@@ -12,26 +13,29 @@ import ImagePicker from 'react-native-image-crop-picker';
 import GradientButton from '../../components/GradientButton';
 import { uploadImageToFirebaseStorage } from '../../actions/ProfileFields/profileConstructionActions';
 
+const { height, width } = Dimensions.get('window');
+
 const ProfilePhotoScreen = props => {
+  const { navigation } = props;
+  const user = navigation.getParam('user', null);
+  const dataKey = navigation.getParam('dataKey', null);
   // Initial State
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [allowContinue, setAllowContinue] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [user] = useState(props.navigation.getParam('user', null));
-  const [dataKey] = useState(props.navigation.getParam('dataKey', null));
+
   const pickerProps = {
     width: 300,
     height: 300,
     cropping: true,
     cropperCircleOverlay: true,
   };
-
+  // Event Handlers
   const handlePhotoUpload = value => {
     const picker = value
       ? ImagePicker.openPicker(pickerProps)
       : ImagePicker.openCamera(pickerProps);
-
     picker.then(image => {
       setProfilePhoto(image);
       setModalVisible(false);
@@ -48,7 +52,7 @@ const ProfilePhotoScreen = props => {
   };
 
   const handlePress = () => {
-    props.navigation.navigate('AccountType', {
+    navigation.navigate('AccountType', {
       user,
     });
   };
@@ -84,7 +88,7 @@ const ProfilePhotoScreen = props => {
       <GradientButton onPress={openModal} title="UPLOAD PROFILE PHOTO" />
       {isLoading && <ActivityIndicator size="large" color="orangered" />}
       {allowContinue && (
-        <Text style={styles.text3} onPress={handlePress}>
+        <Text style={styles.text2} onPress={handlePress}>
           CONTINUE
         </Text>
       )}
@@ -119,21 +123,14 @@ export default ProfilePhotoScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'white',
-    height: '100%',
-    width: '100%',
-    flex: 1,
+    height,
   },
   container1: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
     alignItems: 'center',
     height: 150,
     width: '100%',
-    marginTop: '4%',
+    marginTop: height * 0.05,
   },
   text: {
     fontSize: 34,
@@ -154,13 +151,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Gill Sans',
     color: 'orangered',
-    marginTop: 20,
-  },
-  text3: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    fontFamily: 'Gill Sans',
-    color: 'orangered',
     marginTop: 25,
   },
   buttonContainer: {
@@ -178,9 +168,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   viewModal: {
-    height: '100%',
+    height,
     width: '100%',
-    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
   },

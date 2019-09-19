@@ -18,20 +18,16 @@ import {
 const { height, width } = Dimensions.get('window');
 
 const PhoneConfirmationScreen = props => {
+  const { navigation } = props;
+  const phoneNumber = navigation.getParam('phoneNumber', null);
+  const confirmResult = navigation.getParam('confirmResult', null);
   // Initial State
   const [message, setMessage] = useState(''); // TO DO integrate into error
   const [codeInput, setCodeInput] = useState('');
-  const [phoneNumber] = useState(
-    props.navigation.getParam('phoneNumber', null),
-  );
-  const [confirmResult] = useState(
-    props.navigation.getParam('confirmResult', null),
-  );
-
   // Event Handlers
   const handlePress = () => {
     Alert.alert('Please re-enter number and try again!');
-    props.navigation.navigate('phone');
+    props.navigation.goBack();
   };
 
   const checkForExistingUser = async user => {
@@ -89,11 +85,8 @@ export default PhoneConfirmationScreen;
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    flexDirection: 'column',
     height,
-    width,
   },
   viewOne: {
     paddingLeft: 20,

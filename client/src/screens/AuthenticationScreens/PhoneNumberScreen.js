@@ -1,11 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  Dimensions,
-  View,
-  ActivityIndicator,
-} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, SafeAreaView, Dimensions, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import PhoneNumberInput from '../../components/NumberEntryComponents/PhoneNumberInput';
@@ -14,11 +8,13 @@ import GradientButton from '../../components/GradientButton';
 // Assets & Data
 import flagCollection from '../../assets/flags/index';
 import countryData from '../../assets/countryData';
-import { checkForProfileFields } from '../../actions/Authentication/authActions';
+import { autoVerify } from '../../actions/Authentication/authActions';
+import LoadingIndicator from '../../components/LoadingIndicator';
 // Style
 const { height, width } = Dimensions.get('window');
 
 const PhoneNumberScreen = props => {
+  const { navigation } = props;
   // Initial State
   const [phoneNumber, setPhoneNumber] = useState('');
   const [country, setCountry] = useState({
@@ -30,60 +26,47 @@ const PhoneNumberScreen = props => {
   const [flag, setFlag] = useState(flagCollection[country.alpha2Code]);
   const [message, setMessage] = useState(''); // TO DO integrate into error
   const [isLoading, setIsLoading] = useState(null);
-  const [listenerOff, setListenerOff] = useState(null);
 
   // Event Handlers
   const handleFlagTouch = () => setPopupVisibility(true);
-  const handleSubmitButtonPress = () => {
-    signIn();
+
+  const checkAutoVerification = async () => {
+    let doesUserExist;
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      doesUserExist = user ? user : false;
+    });
+    if (unsubscribe) unsubscribe();
+    return doesUserExist;
   };
 
-  const signIn = () => {
-    setMessage('Sending code ...');
-    firebase
-      .auth()
-      .signInWithPhoneNumber(`+${country.callingCode}${phoneNumber}`)
-      .then(confirmation => {
-        setIsLoading(true);
-        setListenerOff(true);
-        setMessage('Code has been sent!');
-        props.navigation.navigate('codeEntry', {
+  const signIn = async () => {
+    try {
+      setMessage('Sending code ...');
+      const confirmation = await firebase
+        .auth()
+        .signInWithPhoneNumber(`+${country.callingCode}${phoneNumber}`);
+      setIsLoading(true);
+      const autoUser = await checkAutoVerification();
+      if (autoUser) {
+        autoVerify(autoUser, props);
+      } else {
+        navigation.navigate('codeEntry', {
           confirmResult: confirmation,
           phoneNumber,
         });
-      })
-      .catch(error => setMessage(error.message));
-  };
-
-  useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user && !listenerOff) {
-        // Handling Auto-verification for android
-        // User will only exist in this screen if client is using personal device
-        // Which will trigger auto-verification
-        checkForProfileFields(user, props);
       }
-    });
-
-    return () => {
-      if (unsubscribe) unsubscribe();
-      console.log('unmounted from PhoneNumberScreen');
-    };
-  }, [listenerOff]);
+    } catch (err) {
+      console.warn(err);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       {isLoading ? (
-        <View style={styles.indicator}>
-          <ActivityIndicator size="large" color="orangered" />
-        </View>
+        <LoadingIndicator size="large" color="orangered" />
       ) : (
         <View style={styles.container}>
           <View style={styles.viewOne}>
-            {/* <Image
-              source={require('../assets/images/dhol_logo.png')}
-              style={styles.image}
-            /> */}
             <Text style={{ fontSize: 36, color: '#606060' }}>My number is</Text>
           </View>
           <View style={styles.viewTwo}>
@@ -110,10 +93,7 @@ const PhoneNumberScreen = props => {
             </Text>
           </View>
           <View style={styles.viewThree}>
-            <GradientButton
-              onPress={handleSubmitButtonPress}
-              title="Get SMS Code"
-            />
+            <GradientButton onPress={signIn} title="Get SMS Code" />
             <Text style={styles.messageText}>{message}</Text>
           </View>
         </View>
@@ -126,32 +106,26 @@ export default PhoneNumberScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    height: '100%',
-    width: '100%',
-    justifyContent: 'flex-start',
+    height,
     alignItems: 'flex-start',
   },
   viewOne: {
+    height: height * 0.12,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    height: height * 0.12,
-    width,
     paddingLeft: 20,
   },
   viewTwo: {
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
     height: height * 0.18,
     width,
+    alignItems: 'flex-start',
     paddingLeft: 20,
     paddingRight: 15,
   },
   viewThree: {
-    justifyContent: 'flex-start',
     alignItems: 'center',
     width,
-    paddingTop: 50,
+    marginTop: 50,
   },
   phoneNumberInput: {
     marginTop: 50,
@@ -161,18 +135,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 12,
     color: 'grey',
-  },
-  indicator: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height,
-    width,
-  },
-  image: {
-    height: 60,
-    width: 60,
-    marginTop: '2%',
   },
   messageText: {
     marginTop: 10,

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import PostsFeed from '../components/PostsFeed';
 import HomeFeedHeader from '../components/HomeFeedHeader';
+import LoadingIndicator from '../components/LoadingIndicator';
 
 const HomeScreen = props => {
   // Initial State
@@ -22,9 +23,7 @@ const HomeScreen = props => {
     <View>
       <View>
         {!isLoaded ? (
-          <View style={styles.container}>
-            <ActivityIndicator size="large" color="orangered" />
-          </View>
+          <LoadingIndicator />
         ) : (
           <View>
             <PostsFeed
@@ -39,12 +38,3 @@ const HomeScreen = props => {
 };
 
 export default HomeScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
-  },
-});

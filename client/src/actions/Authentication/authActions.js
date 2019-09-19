@@ -20,6 +20,7 @@ export const getClientUserKey = async user => {
     return key;
   } catch (err) {
     console.warn(err);
+    return false;
   }
 };
 
@@ -131,6 +132,20 @@ export const removeUserFromDatabases = async (key, name) => {
     snapshot.forEach(post => {
       postsRef.child(post.key).remove();
     });
+  } catch (err) {
+    console.warn(err);
+  }
+};
+
+// Function used in: PhoneNumberScreen.js
+export const autoVerify = async (user, props) => {
+  try {
+    const alreadyRegistered = await getClientUserKey(user);
+    if (alreadyRegistered) {
+      checkForProfileFields(user, props);
+    } else {
+      createInitialProfileFields(user, props);
+    }
   } catch (err) {
     console.warn(err);
   }

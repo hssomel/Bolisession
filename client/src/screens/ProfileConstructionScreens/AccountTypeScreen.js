@@ -6,26 +6,38 @@ import {
   View,
   Modal,
   Alert,
+  Dimensions,
 } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
 import GradientButton from '../../components/GradientButton';
+import {
+  getClientUserKey,
+  getProfileData,
+} from '../../actions/Authentication/authActions';
 
-export default function AccountTypeScreen(props) {
+const { height, width } = Dimensions.get('window');
+
+const AccountTypeScreen = props => {
+  const { navigation } = props;
+  const user = navigation.getParam('user', null);
   // Initial State
   const [modalVisible, setModalVisible] = useState(false);
-  const [user] = useState(props.navigation.getParam('user', null));
-  const [username, setUsername] = useState(null);
-  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [profileData, setProfileData] = useState(null);
   const [isLoaded, setIsLoaded] = useState(null);
+  // Event Handlers
+  const setFields = async user => {
+    const key = await getClientUserKey(user);
+    const data = await getProfileData(key);
+    setProfileData(data);
+    setIsLoaded(true);
+  };
 
   useEffect(() => {
-    setUsername(user.displayName);
-    setProfilePhoto(user.photoURL);
-    setIsLoaded(true);
-  }, [profilePhoto]);
+    setFields(user);
+  }, []);
 
   const handlePress = () => {
-    props.navigation.navigate('Home', {
+    navigation.navigate('Home', {
       user,
     });
   };
@@ -47,8 +59,12 @@ export default function AccountTypeScreen(props) {
     <SafeAreaView>
       {isLoaded && (
         <View style={styles.container}>
-          <Text style={styles.text}>Welcome, {username}</Text>
-          <Avatar rounded size={150} source={{ uri: profilePhoto }} />
+          <Text style={styles.text}>Welcome, {profileData.username}</Text>
+          <Avatar
+            rounded
+            size={150}
+            source={{ uri: profileData.profilePhoto }}
+          />
           <Text style={styles.text1}>Manager of a Team or Competition?</Text>
           <GradientButton
             onPress={openModal}
@@ -57,7 +73,6 @@ export default function AccountTypeScreen(props) {
           <Text style={styles.bottomText} onPress={handlePress}>
             Skip and continue
           </Text>
-
           <Modal
             animationType="slide"
             transparent={false}
@@ -84,15 +99,15 @@ export default function AccountTypeScreen(props) {
       )}
     </SafeAreaView>
   );
-}
+};
+
+export default AccountTypeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    height: '100%',
-    width: '100%',
+    height,
+    // width: '100%',
   },
   text: {
     fontSize: 34,
@@ -130,13 +145,11 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderWidth: 2,
     borderColor: 'orangered',
-    backgroundColor: 'transparent',
+    // backgroundColor: 'transparent',
   },
   modalView: {
-    height: '100%',
-    width: '100%',
-    flexDirection: 'column',
-    justifyContent: 'center',
+    height,
+    width,
     alignItems: 'center',
   },
 });

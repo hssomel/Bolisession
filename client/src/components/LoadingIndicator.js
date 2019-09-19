@@ -13,7 +13,6 @@ export default LoadingIndicator;
 
 const styles = StyleSheet.create({
   indicator: {
-    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',

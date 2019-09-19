@@ -39,11 +39,12 @@ const bhangraTeams = [
 ];
 
 const CreateAccountScreen = props => {
+  const { navigation } = props;
   // Initial State
   const [currentTeam, setCurrentTeam] = useState('');
   const [username, setUserName] = useState('');
-  const [user] = useState(props.navigation.getParam('user', null));
-  const [dataKey] = useState(props.navigation.getParam('dataKey', null));
+  const [user] = useState(navigation.getParam('user', null));
+  const [dataKey] = useState(navigation.getParam('dataKey', null));
   // Event Handlers
   const handlePress = () => {
     if (username.length > 2) {
@@ -94,16 +95,12 @@ export default CreateAccountScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
     alignItems: 'center',
     height,
-    width,
   },
   viewOne: {
     justifyContent: 'flex-end',
     alignItems: 'center',
-    width,
     flex: 2.25,
   },
   viewTwo: {
@@ -120,8 +117,6 @@ const styles = StyleSheet.create({
   },
   viewFour: {
     marginTop: height * 0.075,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
     width,
     flex: 5,
   },

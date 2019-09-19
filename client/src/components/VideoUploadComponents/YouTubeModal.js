@@ -110,6 +110,8 @@ const styles = StyleSheet.create({
     paddingBottom: '-1%',
     marginLeft: 10,
     marginTop: 15,
+    borderBottomWidth: 2,
+    borderBottomColor: 'red',
   },
   openModal: {
     height: 45,
