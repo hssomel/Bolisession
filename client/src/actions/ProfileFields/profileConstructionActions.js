@@ -6,7 +6,7 @@ const usersRef = firebase
   .child('users');
 
 // Function used in: 'CreateAccountScreen' to set username
-export const uploadUsername = async (user, username, dataKey, props) => {
+export const uploadUsername = async (user, username, dataKey, navigation) => {
   try {
     // update Admin Database first
     await user.updateProfile({
@@ -16,7 +16,7 @@ export const uploadUsername = async (user, username, dataKey, props) => {
     await usersRef.child(dataKey).update({
       username,
     });
-    props.navigation.navigate('ProfilePhoto', {
+    navigation.navigate('ProfilePhoto', {
       dataKey,
       user,
     });
@@ -69,4 +69,14 @@ export const uploadProfileVideo = (key, url, startTime) => {
     .catch(error => {
       console.log('error ', error);
     });
+};
+
+export const uploadUserBio = async (key, bio) => {
+  try {
+    usersRef.child(key).update({
+      bio,
+    });
+  } catch (err) {
+    console.warn(err);
+  }
 };

@@ -71,23 +71,23 @@ export const confirmUserinFireBase = async user => {
 
 // Navigate to the screen that completes missing information in User Profile
 // Function used in: LandingPageScreen, PhoneNumberScreen, PhoneConfirmationScreen
-export const checkForProfileFields = async (user, props) => {
+export const checkForProfileFields = async (user, navigation) => {
   const key = await getClientUserKey(user);
 
   if (!user.displayName) {
-    props.navigation.navigate('Create', {
+    navigation.navigate('Create', {
       user,
       dataKey: key,
     });
   }
   if (user.displayName && !user.photoURL) {
-    props.navigation.navigate('ProfilePhoto', {
+    navigation.navigate('ProfilePhoto', {
       user,
       dataKey: key,
     });
   }
   if (user.displayName && user.photoURL) {
-    props.navigation.navigate('Home', {
+    navigation.navigate('Home', {
       user,
     });
   }
@@ -95,7 +95,7 @@ export const checkForProfileFields = async (user, props) => {
 
 // Creating User in secondary (non-admin) firebase database
 // Function used in: PhoneConfirmationScreen
-export const createInitialProfileFields = (user, props) => {
+export const createInitialProfileFields = (user, navigation) => {
   usersRef
     .push({
       userID: user.uid,
@@ -109,7 +109,7 @@ export const createInitialProfileFields = (user, props) => {
       },
     })
     .then(data => {
-      props.navigation.navigate('Create', {
+      navigation.navigate('Create', {
         dataKey: data.key,
         user,
       });
@@ -138,13 +138,13 @@ export const removeUserFromDatabases = async (key, name) => {
 };
 
 // Function used in: PhoneNumberScreen.js
-export const autoVerify = async (user, props) => {
+export const autoVerify = async (user, navigation) => {
   try {
     const alreadyRegistered = await getClientUserKey(user);
     if (alreadyRegistered) {
-      checkForProfileFields(user, props);
+      checkForProfileFields(user, navigation);
     } else {
-      createInitialProfileFields(user, props);
+      createInitialProfileFields(user, navigation);
     }
   } catch (err) {
     console.warn(err);

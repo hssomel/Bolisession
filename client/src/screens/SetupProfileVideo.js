@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import GradientButton from '../components/GradientButton';
@@ -7,10 +7,12 @@ import { uploadProfileVideo } from '../actions/ProfileFields/profileConstruction
 import YouTubeModal from '../components/VideoUploadComponents/YouTubeModal';
 import YouTubeVideo from '../components/VideoUploadComponents/YouTubeVideo';
 
-const SetupProfileVideo = props => {
+const { width, height } = Dimensions.get('window');
+
+const SetupProfileVideo = ({ navigation }) => {
+  const [key] = useState(navigation.getParam('userKey', null));
   //Initial State
   const [modalOpen, setModalOpen] = useState(false);
-  const [key] = useState(props.navigation.getParam('userKey', null));
   const [youtubeURL, setYoutubeURL] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [slicedURL, setFinalURL] = useState(null);
@@ -69,7 +71,7 @@ const SetupProfileVideo = props => {
                 name="ios-arrow-round-back"
                 size={36}
                 color="orangered"
-                onPress={() => props.navigation.goBack()}
+                onPress={() => navigation.goBack()}
               />
             </View>
             <Text style={styles.titleText}>Upload a profile video</Text>
@@ -125,32 +127,24 @@ export default SetupProfileVideo;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    height: '100%',
-    width: '100%',
+    height,
   },
   topContainer: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
     alignItems: 'center',
     height: '100%',
-    width: '100%',
+    width,
     flex: 1,
     paddingTop: 10,
   },
   bottomContainer: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
     alignItems: 'center',
     height: '100%',
-    width: '100%',
+    width,
     flex: 1,
   },
   containerOne: {
     paddingTop: 5,
-    justifyContent: 'flex-start',
     alignItems: 'flex-start',
     paddingRight: 15,
     paddingLeft: 15,
@@ -158,7 +152,6 @@ const styles = StyleSheet.create({
   containerTwo: {
     height: '100%',
     width: '100%',
-    justifyContent: 'flex-start',
     alignItems: 'center',
   },
   buttonContainer: {
@@ -166,7 +159,6 @@ const styles = StyleSheet.create({
     marginBottom: '5%',
     alignItems: 'center',
     width: '100%',
-    justifyContent: 'flex-start',
   },
   buttonStyle: {
     height: 50,

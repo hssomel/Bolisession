@@ -22,9 +22,9 @@ import {
   isUserLocationOn,
 } from '../actions/Location/locationActions';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const MapScreen = props => {
+const MapScreen = ({ navigation }) => {
   // Initial State
   const [user, setUser] = useState(null);
   const [userKey, setUserKey] = useState(null);
@@ -45,11 +45,11 @@ const MapScreen = props => {
   // Event Handlers
   const navigateToProfile = item => {
     if (user.displayName == item._value.username) {
-      props.navigation.navigate('Profile', {
+      navigation.navigate('Profile', {
         sameUser: true,
       });
     } else {
-      props.navigation.navigate('Profile', {
+      navigation.navigate('Profile', {
         sameUser: false,
         username: item._value.username,
       });
@@ -233,14 +233,12 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'flex-start',
     height: '100%',
-    width: '100%',
+    width,
     flex: 1,
   },
   openModalButton: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'center',
     height: 50,
     width: width * 0.75,
@@ -251,11 +249,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   bottomContainer: {
-    flexDirection: 'column',
     alignItems: 'flex-end',
     justifyContent: 'center',
     height: '100%',
-    width: '100%',
+    width,
     flex: 1,
     paddingRight: 10,
   },

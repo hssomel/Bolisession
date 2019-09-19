@@ -17,8 +17,7 @@ import {
 
 const { height, width } = Dimensions.get('window');
 
-const PhoneConfirmationScreen = props => {
-  const { navigation } = props;
+const PhoneConfirmationScreen = ({ navigation }) => {
   const phoneNumber = navigation.getParam('phoneNumber', null);
   const confirmResult = navigation.getParam('confirmResult', null);
   // Initial State
@@ -27,15 +26,15 @@ const PhoneConfirmationScreen = props => {
   // Event Handlers
   const handlePress = () => {
     Alert.alert('Please re-enter number and try again!');
-    props.navigation.goBack();
+    navigation.goBack();
   };
 
   const checkForExistingUser = async user => {
     const doesExist = await confirmUserinFireBase(user);
     if (doesExist) {
-      checkForProfileFields(user, props);
+      checkForProfileFields(user, navigation);
     } else {
-      createInitialProfileFields(user, props);
+      createInitialProfileFields(user, navigation);
     }
   };
 
@@ -49,10 +48,6 @@ const PhoneConfirmationScreen = props => {
         })
         .catch(error => setMessage(error.message));
     }
-  };
-
-  const handleSubmitButtonPress = () => {
-    confirmCode();
   };
 
   return (
@@ -72,7 +67,7 @@ const PhoneConfirmationScreen = props => {
         </Text>
       </View>
       <View style={styles.viewTwo}>
-        <GradientButton onPress={handleSubmitButtonPress} title="Verify Code" />
+        <GradientButton onPress={confirmCode} title="Verify Code" />
         <Text style={{ marginTop: 10, fontSize: 12, paddingLeft: 20 }}>
           {message}
         </Text>

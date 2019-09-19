@@ -4,9 +4,9 @@ import PostsFeed from '../components/PostsFeed';
 import HomeFeedHeader from '../components/HomeFeedHeader';
 import LoadingIndicator from '../components/LoadingIndicator';
 
-const HomeScreen = props => {
+const HomeScreen = ({ navigation }) => {
   // Initial State
-  const [user] = useState(props.navigation.getParam('user', null));
+  const [user] = useState(navigation.getParam('user', null));
   const [isLoaded, setIsLoaded] = useState(null);
 
   useEffect(() => {

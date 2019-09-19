@@ -14,10 +14,8 @@ import { writeUserData } from '../actions/userProfileActions';
 
 const { width } = Dimensions.get('window');
 
-export default function HomeFeedHeader(props) {
-  const { user } = props;
+const HomeFeedHeader = ({ user, user: { photoURL } }) => {
   // Intial State
-  const [profilePhoto, setProfilePhoto] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [tweet, setTweet] = useState(null);
   const [isLoaded, setIsLoaded] = useState(null);
@@ -33,7 +31,6 @@ export default function HomeFeedHeader(props) {
   };
 
   useEffect(() => {
-    setProfilePhoto(user.photoURL);
     setIsLoaded(true);
   }, [writeUserData]);
 
@@ -45,7 +42,7 @@ export default function HomeFeedHeader(props) {
             rounded
             size={55}
             source={{
-              uri: profilePhoto,
+              uri: photoURL,
             }}
             containerStyle={styles.avatarStyle}
           />
@@ -79,9 +76,8 @@ export default function HomeFeedHeader(props) {
                   <Text style={styles.postText}>Post</Text>
                 </TouchableOpacity>
               </View>
-
               <View style={styles.bottomContainer}>
-                <Avatar rounded size={60} source={{ uri: profilePhoto }} />
+                <Avatar rounded size={60} source={{ uri: photoURL }} />
                 <TextInput
                   placeholder="What's the latest in bhangra?"
                   onChangeText={input => setTweet(input)}
@@ -94,12 +90,13 @@ export default function HomeFeedHeader(props) {
       )}
     </View>
   );
-}
+};
+
+export default HomeFeedHeader;
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'flex-start',
     paddingBottom: 20,
     paddingLeft: 10,
@@ -107,8 +104,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 14,
   },
   outerModalContainer: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
     alignItems: 'flex-start',
     flex: 1,
   },
@@ -116,7 +111,6 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'flex-start',
     flex: 1,
     paddingTop: 15,
@@ -125,7 +119,6 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'flex-start',
     flex: 9,
     paddingLeft: 10,

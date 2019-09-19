@@ -7,7 +7,7 @@ import {
   removeUserFromDatabases,
 } from '../actions/Authentication/authActions';
 
-const SettingsScreen = props => {
+const SettingsScreen = ({ navigation }) => {
   // Intial State
   const [user, setUser] = useState(null);
   const [userKey, setUserKey] = useState(null);
@@ -46,17 +46,17 @@ const SettingsScreen = props => {
   const signOut = () => {
     firebase.auth().signOut();
     console.log('Signed Out !');
-    props.navigation.navigate('phone');
+    navigation.navigate('phone');
   };
 
   const navigateToVideo = () => {
-    props.navigation.navigate('Video', {
+    navigation.navigate('Video', {
       userKey,
     });
   };
 
   const navigateToBio = () => {
-    props.navigation.navigate('Bio', {
+    navigation.navigate('Bio', {
       userKey,
     });
   };
@@ -88,7 +88,6 @@ export default SettingsScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',

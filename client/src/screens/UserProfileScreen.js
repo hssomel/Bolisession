@@ -10,17 +10,16 @@ import {
   getOtherPersonsKey,
 } from '../actions/Authentication/authActions';
 
-const UserProfileScreen = props => {
+const UserProfileScreen = ({ navigation }) => {
+  // Boolean value passed in indicating if client accessed screen by
+  // clicking on their own avatar or of another user
+  const [sameUser] = useState(navigation.getParam('sameUser', true));
+  // Username of the profile the client accessed
+  const [otherUser] = useState(navigation.getParam('username', null));
   // Initial State
   const [user, setUser] = useState(null);
-  // userKey refers to non-admin firebase database key for locating Current User
   const [userKey, setUserKey] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  // True or False param passed in indicating if user has accessed this route by
-  // clicking on their own avatar or someone else's in the universal post feed
-  const [sameUser] = useState(props.navigation.getParam('sameUser', true));
-  // Username of whoever's avatar the client clicked on in the universal post feed
-  const [otherUser] = useState(props.navigation.getParam('username', null));
   const [otherUserKey, setOtherUserKey] = useState(null);
   // Profile Data will either be of the client's or of another user if client
   // accessed the profile screen by clicking on another user's avatar

@@ -13,8 +13,7 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 // Style
 const { height, width } = Dimensions.get('window');
 
-const PhoneNumberScreen = props => {
-  const { navigation } = props;
+const PhoneNumberScreen = ({ navigation }) => {
   // Initial State
   const [phoneNumber, setPhoneNumber] = useState('');
   const [country, setCountry] = useState({
@@ -48,7 +47,7 @@ const PhoneNumberScreen = props => {
       setIsLoading(true);
       const autoUser = await checkAutoVerification();
       if (autoUser) {
-        autoVerify(autoUser, props);
+        autoVerify(autoUser, navigation);
       } else {
         navigation.navigate('codeEntry', {
           confirmResult: confirmation,

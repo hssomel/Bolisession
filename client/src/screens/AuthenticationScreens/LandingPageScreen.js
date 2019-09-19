@@ -11,18 +11,18 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
-const LandingPageScreen = props => {
+const LandingPageScreen = ({ navigation }) => {
   // Initial State
   const [isLoaded, setIsLoaded] = useState(false);
   // Event Handlers
   const handleSignUpPress = () => {
-    props.navigation.navigate('phone');
+    navigation.navigate('phone');
   };
 
   const recheckForUser = async user => {
     const doesExist = await confirmUserinFireBase(user);
     if (doesExist) {
-      checkForProfileFields(user, props);
+      checkForProfileFields(user, navigation);
     } else {
       // user does not exist in secondary database
       setIsLoaded(true);

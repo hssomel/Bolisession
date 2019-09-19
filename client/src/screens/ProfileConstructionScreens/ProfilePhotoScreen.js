@@ -15,8 +15,7 @@ import { uploadImageToFirebaseStorage } from '../../actions/ProfileFields/profil
 
 const { height, width } = Dimensions.get('window');
 
-const ProfilePhotoScreen = props => {
-  const { navigation } = props;
+const ProfilePhotoScreen = ({ navigation }) => {
   const user = navigation.getParam('user', null);
   const dataKey = navigation.getParam('dataKey', null);
   // Initial State

@@ -17,8 +17,7 @@ import {
 
 const { height, width } = Dimensions.get('window');
 
-const AccountTypeScreen = props => {
-  const { navigation } = props;
+const AccountTypeScreen = ({ navigation }) => {
   const user = navigation.getParam('user', null);
   // Initial State
   const [modalVisible, setModalVisible] = useState(false);
@@ -46,7 +45,7 @@ const AccountTypeScreen = props => {
     Alert.alert(
       'Team & Competition account types feature will be available next update!',
     );
-    props.navigation.navigate('Home', {
+    navigation.navigate('Home', {
       user,
     });
   };

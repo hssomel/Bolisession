@@ -38,17 +38,16 @@ const bhangraTeams = [
   },
 ];
 
-const CreateAccountScreen = props => {
-  const { navigation } = props;
+const CreateAccountScreen = ({ navigation }) => {
+  const [user] = useState(navigation.getParam('user', null));
+  const [dataKey] = useState(navigation.getParam('dataKey', null));
   // Initial State
   const [currentTeam, setCurrentTeam] = useState('');
   const [username, setUserName] = useState('');
-  const [user] = useState(navigation.getParam('user', null));
-  const [dataKey] = useState(navigation.getParam('dataKey', null));
   // Event Handlers
   const handlePress = () => {
     if (username.length > 2) {
-      uploadUsername(user, username, dataKey, props);
+      uploadUsername(user, username, dataKey, navigation);
     } else {
       Alert.alert('Username must be minimum 3 characters!');
     }

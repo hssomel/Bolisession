@@ -1,43 +1,34 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TextInput, Image } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { Button } from 'react-native-elements';
-import firebase from 'react-native-firebase';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  Image,
+  Dimensions,
+} from 'react-native';
+import GradientButton from '../components/GradientButton';
+import { uploadUserBio } from '../actions/ProfileFields/profileConstructionActions';
 
-export default function UserBioScreen(props) {
+const { width, height } = Dimensions.get('window');
+
+const UserBioScreen = ({ navigation }) => {
+  const [userKey] = useState(navigation.getParam('userKey', null));
   // Initial State
   const [bio, setBio] = useState('');
-  const [userKey] = useState(props.navigation.getParam('userKey', null));
   const x = 120 - bio.length;
-  // Firebase references
-  const usersRef = firebase
-    .database()
-    .ref('people/')
-    .child('users')
-    .child(userKey);
-
   // Event Handlers
-  const uploadBio = () => {
-    usersRef
-      .update({
-        bio: bio,
-      })
-      .then(data => {
-        console.log('successfully updated ', data);
-        props.navigation.navigate('Home');
-      })
-      .catch(error => {
-        console.log('error ', error);
-      });
+  const uploadBio = async () => {
+    await uploadUserBio(userKey, bio);
+    navigation.navigate('Home');
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        source={require('../assets/images/bhangra.png')}
+        source={require('../assets/images/dhol_logo.png')}
         style={styles.image}
       />
-
       <Text style={styles.text}>Describe yourself</Text>
       <Text style={styles.text1}>What makes you unique?</Text>
       <Text style={styles.text2}>Write a couple lines for your bio.</Text>
@@ -48,33 +39,19 @@ export default function UserBioScreen(props) {
       />
       <Text style={styles.text3}>{x}</Text>
       {bio.length > 2 && (
-        <Button
-          onPress={uploadBio}
-          containerStyle={styles.buttonContainer}
-          buttonStyle={styles.buttonStyle}
-          ViewComponent={LinearGradient}
-          linearGradientProps={{
-            colors: ['red', 'orange'],
-            start: { x: 0, y: 0.5 },
-            end: { x: 1, y: 0.5 },
-          }}
-          title="APPLY CHANGES"
-          fontSize={38}
-        />
+        <GradientButton title="APPLY CHANGES" onPress={uploadBio} />
       )}
     </SafeAreaView>
   );
-}
+};
+
+export default UserBioScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'white',
-    height: '100%',
-    width: '100%',
-    flex: 1,
+    height,
+    width,
   },
   text: {
     fontSize: 32,
@@ -101,6 +78,7 @@ const styles = StyleSheet.create({
     color: 'grey',
     marginTop: '1%',
     marginLeft: '75%',
+    marginBottom: '5%',
   },
   textInput: {
     borderBottomWidth: 2,
@@ -114,16 +92,5 @@ const styles = StyleSheet.create({
     height: 60,
     width: 60,
     marginTop: '2%',
-  },
-  buttonContainer: {
-    marginTop: '15%',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'center',
-  },
-  buttonStyle: {
-    height: 50,
-    width: '85%',
-    borderRadius: 25,
   },
 });
