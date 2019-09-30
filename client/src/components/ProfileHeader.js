@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,9 +6,10 @@ import {
   Text,
   Dimensions,
 } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Avatar } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
-import LoadingIndicator from './LoadingIndicator';
 import FollowSwitch from './FollowSwitch';
 import YouTubeVideo from './VideoUploadComponents/YouTubeVideo';
 import {
@@ -16,18 +17,15 @@ import {
   createOrVerifyThread,
   getMessageThreadKey,
 } from '../actions/Messaging/messagingActions';
-import {
-  increaseFollowingList,
-  decreaseFollowingList,
-  increaseFollowerList,
-  decreaseFollowersList,
-} from '../actions/userProfileActions';
+import { onFollowSwitchChange } from '../actions/userProfileActions';
 
 const { width } = Dimensions.get('window');
 const videoHeight = width * 0.6;
 
-const ProfileHeader = props => {
-  const { user, profileData, userKey, otherUserKey } = props;
+// profilekey is null if route is accessed by pressing profile icon on HomeScreen
+const ProfileHeader = ({ user, userkey, profile, profilekey, navigation }) => {
+  const clientName = user.username;
+  const clientID = user.userID;
   // Destructuring props
   const {
     username,
@@ -38,180 +36,166 @@ const ProfileHeader = props => {
     followingCount,
     bio,
     userID,
-  } = profileData;
+  } = profile;
   // Initial State
-  const [isLoaded, setIsLoaded] = useState(null);
   const [followers, setFollowersCount] = useState(followersCount);
   // Event Handlers
-  const toggleFollowSwitch = value => {
-    let counter;
-    if (!value) {
-      decreaseFollowingList(userKey, username);
-      decreaseFollowersList(otherUserKey, user.displayName);
-      counter = followers - 1;
-    } else {
-      increaseFollowingList(userKey, username);
-      increaseFollowerList(otherUserKey, user.displayName);
-      counter = followers + 1;
-    }
+  const handleFollowSwitchChange = value => {
+    const counter = value ? followers + 1 : followers - 1;
     setFollowersCount(counter);
+    onFollowSwitchChange(value, userkey, username, profilekey, clientName);
   };
 
   const onMessageButtonPress = async () => {
-    const threadID = await generateThreadID(user, userID);
+    const threadID = await generateThreadID(clientID, userID);
     const newThreadKey = await createOrVerifyThread(threadID);
     if (newThreadKey) {
-      props.navigation.navigate('PrivateMessage', {
-        user,
+      navigation.navigate('PrivateMessage', {
         threadKey: newThreadKey,
       });
     } else {
       // There is an existing messaging thread
       // Get the existing message thread key
       const key = await getMessageThreadKey(threadID);
-      props.navigation.navigate('PrivateMessage', {
-        user,
+      navigation.navigate('PrivateMessage', {
         threadKey: key,
       });
     }
   };
 
   const editButtonPress = () => {
-    props.navigation.navigate('Settings');
+    navigation.navigate('Settings');
   };
 
   const navigateToVideo = () => {
-    // Video route only accessible if client is viewing own profile
-    if (!otherUserKey) {
-      props.navigation.navigate('Video', {
-        user,
-        currentUser: profileData,
-        userKey,
-      });
+    if (username === clientName) {
+      navigation.navigate('Video');
     }
   };
 
-  useEffect(() => {
-    setIsLoaded(true);
-    return () => {
-      setIsLoaded(false);
-    };
-  }, []);
-
   return (
     <View>
-      {!isLoaded && <LoadingIndicator />}
-      {isLoaded && (
-        <View style={styles.container}>
-          <View style={styles.viewOne}>
-            {youtubeURL ? (
-              <YouTubeVideo
-                key={userKey}
-                style={{ height: '100%', width: '100%' }}
-                url={youtubeURL}
-                startTime={startTime}
-              />
-            ) : (
-              <Avatar
-                size="large"
-                icon={{ name: 'md-add-circle', type: 'ionicon', size: 72 }}
-                containerStyle={{
-                  height: '100%',
-                  width: '100%',
-                }}
-                onPress={navigateToVideo}
-              />
-            )}
-          </View>
-          <View style={styles.viewTwo}>
-            <View style={styles.viewThree}>
-              <Text style={styles.username}>{'@' + username}</Text>
-              <Avatar
-                rounded
-                size={100}
-                source={{
-                  uri: profilePhoto,
-                }}
-                containerStyle={styles.avatar}
-              />
-            </View>
-            <View style={styles.viewFour}>
-              <Text style={{ fontSize: 16 }}> Followers: </Text>
-              <Text style={styles.followCount}>{followers}</Text>
-              <Text style={{ fontSize: 16, paddingLeft: 15 }}>Following:</Text>
-              <Text style={styles.followCount}>{followingCount}</Text>
-            </View>
-            {otherUserKey ? (
-              <View style={styles.viewFive}>
-                <TouchableOpacity
-                  style={styles.messageButton}
-                  onPress={onMessageButtonPress}
-                >
-                  <Text style={styles.messageButtonText}>Message</Text>
-                </TouchableOpacity>
-                <FollowSwitch
-                  otherUserKey={otherUserKey}
-                  userKey={userKey}
-                  user={user}
-                  followers={followers}
-                  setFollowersCount={setFollowersCount}
-                  username={username}
-                  toggleFollowSwitch={toggleFollowSwitch}
-                />
-              </View>
-            ) : (
-              <TouchableOpacity
-                style={styles.editButton}
-                onPress={editButtonPress}
-              >
-                <Text style={styles.editText}>Edit Profile</Text>
-              </TouchableOpacity>
-            )}
-            <Text style={styles.bioText}>{bio}</Text>
-          </View>
+      <View style={styles.container}>
+        <View style={styles.viewOne}>
+          {youtubeURL ? (
+            <YouTubeVideo
+              key={userkey}
+              style={{ height: '100%', width: '100%' }}
+              url={youtubeURL}
+              startTime={startTime}
+            />
+          ) : (
+            <Avatar
+              size="large"
+              icon={{ name: 'md-add-circle', type: 'ionicon', size: 72 }}
+              containerStyle={{
+                height: '100%',
+                width: '100%',
+                backgroundColor: 'cyan',
+              }}
+              onPress={navigateToVideo}
+            />
+          )}
         </View>
-      )}
+        <View style={styles.viewTwo}>
+          <View style={styles.viewThree}>
+            <Text style={styles.username}>{'@' + username}</Text>
+            <Avatar
+              rounded
+              size={100}
+              source={{
+                uri: profilePhoto,
+              }}
+              containerStyle={styles.avatar}
+            />
+          </View>
+          <View style={styles.viewFour}>
+            <Text style={{ fontSize: 16 }}> Followers: </Text>
+            <Text style={styles.followCount}>{followers}</Text>
+            <Text style={{ fontSize: 16, paddingLeft: 15 }}> Following: </Text>
+            <Text style={styles.followCount}>{followingCount}</Text>
+          </View>
+          {username != clientName ? (
+            <View style={styles.viewFive}>
+              <TouchableOpacity
+                style={styles.messageButton}
+                onPress={onMessageButtonPress}
+              >
+                <Text style={styles.messageButtonText}>Message</Text>
+              </TouchableOpacity>
+              <FollowSwitch
+                handleFollowSwitchChange={handleFollowSwitchChange}
+              />
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={editButtonPress}
+            >
+              <Text style={styles.editText}>Edit Profile</Text>
+            </TouchableOpacity>
+          )}
+          <Text style={styles.bioText}>{bio}</Text>
+        </View>
+      </View>
     </View>
   );
 };
 
-export default withNavigation(ProfileHeader);
+ProfileHeader.propTypes = {
+  user: PropTypes.object.isRequired,
+  userkey: PropTypes.string.isRequired,
+  profile: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  userkey: state.auth.userkey,
+  profile: state.profile.profile,
+  profilekey: state.profile.profilekey,
+  postsByProfile: state.post.postsByProfile,
+});
+
+export default connect(mapStateToProps)(withNavigation(ProfileHeader));
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
     flex: 1,
     borderBottomColor: '#D3D3D3',
     borderBottomWidth: 14,
   },
   viewOne: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: videoHeight,
-    width: '100%',
     flex: 1,
+    height: videoHeight,
+    width,
   },
   viewTwo: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
+    flex: 1,
     alignItems: 'flex-start',
-    flex: 3,
     paddingLeft: 15,
     paddingRight: 10,
-    height: '100%',
-    width: '100%',
   },
   viewThree: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
     height: '100%',
     width: '100%',
+  },
+  viewFour: {
+    marginTop: 45,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flex: 1,
+    marginBottom: 7.5,
+  },
+  viewFive: {
+    width: '100%',
+    height: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
   },
   username: {
@@ -222,20 +206,8 @@ const styles = StyleSheet.create({
     left: 0,
     fontWeight: 'bold',
   },
-  viewFour: {
-    marginTop: 45,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    flex: 1,
-  },
-  viewFive: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   followCount: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 'bold',
     color: 'black',
     fontFamily: 'Roboto',

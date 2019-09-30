@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import GradientButton from '../components/GradientButton';
-import { uploadProfileVideo } from '../actions/ProfileFields/profileConstructionActions';
+import { uploadProfileVideo } from '../actions/profileActions';
 import YouTubeModal from '../components/VideoUploadComponents/YouTubeModal';
 import YouTubeVideo from '../components/VideoUploadComponents/YouTubeVideo';
 
 const { width, height } = Dimensions.get('window');
 
-const SetupProfileVideo = ({ navigation }) => {
-  const [key] = useState(navigation.getParam('userKey', null));
+const SetupProfileVideo = ({ navigation, userkey, uploadProfileVideo }) => {
+  // This might run an error because we need to do const [key]
   //Initial State
   const [modalOpen, setModalOpen] = useState(false);
   const [youtubeURL, setYoutubeURL] = useState(null);
@@ -85,7 +87,7 @@ const SetupProfileVideo = ({ navigation }) => {
       <View style={styles.bottomContainer}>
         {startTime && slicedURL && videoSelected && (
           <Button
-            onPress={() => uploadProfileVideo(key, slicedURL, startTime)}
+            onPress={() => uploadProfileVideo(userkey, slicedURL, startTime)}
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.buttonStyle}
             title="Confirm profile video"
@@ -123,7 +125,18 @@ const SetupProfileVideo = ({ navigation }) => {
   );
 };
 
-export default SetupProfileVideo;
+SetupProfileVideo.propTypes = {
+  userkey: PropTypes.string.isRequired,
+  uploadProfileVideo: PropTypes.func.isRequired,
+};
+const mapStateToProps = state => ({
+  userkey: state.auth.userkey,
+});
+
+export default connect(
+  mapStateToProps,
+  { uploadProfileVideo },
+)(SetupProfileVideo);
 
 const styles = StyleSheet.create({
   container: {

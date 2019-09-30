@@ -6,35 +6,40 @@ import {
   TouchableHighlight,
   Alert,
 } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { withNavigation } from 'react-navigation';
+import { getPostsByProfile, setProfileOnScreen } from '../actions/postActions';
 import {
   addUserToLikesArray,
   removeUserFromLikesArray,
   checkForLikes,
 } from '../actions/userProfileActions';
 
-const Post = props => {
+const Post = ({
+  data,
+  postkey,
+  user,
+  user: { username },
+  setProfileOnScreen,
+  getPostsByProfile,
+  navigation,
+}) => {
+  // Destructuring props
+  const { author, text, profilePhoto, comments, retweets, likes } = data;
   // Initial State
-  const { item, user } = props;
   const [liked, setHasLiked] = useState(null);
   const [likeCounter, setLikeCounter] = useState(null);
-  // Destructuring props
-  const { displayName } = user;
-  const {
-    username,
-    text,
-    profilePhoto,
-    comments,
-    retweets,
-    likes,
-  } = item._value;
+  const [isLoaded, setIsLoaded] = useState(null);
   // Event Handlers
   const hasUserLikedPost = async () => {
-    const initalLike = await checkForLikes(item, user);
+    // issue is we are not refreshing redux
+    const initalLike = await checkForLikes(postkey, username);
     setHasLiked(initalLike);
     setLikeCounter(likes);
+    setIsLoaded(true);
   };
 
   const handleLikeButtonPress = async () => {
@@ -42,28 +47,13 @@ const Post = props => {
     if (liked) {
       setHasLiked(null);
       counter = likeCounter - 1;
-      await removeUserFromLikesArray(item.key, displayName);
+      await removeUserFromLikesArray(postkey, username);
     } else {
       setHasLiked(true);
       counter = likeCounter + 1;
-      await addUserToLikesArray(item.key, displayName);
+      await addUserToLikesArray(postkey, username);
     }
     setLikeCounter(counter);
-  };
-
-  const handleAvatarPress = () => {
-    if (displayName == username) {
-      // Client has clicked on their own avatar of their own post
-      props.navigation.navigate('Profile', {
-        sameUser: true,
-      });
-    } else {
-      // Client has clicked on someone else's avatar
-      props.navigation.navigate('Profile', {
-        sameUser: false,
-        username,
-      });
-    }
   };
 
   const handleRetweetPress = () => {
@@ -80,87 +70,84 @@ const Post = props => {
     );
   };
 
+  const onAvatarPress = async () => {
+    await getPostsByProfile(author);
+    await setProfileOnScreen(user, author);
+    navigation.navigate('Profile');
+  };
+
   useEffect(() => {
     // Check if client has liked the post
     hasUserLikedPost();
-  }, []);
+  }, [likes]);
 
   return (
-    <View style={styles.tweet}>
-      <View style={styles.firstContainer}>
-        <TouchableHighlight underlayColor="white" activeOpacity={0.75}>
-          <View>
-            <Avatar
-              source={{
-                uri: profilePhoto,
-              }}
-              rounded
-              size={60}
-              onPress={handleAvatarPress}
-            />
+    <View>
+      {isLoaded && (
+        <View style={styles.container}>
+          <View style={styles.firstContainer}>
+            <TouchableHighlight underlayColor="white" activeOpacity={0.75}>
+              <View>
+                <Avatar
+                  source={{
+                    uri: profilePhoto,
+                  }}
+                  rounded
+                  size={60}
+                  onPress={onAvatarPress}
+                />
+              </View>
+            </TouchableHighlight>
           </View>
-        </TouchableHighlight>
-      </View>
-      <View style={styles.secondaryContainer}>
-        <View style={styles.usernameContainer}>
-          <Text style={styles.usernameText}>{'@' + username}</Text>
-        </View>
-        <View style={styles.tweetBodyContainer}>
-          <Text style={styles.tweetText}>{text}</Text>
-        </View>
-        <View style={styles.footerContainer}>
-          <View style={styles.iconContainer}>
-            <Icon name="md-chatboxes" size={20} onPress={handleRetweetPress} />
-            <Text style={styles.badgeCount}>{comments}</Text>
-          </View>
-          <View style={styles.iconContainer}>
-            <Icon name="md-repeat" size={20} onPress={handleRetweetPress} />
-            <Text style={styles.badgeCount}>{retweets}</Text>
-          </View>
-          <View style={styles.iconContainer}>
-            {liked && (
-              <Icon
-                name="ios-heart"
-                size={20}
-                color="red"
-                onPress={handleLikeButtonPress}
-              />
-            )}
-            {!liked && (
-              <Icon
-                name="ios-heart-empty"
-                size={20}
-                onPress={handleLikeButtonPress}
-              />
-            )}
-            <Text style={styles.badgeCount}>{likeCounter}</Text>
+          <View style={styles.secondaryContainer}>
+            <Text style={styles.usernameText}>{'@' + author}</Text>
+            <Text style={styles.tweetText}>{text}</Text>
+            <View style={styles.footerContainer}>
+              <View style={styles.iconContainer}>
+                <Icon
+                  name="md-chatboxes"
+                  size={20}
+                  onPress={handleRetweetPress}
+                />
+                <Text style={styles.badgeCount}>{comments}</Text>
+              </View>
+              <View style={styles.iconContainer}>
+                <Icon name="md-repeat" size={20} onPress={handleRetweetPress} />
+                <Text style={styles.badgeCount}>{retweets}</Text>
+              </View>
+              <View style={styles.iconContainer}>
+                <Icon
+                  name="ios-heart"
+                  size={20}
+                  color={liked ? 'red' : null}
+                  onPress={handleLikeButtonPress}
+                />
+                <Text style={styles.badgeCount}>{likeCounter}</Text>
+              </View>
+            </View>
           </View>
         </View>
-      </View>
+      )}
     </View>
   );
 };
-export default withNavigation(Post);
+
+Post.propTypes = {
+  user: PropTypes.object.isRequired,
+  getPostsByProfile: PropTypes.func.isRequired,
+  setProfileOnScreen: PropTypes.func.isRequired,
+};
+const mapStateToProps = state => ({
+  user: state.auth.user,
+});
+
+export default connect(
+  mapStateToProps,
+  { getPostsByProfile, setProfileOnScreen },
+)(withNavigation(Post));
 
 const styles = StyleSheet.create({
-  firstContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  secondaryContainer: {
-    flex: 5,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    paddingLeft: 10,
-  },
-  usernameText: {
-    fontSize: 17,
-    fontFamily: 'arial',
-  },
-  tweet: {
+  container: {
     paddingTop: 10,
     paddingBottom: 5,
     paddingLeft: 5,
@@ -168,7 +155,19 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E4E4E4',
     borderBottomWidth: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+  },
+  firstContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  secondaryContainer: {
+    flex: 5,
+    alignItems: 'flex-start',
+    paddingLeft: 10,
+  },
+  usernameText: {
+    fontSize: 17,
+    fontFamily: 'arial',
   },
   tweetText: {
     marginTop: 1,
@@ -176,32 +175,17 @@ const styles = StyleSheet.create({
     color: 'black',
     paddingLeft: 2,
   },
-  usernameContainer: {
-    height: '100%',
-    width: '100%',
-    flex: 1,
-  },
-  tweetBodyContainer: {
-    height: '100%',
-    width: '100%',
-    flex: 1,
-  },
   footerContainer: {
-    height: '100%',
-    width: '100%',
     flexDirection: 'row',
     paddingTop: 15,
     paddingBottom: 5,
     paddingLeft: 10,
-    flex: 1,
     justifyContent: 'space-evenly',
     marginTop: 10,
   },
   iconContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: '100%',
-    width: '100%',
     flex: 1,
     elevation: 1,
   },

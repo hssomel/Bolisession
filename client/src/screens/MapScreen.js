@@ -9,26 +9,23 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
-import firebase from 'react-native-firebase';
 import MapSearchModal from '../components/MapScreenComponents/MapSearchModal';
 import MapSettingsModal from '../components/MapScreenComponents/MapSettingsModal';
-import { getClientUserKey } from '../actions/Authentication/authActions';
 import {
   requestLocationPermission,
   getLocation,
   getUsersLocations,
   updateFirebaseLocation,
-  isUserLocationOn,
 } from '../actions/Location/locationActions';
 
 const { width, height } = Dimensions.get('window');
 
-const MapScreen = ({ navigation }) => {
+const MapScreen = ({ navigation, userkey, user }) => {
+  const { username, locationOn } = user;
   // Initial State
-  const [user, setUser] = useState(null);
-  const [userKey, setUserKey] = useState(null);
-  const [locationOn, setLocationOn] = useState(null);
   const [usersLocationData, setUsersLocationData] = useState(null);
   const [searchVisible, setSearchVisible] = useState(true);
   const [modalOpen, setModalOpen] = useState(null);
@@ -44,14 +41,11 @@ const MapScreen = ({ navigation }) => {
 
   // Event Handlers
   const navigateToProfile = item => {
-    if (user.displayName == item._value.username) {
-      navigation.navigate('Profile', {
-        sameUser: true,
-      });
+    if (username == item._value.username) {
+      navigation.navigate('Profile', {});
     } else {
       navigation.navigate('Profile', {
-        sameUser: false,
-        username: item._value.username,
+        profileName: item._value.username,
       });
     }
   };
@@ -92,42 +86,29 @@ const MapScreen = ({ navigation }) => {
     }
   };
 
-  const checkAppLevelPermission = async key => {
-    const location = await isUserLocationOn(key);
-    if (location) {
+  const checkAppLevelPermission = async () => {
+    if (locationOn) {
       const coords = await getLocation();
       setCoordinates(coords);
-      setLocationOn(true);
       const { latitude, longitude } = coords;
-      updateFirebaseLocation(key, latitude, longitude, true);
+      updateFirebaseLocation(userkey, latitude, longitude, true);
       return true;
     }
   };
 
-  const initializePermissionsAndFields = async user => {
-    const key = await getClientUserKey(user);
-    setUserKey(key);
+  const initializePermissionsAndFields = async () => {
     const userLocations = await getUsersLocations();
     setUsersLocationData(userLocations);
     const OSLevelPerm = await requestLocationPermission();
     if (OSLevelPerm) {
-      await checkAppLevelPermission(key);
+      await checkAppLevelPermission();
     } else {
-      updateFirebaseLocation(key, 0, 0, false);
-      setLocationOn(false);
+      updateFirebaseLocation(userkey, 0, 0, false);
     }
   };
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        setUser(user);
-        initializePermissionsAndFields(user);
-      }
-    });
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
+    initializePermissionsAndFields();
   }, []);
 
   return (
@@ -208,16 +189,25 @@ const MapScreen = ({ navigation }) => {
           settingsmodalOpen={settingsModalOpen}
           setSettingsModalOpen={setSettingsModalOpen}
           locationOn={locationOn}
-          setLocationOn={setLocationOn}
           setCoordinates={setCoordinates}
-          userKey={userKey}
+          userKey={userkey}
         />
       )}
     </View>
   );
 };
 
-export default MapScreen;
+MapScreen.propTypes = {
+  user: PropTypes.object.isRequired,
+  userkey: PropTypes.string.isRequired,
+};
+
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  userkey: state.auth.userkey,
+});
+
+export default connect(mapStateToProps)(MapScreen);
 
 const styles = StyleSheet.create({
   container: {

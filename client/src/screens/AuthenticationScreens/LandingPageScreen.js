@@ -2,16 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
 import Video from 'react-native-video';
 import firebase from 'react-native-firebase';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import GradientButton from '../../components/GradientButton';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import {
-  confirmUserinFireBase,
-  checkForProfileFields,
-} from '../../actions/Authentication/authActions';
+  initializeUserCredentials,
+  initializeProfileData,
+} from '../../actions/authActions';
 
 const { width, height } = Dimensions.get('window');
 
-const LandingPageScreen = ({ navigation }) => {
+const LandingPageScreen = ({
+  navigation,
+  initializeProfileData,
+  initializeUserCredentials,
+}) => {
   // Initial State
   const [isLoaded, setIsLoaded] = useState(false);
   // Event Handlers
@@ -19,30 +25,21 @@ const LandingPageScreen = ({ navigation }) => {
     navigation.navigate('phone');
   };
 
-  const recheckForUser = async user => {
-    const doesExist = await confirmUserinFireBase(user);
-    if (doesExist) {
-      checkForProfileFields(user, navigation);
-    } else {
-      // user does not exist in secondary database
-      setIsLoaded(true);
-    }
+  const checkIfUserExistsInDatabase = async user => {
+    const key = await initializeUserCredentials(user);
+    initializeProfileData(key, navigation);
   };
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      console.log('mounted to LandingPageScreen');
       if (user) {
-        console.log('initial user', user);
-        // checking to see if user exists in secondary (non-admin) database
-        recheckForUser(user);
+        checkIfUserExistsInDatabase(user);
       } else {
         setIsLoaded(true);
       }
     });
     return () => {
       if (unsubscribe) unsubscribe();
-      console.log('unmounted from Landing Page');
     };
   }, []);
 
@@ -77,7 +74,16 @@ const LandingPageScreen = ({ navigation }) => {
   );
 };
 
-export default LandingPageScreen;
+LandingPageScreen.propTypes = {
+  initializeUserCredentials: PropTypes.func.isRequired,
+  initializeProfileData: PropTypes.func.isRequired,
+};
+const mapStateToProps = state => ({});
+
+export default connect(
+  mapStateToProps,
+  { initializeProfileData, initializeUserCredentials },
+)(LandingPageScreen);
 
 const styles = StyleSheet.create({
   container: {

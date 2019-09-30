@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,45 +9,26 @@ import {
   Dimensions,
 } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import GradientButton from '../../components/GradientButton';
-import {
-  getClientUserKey,
-  getProfileData,
-} from '../../actions/Authentication/authActions';
 
 const { height, width } = Dimensions.get('window');
 
-const AccountTypeScreen = ({ navigation }) => {
-  const user = navigation.getParam('user', null);
+const AccountTypeScreen = ({ navigation, user }) => {
+  const { username, profilePhoto } = user;
   // Initial State
   const [modalVisible, setModalVisible] = useState(false);
-  const [profileData, setProfileData] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(null);
   // Event Handlers
-  const setFields = async user => {
-    const key = await getClientUserKey(user);
-    const data = await getProfileData(key);
-    setProfileData(data);
-    setIsLoaded(true);
-  };
-
-  useEffect(() => {
-    setFields(user);
-  }, []);
-
   const handlePress = () => {
-    navigation.navigate('Home', {
-      user,
-    });
+    navigation.navigate('Home');
   };
 
   const handleModalButton = () => {
     Alert.alert(
       'Team & Competition account types feature will be available next update!',
     );
-    navigation.navigate('Home', {
-      user,
-    });
+    navigation.navigate('Home');
   };
 
   const openModal = () => {
@@ -56,57 +37,54 @@ const AccountTypeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView>
-      {isLoaded && (
-        <View style={styles.container}>
-          <Text style={styles.text}>Welcome, {profileData.username}</Text>
-          <Avatar
-            rounded
-            size={150}
-            source={{ uri: profileData.profilePhoto }}
-          />
-          <Text style={styles.text1}>Manager of a Team or Competition?</Text>
-          <GradientButton
-            onPress={openModal}
-            title="Create a Special Account"
-          />
-          <Text style={styles.bottomText} onPress={handlePress}>
-            Skip and continue
-          </Text>
-          <Modal
-            animationType="slide"
-            transparent={false}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(false);
-            }}
-          >
-            <View style={styles.modalView}>
-              <GradientButton
-                onPress={handleModalButton}
-                title="CREATE TEAM ACCOUNT"
-              />
-              <Button
-                onPress={handleModalButton}
-                containerStyle={styles.buttonContainer}
-                buttonStyle={styles.buttonStyle}
-                title="CREATE COMPETITION ACCOUNT"
-                titleStyle={{ color: 'orangered' }}
-              />
-            </View>
-          </Modal>
-        </View>
-      )}
+      <View style={styles.container}>
+        <Text style={styles.text}>Welcome, {username}</Text>
+        <Avatar rounded size={150} source={{ uri: profilePhoto }} />
+        <Text style={styles.text1}>Manager of a Team or Competition?</Text>
+        <GradientButton onPress={openModal} title="Create a Special Account" />
+        <Text style={styles.bottomText} onPress={handlePress}>
+          Skip and continue
+        </Text>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(false);
+          }}
+        >
+          <View style={styles.modalView}>
+            <GradientButton
+              onPress={handleModalButton}
+              title="CREATE TEAM ACCOUNT"
+            />
+            <Button
+              onPress={handleModalButton}
+              containerStyle={styles.buttonContainer}
+              buttonStyle={styles.buttonStyle}
+              title="CREATE COMPETITION ACCOUNT"
+              titleStyle={{ color: 'orangered' }}
+            />
+          </View>
+        </Modal>
+      </View>
     </SafeAreaView>
   );
 };
 
-export default AccountTypeScreen;
+AccountTypeScreen.propTypes = {
+  user: PropTypes.object.isRequired,
+};
+const mapStateToProps = state => ({
+  user: state.auth.user,
+});
+
+export default connect(mapStateToProps)(AccountTypeScreen);
 
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     height,
-    // width: '100%',
   },
   text: {
     fontSize: 34,

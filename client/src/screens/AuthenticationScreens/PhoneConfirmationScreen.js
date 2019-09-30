@@ -8,20 +8,25 @@ import {
   Dimensions,
 } from 'react-native';
 import { Text } from 'react-native-elements';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import GradientButton from '../../components/GradientButton';
 import {
-  confirmUserinFireBase,
-  checkForProfileFields,
-  createInitialProfileFields,
-} from '../../actions/Authentication/authActions';
+  initializeUserCredentials,
+  initializeProfileData,
+} from '../../actions/authActions';
 
 const { height, width } = Dimensions.get('window');
 
-const PhoneConfirmationScreen = ({ navigation }) => {
+const PhoneConfirmationScreen = ({
+  navigation,
+  initializeProfileData,
+  initializeUserCredentials,
+}) => {
   const phoneNumber = navigation.getParam('phoneNumber', null);
   const confirmResult = navigation.getParam('confirmResult', null);
   // Initial State
-  const [message, setMessage] = useState(''); // TO DO integrate into error
+  const [message, setMessage] = useState('');
   const [codeInput, setCodeInput] = useState('');
   // Event Handlers
   const handlePress = () => {
@@ -30,12 +35,8 @@ const PhoneConfirmationScreen = ({ navigation }) => {
   };
 
   const checkForExistingUser = async user => {
-    const doesExist = await confirmUserinFireBase(user);
-    if (doesExist) {
-      checkForProfileFields(user, navigation);
-    } else {
-      createInitialProfileFields(user, navigation);
-    }
+    const key = await initializeUserCredentials(user);
+    initializeProfileData(key, navigation);
   };
 
   const confirmCode = () => {
@@ -76,7 +77,16 @@ const PhoneConfirmationScreen = ({ navigation }) => {
   );
 };
 
-export default PhoneConfirmationScreen;
+PhoneConfirmationScreen.propTypes = {
+  initializeUserCredentials: PropTypes.func.isRequired,
+  initializeProfileData: PropTypes.func.isRequired,
+};
+const mapStateToProps = state => ({});
+
+export default connect(
+  mapStateToProps,
+  { initializeProfileData, initializeUserCredentials },
+)(PhoneConfirmationScreen);
 
 const styles = StyleSheet.create({
   container: {

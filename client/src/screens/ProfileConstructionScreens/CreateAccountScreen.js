@@ -9,13 +9,15 @@ import {
   Alert,
   Dimensions,
 } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import RNPickerSelect from 'react-native-picker-select';
 import GradientButton from '../../components/GradientButton';
-import { uploadUsername } from '../../actions/ProfileFields/profileConstructionActions';
+import { uploadUsername } from '../../actions/profileActions';
 
 const { height, width } = Dimensions.get('window');
 
-const bhangraTeams = [
+const danceTeams = [
   {
     label: 'SPD',
     value: 'SPD',
@@ -24,30 +26,16 @@ const bhangraTeams = [
     label: 'Bhangra Empire',
     value: 'Bhangra Empire',
   },
-  {
-    label: 'DRP',
-    value: 'DRP',
-  },
-  {
-    label: 'Got Bhangra',
-    value: 'Got Bhangra',
-  },
-  {
-    label: 'ASAP',
-    value: 'ASAP',
-  },
 ];
 
-const CreateAccountScreen = ({ navigation }) => {
-  const [user] = useState(navigation.getParam('user', null));
-  const [dataKey] = useState(navigation.getParam('dataKey', null));
+const CreateAccountScreen = ({ navigation, uploadUsername, userkey }) => {
   // Initial State
   const [currentTeam, setCurrentTeam] = useState('');
   const [username, setUserName] = useState('');
   // Event Handlers
   const handlePress = () => {
     if (username.length > 2) {
-      uploadUsername(user, username, dataKey, navigation);
+      uploadUsername(userkey, username, navigation);
     } else {
       Alert.alert('Username must be minimum 3 characters!');
     }
@@ -76,7 +64,7 @@ const CreateAccountScreen = ({ navigation }) => {
             value: null,
             color: 'grey',
           }}
-          items={bhangraTeams}
+          items={danceTeams}
           onValueChange={value => setCurrentTeam(value)}
           value={currentTeam}
           useNativeAndroidPickerStyle={false}
@@ -90,7 +78,18 @@ const CreateAccountScreen = ({ navigation }) => {
   );
 };
 
-export default CreateAccountScreen;
+CreateAccountScreen.propTypes = {
+  uploadUsername: PropTypes.func.isRequired,
+  userkey: PropTypes.string.isRequired,
+};
+const mapStateToProps = state => ({
+  userkey: state.auth.userkey,
+});
+
+export default connect(
+  mapStateToProps,
+  { uploadUsername },
+)(CreateAccountScreen);
 
 const styles = StyleSheet.create({
   container: {

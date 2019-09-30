@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import firebase from 'react-native-firebase';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { getExistingMessages } from '../../actions/Messaging/messagingActions';
 
-export default function PrivateMessageScreen(props) {
+const PrivateMessageScreen = ({ user: { username, profilePhoto, userID } }) => {
   // Initial State
   const [messages, setMessages] = useState([]);
-  const [thisUser] = useState(props.navigation.getParam('user', null));
   const [threadKey] = useState(props.navigation.getParam('threadKey', null));
   // Firebase References
   const messageRef = firebase.database().ref('messages/');
@@ -40,10 +41,19 @@ export default function PrivateMessageScreen(props) {
       inverted={false}
       onSend={newMessage => onSend(newMessage)}
       user={{
-        _id: thisUser.uid,
-        name: thisUser.displayName,
-        avatar: thisUser.photoURL,
+        _id: userID,
+        name: username,
+        avatar: profilePhoto,
       }}
     />
   );
-}
+};
+
+PrivateMessageScreen.propTypes = {
+  user: PropTypes.object.isRequired,
+};
+const mapStateToProps = state => ({
+  user: state.auth.user,
+});
+
+export default connect(mapStateToProps)(PrivateMessageScreen);

@@ -7,16 +7,16 @@ const usersRef = firebase
   .child('users');
 
 // Function used to generate unique thread key between two users
-// Function called by: MessagingListScreen.js & OtherUserProfileHeader.js
-export const generateThreadID = async (user, name) => {
-  const string1 = user.uid.toString();
+// Function called by: MessagingListScreen.js & ProfileHeader.js
+export const generateThreadID = async (clientID, name) => {
+  const string1 = clientID.toString();
   const string2 = name.toString();
   const threadID =
     string1 < string2 ? string1.concat(string2) : string2.concat(string1);
   return threadID;
 };
 
-// Function called by: MessagingListScreen.js & OtherUserProfileHeader.js
+// Function called by: MessagingListScreen.js & ProfileHeader.js
 export const createOrVerifyThread = async threadID => {
   try {
     const snapshot = await messageRef

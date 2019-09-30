@@ -11,7 +11,7 @@ export const increaseFollowingList = async (key, name) => {
   try {
     const ref = usersRef.child(key);
     await ref.child('following').push({
-      user_name: name,
+      username: name,
     });
 
     ref.child('followingCount').transaction(currentVal => {
@@ -27,7 +27,7 @@ export const decreaseFollowingList = async (key, name) => {
   try {
     const ref = usersRef.child(key).child('following');
     const snapshot = await ref
-      .orderByChild('user_name')
+      .orderByChild('username')
       .equalTo(name)
       .once('value');
 
@@ -49,7 +49,7 @@ export const increaseFollowerList = async (key, name) => {
   try {
     const ref = usersRef.child(key);
     await ref.child('followers').push({
-      user_name: name,
+      username: name,
     });
 
     const increaseFollowersRef = ref.child('followersCount');
@@ -66,7 +66,7 @@ export const decreaseFollowersList = async (key, name) => {
   try {
     const ref = usersRef.child(key).child('followers');
     const snapshot = await ref
-      .orderByChild('user_name')
+      .orderByChild('username')
       .equalTo(name)
       .once('value');
 
@@ -88,10 +88,12 @@ export const addUserToLikesArray = async (key, name) => {
   try {
     const ref = postsRef.child(key);
     await ref.child('usersLiked').push({
-      user_name: name,
+      username: name,
     });
-    // Increasing Like Count
-    ref.child('likes').transaction(currentVal => {
+
+    // Increasing like count
+    await ref.child('likes').transaction(currentVal => {
+      console.log('hit 81');
       return (currentVal || 0) + 1;
     });
   } catch (err) {
@@ -104,7 +106,7 @@ export const removeUserFromLikesArray = async (key, name) => {
   try {
     const removeRef = postsRef.child(key).child('usersLiked');
     const snapshot = await removeRef
-      .orderByChild('user_name')
+      .orderByChild('username')
       .equalTo(name)
       .once('value');
 
@@ -113,8 +115,9 @@ export const removeUserFromLikesArray = async (key, name) => {
     });
 
     const ref = postsRef.child(key).child('likes');
-    ref.transaction(currentVal => {
-      return (currentVal || 0) - 1;
+    await ref.transaction(currentVal => {
+      const val = (currentVal || 0) - 1;
+      return val;
     });
   } catch (err) {
     console.warn(err);
@@ -123,16 +126,14 @@ export const removeUserFromLikesArray = async (key, name) => {
 
 // Function to check if user has liked a post
 // Function used in component: Post.js
-export const checkForLikes = async (item, user) => {
+export const checkForLikes = async (key, name) => {
   try {
-    const snapshot = await postsRef
-      .child(item.key)
+    const ref = postsRef
+      .child(key)
       .child('usersLiked')
-      .orderByChild('user_name')
-      .equalTo(user.displayName)
-      .once('value');
-
-    // snapshot.val() is null if user has not liked post
+      .orderByChild('username')
+      .equalTo(name);
+    const snapshot = await ref.once('value');
     return snapshot.val();
   } catch (err) {
     console.warn(err);
@@ -141,12 +142,12 @@ export const checkForLikes = async (item, user) => {
 
 // Function checks if Client is following the other user
 // Function called by FollowSwitch.js
-export const checkIfFollowing = async (userKey, username) => {
+export const checkIfFollowing = async (profilekey, username) => {
   try {
     const snapshot = await usersRef
-      .child(userKey)
-      .child('following')
-      .orderByChild('user_name')
+      .child(profilekey)
+      .child('followers')
+      .orderByChild('username')
       .equalTo(username)
       .once('value');
     // if Client is not following other user the return is null
@@ -156,22 +157,18 @@ export const checkIfFollowing = async (userKey, username) => {
   }
 };
 
-// Function triggered when client posts a new tweet
-export const writeUserData = (tweet, user) => {
-  postsRef
-    .push({
-      text: tweet,
-      username: user.displayName,
-      profilePhoto: user.photoURL,
-      likes: 0,
-      comments: 0,
-      retweets: 0,
-      usersLiked: {},
-    })
-    .then(data => {
-      console.log('data ', data);
-    })
-    .catch(error => {
-      console.log('error ', error);
-    });
+export const onFollowSwitchChange = (
+  value,
+  userkey,
+  username,
+  profilekey,
+  clientName,
+) => {
+  if (!value) {
+    decreaseFollowingList(userkey, username);
+    decreaseFollowersList(profilekey, clientName);
+  } else {
+    increaseFollowingList(userkey, username);
+    increaseFollowerList(profilekey, clientName);
+  }
 };

@@ -1,40 +1,64 @@
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import firebase from 'react-native-firebase';
+import { NavigationEvents } from 'react-navigation';
 import PostsFeed from '../components/PostsFeed';
 import HomeFeedHeader from '../components/HomeFeedHeader';
 import LoadingIndicator from '../components/LoadingIndicator';
+import { getAllPosts } from '../actions/postActions';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ getAllPosts }) => {
+  // Firebase References
+  const postsRef = firebase.database().ref('posts/');
   // Initial State
-  const [user] = useState(navigation.getParam('user', null));
   const [isLoaded, setIsLoaded] = useState(null);
+  const [isFocused, setFocused] = useState(null);
+  // Event Handlers
+  const updatePosts = () => {
+    postsRef.on('child_added', () => {
+      getAllPosts();
+    });
+  };
 
   useEffect(() => {
-    console.log('mounted to home screen');
-    if (user) {
-      setIsLoaded(true);
-    }
+    updatePosts();
+    setIsLoaded(true);
     return () => {
-      console.log('unmounted from the home screen');
+      postsRef.off();
     };
-  }, [user]);
+  }, []);
+
+  useEffect(() => {
+    if (isFocused) {
+      getAllPosts();
+    }
+  }, [isFocused]);
 
   return (
     <View>
-      <View>
-        {!isLoaded ? (
-          <LoadingIndicator />
-        ) : (
-          <View>
-            <PostsFeed
-              user={user}
-              ListHeaderComponent={<HomeFeedHeader user={user} />}
-            />
-          </View>
-        )}
-      </View>
+      {!isLoaded ? (
+        <LoadingIndicator />
+      ) : (
+        <View style={{ justifyContent: 'center' }}>
+          <NavigationEvents
+            onDidFocus={() => setFocused(true)}
+            onDidBlur={() => setFocused(false)}
+          />
+          <PostsFeed ListHeaderComponent={<HomeFeedHeader />} />
+        </View>
+      )}
     </View>
   );
 };
 
-export default HomeScreen;
+HomeScreen.propTypes = {
+  getAllPosts: PropTypes.func.isRequired,
+};
+const mapStateToProps = state => ({});
+
+export default connect(
+  mapStateToProps,
+  { getAllPosts },
+)(HomeScreen);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,91 +8,92 @@ import {
   Modal,
   TextInput,
 } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { writeUserData } from '../actions/userProfileActions';
+import { postTweet } from '../actions/postActions';
 
 const { width } = Dimensions.get('window');
 
-const HomeFeedHeader = ({ user, user: { photoURL } }) => {
+const HomeFeedHeader = ({ user, user: { profilePhoto } }) => {
   // Intial State
   const [modalOpen, setModalOpen] = useState(false);
   const [tweet, setTweet] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(null);
-
   // Event Handlers
   const openPostModal = () => {
     setModalOpen(true);
   };
 
   const handlePress = tweet => {
-    writeUserData(tweet, user);
+    postTweet(tweet, user);
     setModalOpen(false);
   };
 
-  useEffect(() => {
-    setIsLoaded(true);
-  }, [writeUserData]);
-
   return (
     <View>
-      {isLoaded && (
-        <View style={styles.container}>
-          <Avatar
-            rounded
-            size={55}
-            source={{
-              uri: photoURL,
-            }}
-            containerStyle={styles.avatarStyle}
-          />
-          <TouchableOpacity
-            style={styles.openModalButton}
-            onPress={openPostModal}
-          >
-            <Text style={styles.buttonText}>What's happening in bhangra?</Text>
-          </TouchableOpacity>
-          <Modal
-            animationType="slide"
-            transparent={false}
-            visible={modalOpen}
-            onRequestClose={() => {
-              setModalOpen(false);
-            }}
-          >
-            <View style={styles.outerModalContainer}>
-              <View style={styles.topContainer}>
-                <Icon
-                  name="md-close"
-                  style={styles.iconStyle}
-                  onPress={() => setModalOpen(false)}
-                  color="orangered"
-                  size={32}
-                />
-                <TouchableOpacity
-                  style={styles.postButton}
-                  onPress={() => handlePress(tweet)}
-                >
-                  <Text style={styles.postText}>Post</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.bottomContainer}>
-                <Avatar rounded size={60} source={{ uri: photoURL }} />
-                <TextInput
-                  placeholder="What's the latest in bhangra?"
-                  onChangeText={input => setTweet(input)}
-                  style={styles.textInput}
-                />
-              </View>
+      <View style={styles.container}>
+        <Avatar
+          rounded
+          size={55}
+          source={{
+            uri: profilePhoto,
+          }}
+          containerStyle={styles.avatarStyle}
+        />
+        <TouchableOpacity
+          style={styles.openModalButton}
+          onPress={openPostModal}
+        >
+          <Text style={styles.buttonText}>What's happening in bhangra?</Text>
+        </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={modalOpen}
+          onRequestClose={() => {
+            setModalOpen(false);
+          }}
+        >
+          <View style={styles.outerModalContainer}>
+            <View style={styles.topContainer}>
+              <Icon
+                name="md-close"
+                style={styles.iconStyle}
+                onPress={() => setModalOpen(false)}
+                color="orangered"
+                size={32}
+              />
+              <TouchableOpacity
+                style={styles.postButton}
+                onPress={() => handlePress(tweet)}
+              >
+                <Text style={styles.postText}>Post</Text>
+              </TouchableOpacity>
             </View>
-          </Modal>
-        </View>
-      )}
+            <View style={styles.bottomContainer}>
+              <Avatar rounded size={60} source={{ uri: profilePhoto }} />
+              <TextInput
+                placeholder="What's the latest in bhangra?"
+                onChangeText={input => setTweet(input)}
+                style={styles.textInput}
+              />
+            </View>
+          </View>
+        </Modal>
+      </View>
     </View>
   );
 };
 
-export default HomeFeedHeader;
+HomeFeedHeader.propTypes = {
+  user: PropTypes.object.isRequired,
+};
+const mapStateToProps = state => ({
+  user: state.auth.user,
+});
+
+export default connect(mapStateToProps)(HomeFeedHeader);
 
 const styles = StyleSheet.create({
   container: {

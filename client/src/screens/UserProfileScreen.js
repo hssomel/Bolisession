@@ -1,82 +1,77 @@
 import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
-import firebase from 'react-native-firebase';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ProfileHeader from '../components/ProfileHeader';
 import PostsFeed from '../components/PostsFeed';
 import {
-  getClientUserKey,
-  getProfileData,
-  getOtherPersonsKey,
-} from '../actions/Authentication/authActions';
+  getPostsByProfile,
+  setProfileOnScreen,
+  clearProfile,
+} from '../actions/postActions';
 
-const UserProfileScreen = ({ navigation }) => {
-  // Boolean value passed in indicating if client accessed screen by
-  // clicking on their own avatar or of another user
-  const [sameUser] = useState(navigation.getParam('sameUser', true));
-  // Username of the profile the client accessed
-  const [otherUser] = useState(navigation.getParam('username', null));
+const UserProfileScreen = ({
+  user,
+  profile,
+  postsByProfile,
+  getPostsByProfile,
+  setProfileOnScreen,
+  clearProfile,
+}) => {
+  // Destructuring props
+  const { username } = user;
   // Initial State
-  const [user, setUser] = useState(null);
-  const [userKey, setUserKey] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [otherUserKey, setOtherUserKey] = useState(null);
-  // Profile Data will either be of the client's or of another user if client
-  // accessed the profile screen by clicking on another user's avatar
-  const [profileData, setProfileData] = useState(null);
-
   // Event Handlers
-  const setFields = async user => {
-    const key = await getClientUserKey(user);
-    setUserKey(key);
-    if (sameUser) {
-      // Client clicked on their own profile
-      const data = await getProfileData(key);
-      setProfileData(data);
-    } else {
-      // Client clicked on another user's profile
-      const key2 = await getOtherPersonsKey(otherUser);
-      setOtherUserKey(key2);
-      const data = await getProfileData(key2);
-      setProfileData(data);
+  const setFields = async () => {
+    if (!postsByProfile) {
+      await getPostsByProfile(username);
+    }
+    if (!profile) {
+      await setProfileOnScreen(user);
     }
     setIsLoaded(true);
   };
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      setUser(user);
-      setFields(user);
-    });
-
+    setFields();
     return () => {
-      if (unsubscribe) unsubscribe();
+      setIsLoaded(false);
+      clearProfile();
     };
   }, []);
 
   return (
     <View>
-      <View>
-        {!isLoaded && <LoadingIndicator />}
-        {isLoaded && (
-          <View>
-            <PostsFeed
-              name={profileData.username}
-              user={user}
-              ListHeaderComponent={
-                <ProfileHeader
-                  user={user}
-                  profileData={profileData}
-                  userKey={userKey}
-                  otherUserKey={otherUserKey}
-                />
-              }
-            />
-          </View>
-        )}
-      </View>
+      {!isLoaded ? (
+        <LoadingIndicator />
+      ) : (
+        <View style={{ justifyContent: 'center' }}>
+          <PostsFeed
+            profileMode={true}
+            ListHeaderComponent={<ProfileHeader />}
+          />
+        </View>
+      )}
     </View>
   );
 };
 
-export default UserProfileScreen;
+UserProfileScreen.propTypes = {
+  user: PropTypes.object.isRequired,
+  setProfileOnScreen: PropTypes.func.isRequired,
+  getPostsByProfile: PropTypes.func.isRequired,
+  clearProfile: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  profile: state.profile.profile,
+  postsByProfile: state.post.postsByProfile,
+});
+
+export default connect(
+  mapStateToProps,
+  { getPostsByProfile, setProfileOnScreen, clearProfile },
+)(UserProfileScreen);

@@ -1,35 +1,37 @@
-// **** FULL REDUX INTEGRATION NOT CURRENTLY IMPLEMENTED ***
-// **** THIS CODE IS A STARTING POINT ****
-
 import {
-  SET_CURRENT_PHONE_NUMBER,
-  SET_CURRENT_USER,
-  SIGN_OUT_USER,
+  SET_CLIENT_KEY,
+  INITIAL_CLIENT_PROFILE_FIELDS,
+  UPDATE_CLIENT_PROFILE,
 } from '../actions/actionTypes';
 
+// user refers strictly to the client
+// whereas in profileReducer.js 'profile' can refer to another user's profile
 const initialState = {
-  phoneNumber: '+1',
+  userkey: null,
   user: null,
-  confirmResult: null,
 };
 
 export default function(state = initialState, action) {
-  switch (action.type) {
-    case SET_CURRENT_PHONE_NUMBER:
+  const { type, payload } = action;
+  switch (type) {
+    case SET_CLIENT_KEY:
       return {
         ...state,
-        phoneNumber: action.payload,
+        userkey: payload,
       };
-    case SET_CURRENT_USER:
+
+    case INITIAL_CLIENT_PROFILE_FIELDS:
       return {
         ...state,
-        user: action.payload,
+        user: payload,
       };
-    case SIGN_OUT_USER:
+
+    case UPDATE_CLIENT_PROFILE:
       return {
         ...state,
-        user: null,
+        user: payload,
       };
+
     default:
       return state;
   }

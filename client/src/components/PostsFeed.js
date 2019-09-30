@@ -1,53 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, FlatList, SafeAreaView } from 'react-native';
-import firebase from 'react-native-firebase';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import LoadingIndicator from './LoadingIndicator';
 import Post from './Post';
 
-const PostsFeed = props => {
-  const { ListHeaderComponent, user, name } = props;
+const PostsFeed = ({
+  ListHeaderComponent,
+  posts,
+  postsByProfile,
+  profileMode,
+}) => {
   // Initial State
-  const [feedData, setFeedData] = useState([]);
   const [isLoaded, setIsLoaded] = useState(null);
-  // Firebase References
-  const postsRef = firebase.database().ref('posts/');
   // Event Handlers
-  const getPosts = async username => {
-    try {
-      let snapshot;
-      const posts = [];
-      if (!username) {
-        // We are not on a user's profile page
-        // So we want all posts
-        snapshot = await postsRef.limitToLast(100).once('value');
-      } else {
-        // We want posts by the name prop passed in
-        snapshot = await postsRef
-          .orderByChild('username')
-          .equalTo(username)
-          .once('value');
-      }
-      snapshot.forEach(data => {
-        posts.push(data);
-      });
-      setFeedData(posts.reverse());
-      setIsLoaded(true);
-    } catch (err) {
-      console.warn(err);
-    }
-  };
-
-  const updatePosts = () => {
-    postsRef.on('child_added', () => {
-      getPosts(name);
-    });
-  };
-
   useEffect(() => {
-    getPosts(name);
-    updatePosts();
+    setIsLoaded(true);
     return () => {
-      postsRef.off();
+      setIsLoaded(false);
     };
   }, []);
 
@@ -58,9 +28,11 @@ const PostsFeed = props => {
           <LoadingIndicator />
         ) : (
           <FlatList
-            data={feedData}
+            data={profileMode ? postsByProfile : posts}
             keyExtractor={item => item.key}
-            renderItem={({ item }) => <Post item={item} user={user} />}
+            renderItem={({ item }) => (
+              <Post data={item._value} postkey={item.key} />
+            )}
             ListHeaderComponent={ListHeaderComponent}
           />
         )}
@@ -69,4 +41,12 @@ const PostsFeed = props => {
   );
 };
 
-export default PostsFeed;
+PostsFeed.propTypes = {
+  posts: PropTypes.array.isRequired,
+};
+const mapStateToProps = state => ({
+  posts: state.post.posts,
+  postsByProfile: state.post.postsByProfile,
+});
+
+export default connect(mapStateToProps)(PostsFeed);

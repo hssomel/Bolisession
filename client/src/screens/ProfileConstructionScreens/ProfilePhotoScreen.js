@@ -9,15 +9,21 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
 import GradientButton from '../../components/GradientButton';
-import { uploadImageToFirebaseStorage } from '../../actions/ProfileFields/profileConstructionActions';
+import { uploadPhotoToFirebase } from '../../actions/profileActions';
 
 const { height, width } = Dimensions.get('window');
 
-const ProfilePhotoScreen = ({ navigation }) => {
-  const user = navigation.getParam('user', null);
-  const dataKey = navigation.getParam('dataKey', null);
+const ProfilePhotoScreen = ({
+  navigation,
+  uploadPhotoToFirebase,
+  userkey,
+  user,
+}) => {
+  const { userID } = user;
   // Initial State
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [allowContinue, setAllowContinue] = useState(false);
@@ -39,7 +45,7 @@ const ProfilePhotoScreen = ({ navigation }) => {
       setProfilePhoto(image);
       setModalVisible(false);
       setIsLoading(true);
-      uploadImageToFirebaseStorage(image, user, dataKey)
+      uploadPhotoToFirebase(image, userkey, userID)
         .then(() => {
           setIsLoading(false);
           setAllowContinue(true);
@@ -51,9 +57,7 @@ const ProfilePhotoScreen = ({ navigation }) => {
   };
 
   const handlePress = () => {
-    navigation.navigate('AccountType', {
-      user,
-    });
+    navigation.navigate('AccountType');
   };
 
   const openModal = () => {
@@ -118,7 +122,20 @@ const ProfilePhotoScreen = ({ navigation }) => {
   );
 };
 
-export default ProfilePhotoScreen;
+ProfilePhotoScreen.propTypes = {
+  uploadPhotoToFirebase: PropTypes.func.isRequired,
+  userkey: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired,
+};
+const mapStateToProps = state => ({
+  userkey: state.auth.userkey,
+  user: state.auth.user,
+});
+
+export default connect(
+  mapStateToProps,
+  { uploadPhotoToFirebase },
+)(ProfilePhotoScreen);
 
 const styles = StyleSheet.create({
   container: {

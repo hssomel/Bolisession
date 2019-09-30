@@ -7,19 +7,20 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import GradientButton from '../components/GradientButton';
-import { uploadUserBio } from '../actions/ProfileFields/profileConstructionActions';
+import { uploadUserBio } from '../actions/profileActions';
 
 const { width, height } = Dimensions.get('window');
 
-const UserBioScreen = ({ navigation }) => {
-  const [userKey] = useState(navigation.getParam('userKey', null));
+const UserBioScreen = ({ navigation, userkey }) => {
   // Initial State
   const [bio, setBio] = useState('');
   const x = 120 - bio.length;
   // Event Handlers
-  const uploadBio = async () => {
-    await uploadUserBio(userKey, bio);
+  const uploadBio = () => {
+    uploadUserBio(userkey, bio);
     navigation.navigate('Home');
   };
 
@@ -45,7 +46,18 @@ const UserBioScreen = ({ navigation }) => {
   );
 };
 
-export default UserBioScreen;
+UserBioScreen.propTypes = {
+  userkey: PropTypes.string.isRequired,
+};
+
+const mapStateToProps = state => ({
+  userkey: state.auth.userkey,
+});
+
+export default connect(
+  mapStateToProps,
+  { uploadUserBio },
+)(UserBioScreen);
 
 const styles = StyleSheet.create({
   container: {

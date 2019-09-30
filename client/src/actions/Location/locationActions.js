@@ -97,16 +97,3 @@ export const getUsersLocations = async () => {
     console.warn(err);
   }
 };
-
-// Determining if the user location is turned on internally in the app
-export const isUserLocationOn = async key => {
-  try {
-    const snapshot = await usersRef
-      .child(key)
-      .child('locationOn')
-      .once('value');
-    return snapshot.val();
-  } catch (err) {
-    console.warn(err);
-  }
-};

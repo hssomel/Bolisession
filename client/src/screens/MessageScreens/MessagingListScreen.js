@@ -31,7 +31,7 @@ const MessagingListScreen = props => {
   };
 
   const onListItemPress = async item => {
-    const threadID = await generateThreadID(user, item._value.userID);
+    const threadID = await generateThreadID(user.uid, item._value.userID);
     const newThreadKey = await createOrVerifyThread(threadID);
     if (newThreadKey) {
       props.navigation.navigate('PrivateMessage', {

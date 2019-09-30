@@ -1,47 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import LoadingIndicator from '../components/LoadingIndicator';
-import {
-  getClientUserKey,
-  removeUserFromDatabases,
-} from '../actions/Authentication/authActions';
+import { removeUserFromDatabases } from '../actions/authActions';
 
-const SettingsScreen = ({ navigation }) => {
+const SettingsScreen = ({ navigation, userkey, user }) => {
+  const { username } = user;
   // Intial State
-  const [user, setUser] = useState(null);
-  const [userKey, setUserKey] = useState(null);
+  const [firebaseUser, setUser] = useState(null);
   const [isLoaded, setIsLoaded] = useState(null);
   //Event Handlers
-  const setFields = async user => {
-    const key = await getClientUserKey(user);
-    setUserKey(key);
-    setIsLoaded(true);
-  };
-
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
-      setFields(user);
+      setIsLoaded(true);
     });
-
     return () => {
       if (unsubscribe) unsubscribe();
     };
   }, []);
-
-  const removeUser = async () => {
-    try {
-      // First removing user from non-admin database
-      await removeUserFromDatabases(userKey, user.displayName);
-      // Permanently deleting user from admin database
-      await user.delete();
-      // Then navigate to phone number entry screen
-    } catch (err) {
-      console.warn(err);
-      signOut();
-    }
-  };
 
   const signOut = () => {
     firebase.auth().signOut();
@@ -49,16 +28,17 @@ const SettingsScreen = ({ navigation }) => {
     navigation.navigate('phone');
   };
 
-  const navigateToVideo = () => {
-    navigation.navigate('Video', {
-      userKey,
-    });
-  };
-
-  const navigateToBio = () => {
-    navigation.navigate('Bio', {
-      userKey,
-    });
+  const removeUser = async () => {
+    try {
+      // First removing user from non-admin database
+      await removeUserFromDatabases(userkey, username);
+      // Permanently deleting user from admin database
+      await firebaseUser.delete();
+      // Then navigate to phone number entry screen
+    } catch (err) {
+      console.warn(err);
+      signOut();
+    }
   };
 
   return (
@@ -72,10 +52,16 @@ const SettingsScreen = ({ navigation }) => {
           <TouchableOpacity style={styles.button} onPress={signOut}>
             <Text style={styles.ButtonText}>Sign Out</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={navigateToVideo}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Video')}
+          >
             <Text style={styles.ButtonText}>Edit Profile Video</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={navigateToBio}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Bio')}
+          >
             <Text style={styles.ButtonText}>Edit Your Bio</Text>
           </TouchableOpacity>
         </View>
@@ -84,7 +70,16 @@ const SettingsScreen = ({ navigation }) => {
   );
 };
 
-export default SettingsScreen;
+SettingsScreen.propTypes = {
+  user: PropTypes.object.isRequired,
+  userkey: PropTypes.string.isRequired,
+};
+const mapStateToProps = state => ({
+  user: state.auth.user,
+  userkey: state.auth.userkey,
+});
+
+export default connect(mapStateToProps)(SettingsScreen);
 
 const styles = StyleSheet.create({
   container: {

@@ -2,18 +2,26 @@ import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, Dimensions, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import firebase from 'react-native-firebase';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import PhoneNumberInput from '../../components/NumberEntryComponents/PhoneNumberInput';
 import CountrySelector from '../../components/NumberEntryComponents/CountrySelector';
 import GradientButton from '../../components/GradientButton';
-// Assets & Data
+import LoadingIndicator from '../../components/LoadingIndicator';
 import flagCollection from '../../assets/flags/index';
 import countryData from '../../assets/countryData';
-import { autoVerify } from '../../actions/Authentication/authActions';
-import LoadingIndicator from '../../components/LoadingIndicator';
-// Style
+import {
+  initializeUserCredentials,
+  initializeProfileData,
+} from '../../actions/authActions';
+
 const { height, width } = Dimensions.get('window');
 
-const PhoneNumberScreen = ({ navigation }) => {
+const PhoneNumberScreen = ({
+  navigation,
+  initializeProfileData,
+  initializeUserCredentials,
+}) => {
   // Initial State
   const [phoneNumber, setPhoneNumber] = useState('');
   const [country, setCountry] = useState({
@@ -23,7 +31,7 @@ const PhoneNumberScreen = ({ navigation }) => {
   });
   const [popupVisibility, setPopupVisibility] = useState(false);
   const [flag, setFlag] = useState(flagCollection[country.alpha2Code]);
-  const [message, setMessage] = useState(''); // TO DO integrate into error
+  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(null);
 
   // Event Handlers
@@ -45,9 +53,10 @@ const PhoneNumberScreen = ({ navigation }) => {
         .auth()
         .signInWithPhoneNumber(`+${country.callingCode}${phoneNumber}`);
       setIsLoading(true);
-      const autoUser = await checkAutoVerification();
-      if (autoUser) {
-        autoVerify(autoUser, navigation);
+      const user = await checkAutoVerification();
+      if (user) {
+        const key = await initializeUserCredentials(user);
+        initializeProfileData(key, navigation);
       } else {
         navigation.navigate('codeEntry', {
           confirmResult: confirmation,
@@ -101,7 +110,16 @@ const PhoneNumberScreen = ({ navigation }) => {
   );
 };
 
-export default PhoneNumberScreen;
+PhoneNumberScreen.propTypes = {
+  initializeUserCredentials: PropTypes.func.isRequired,
+  initializeProfileData: PropTypes.func.isRequired,
+};
+const mapStateToProps = state => ({});
+
+export default connect(
+  mapStateToProps,
+  { initializeProfileData, initializeUserCredentials },
+)(PhoneNumberScreen);
 
 const styles = StyleSheet.create({
   container: {
